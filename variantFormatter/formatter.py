@@ -356,3 +356,12 @@ def fetch_aligned_transcripts(hgvs_genomic):
                                         hgvs_genomic.posedit.pos.end.base)
     tx_list.append(refseq_list)
     return tx_list
+
+"""
+Return the relevant protein sequence for a given transcript reference sequence
+"""
+
+
+def fetch_encoded_protein(tx_ac):
+    pro_ac = hdp.get_pro_ac_for_tx_ac(tx_ac)
+    return pro_ac
