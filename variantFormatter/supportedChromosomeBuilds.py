@@ -1526,10 +1526,11 @@ def to_accession(chr_num, primary_assembly):
         'HSCHR19KIR_FH15_A_HAP_CTG3_1': 'NT_187687.1',
         'HSCHR19KIR_RP5_B_HAP_CTG3_1': 'NT_113949.2',
     }
-    
+
     # Convert call line to rs line
     if re.match('chr', chr_num):
-        chr_num.replace('chr', '')
+        chr_num = chr_num.replace('chr', '')
+        chr_num = chr_num.upper()
     if primary_assembly == 'hg19':
          chr_accession = hg19.get(chr_num)
     if primary_assembly == 'GRCh37':
