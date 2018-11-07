@@ -2108,9 +2108,9 @@ def to_chr_num_ucsc(accession, primary_assembly):
         "NT_187667.1": "chrX_KI270913v1_alt",
         "NT_187395.1": "chrY_KI270740v1_random"
     }
-    if primary_assembly == 'hg38':
+    if primary_assembly == 'hg38' or primary_assembly == 'GRCh38':
         chr_num = chr_num_convert_38.get(accession)
-    if primary_assembly == 'hg19':
+    if primary_assembly == 'hg19' or primary_assembly == 'GRCh37':
         chr_num = chr_num_convert_37.get(accession)
     try:
         return chr_num

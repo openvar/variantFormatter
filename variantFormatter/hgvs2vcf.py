@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 hgvs2vcf.py
-
-A variety of functions that convert parder hgvs objects into VCF component parts
-Each function has a slightly difference emphasis
-
-1. hgvs2vcf
-Simple conversionwhich ensures identity is as 5 prime as possible by adding an extra 5
-prime base. Necessary for most gap handling situations
-
-2. report_hgvs2vcf
+report_hgvs2vcf
 Used to report the Most true representation of the VCF i.e. 5 prime normalized but no
 additional bases added. NOTE: no gap handling capabilities
 
-3. pos_lock_hgvs2vcf
-No normalization at all. No additional bases added. Simply returns an in-situ VCF
-
-4. hard_right_hgvs2vcf and hard_left_hgvs2vcf
-Designed specifically for gap handling.
-hard left pushes as 5 prime as possible and adds additional bases
-hard right pushes as 3 prime as possible and adds additional bases
 """
 
 # Import  modules
@@ -110,6 +95,7 @@ def report_hgvs2vcf(hgvs_genomic_variant, primary_assembly):
         ref = pre_base + hgvs_del_seq
         alt = pre_base
 
+
     # inv
     elif re.search('inv', str(reverse_normalized_hgvs_genomic.posedit)):
         end = int(reverse_normalized_hgvs_genomic.posedit.pos.end.base)
@@ -124,13 +110,18 @@ def report_hgvs2vcf(hgvs_genomic_variant, primary_assembly):
             if str(ins_seq) == 'None':
                 ins_seq = ''
         # Recover sequences
+        hgvs_del_seq = sf.fetch_seq(str(reverse_normalized_hgvs_genomic.ac), start, end)
         vcf_del_seq = sf.fetch_seq(str(reverse_normalized_hgvs_genomic.ac), adj_start, end)
+        bs = sf.fetch_seq(str(reverse_normalized_hgvs_genomic.ac), adj_start - 1, adj_start)
         # Assemble
         pos = str(start)
+        # pos = str(start-1)
+        # ref = bs + vcf_del_seq
         ref = vcf_del_seq
         alt = ins_seq
         if re.search('inv', str(reverse_normalized_hgvs_genomic.posedit)):
             my_seq = Seq(vcf_del_seq)
+            # alt = bs + str(my_seq.reverse_complement())
             alt = str(my_seq.reverse_complement())
 
     # Delins
@@ -148,7 +139,12 @@ def report_hgvs2vcf(hgvs_genomic_variant, primary_assembly):
             if str(ins_seq) == 'None':
                 ins_seq = ''
         # Recover sequences
+        hgvs_del_seq = sf.fetch_seq(str(reverse_normalized_hgvs_genomic.ac), start, end)
         vcf_del_seq = sf.fetch_seq(str(reverse_normalized_hgvs_genomic.ac), adj_start, end)
+        # Assemble
+        # pos = str(start)
+        # ref = vcf_del_seq
+        # alt = vcf_del_seq[:1] + ins_seq
         pos = str(start + 1)
         ref = vcf_del_seq[1:]
         alt = ins_seq
@@ -163,12 +159,11 @@ def report_hgvs2vcf(hgvs_genomic_variant, primary_assembly):
         dup_seq = reverse_normalized_hgvs_genomic.posedit.edit.ref
         vcf_ref_seq = sf.fetch_seq(str(reverse_normalized_hgvs_genomic.ac), adj_start, end)
         # Assemble
-        pos = str(start)
-        ref = vcf_ref_seq
-        alt = vcf_ref_seq + dup_seq
+        pos = str(start+1)
+        ref = vcf_ref_seq[1:]
+        alt = vcf_ref_seq[1:] + dup_seq
     else:
-        ucsc_chr = ''
-        grc_chr = ''
+        chr = ''
         ref = ''
         alt = ''
         pos = ''
