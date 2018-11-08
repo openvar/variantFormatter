@@ -283,10 +283,17 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, associated_protein_accession, 
                 associated_protein_accession = hdp.get_pro_ac_for_tx_ac(hgvs_transcript.ac)
 
                 # Intronic inversions are marked as uncertain i.e. p.?
-                if re.search('\d+\-', str(hgvs_transcript.posedit.pos)) or re.search('\d+\+',
-                                                                                     str(hgvs_transcript.posedit.pos)):
-                    # Make the variant
-                    hgvs_protein = hgvs.sequencevariant.SequenceVariant(ac=associated_protein_accession, type='p', posedit='?')
+                if re.search('\d+\-', str(hgvs_transcript.posedit.pos)) or re.search('\d+\+', str(hgvs_transcript.posedit.pos)) or re.search('\*', str(hgvs_transcript.posedit.pos)) or re.search('\.\-', str(hgvs_transcript.posedit.pos)):
+                    if ((
+                                hgvs_transcript.posedit.pos.start.base >= 1 and hgvs_transcript.posedit.pos.start.base <= 3 and hgvs_transcript.posedit.pos.start.offset == 0)
+                        or
+                        (hgvs_transcript.posedit.pos.end.base >= 1 and hgvs_transcript.posedit.pos.end.base <= 3 and hgvs_transcript.posedit.pos.end.offset == 0)) \
+                            and not re.search('\*', str(hgvs_transcript.posedit.pos)):                      
+                        hgvs_protein = hgvs.sequencevariant.SequenceVariant(ac=associated_protein_accession, type='p',
+                                                                            posedit='(Met1?)')
+                    else:                   
+                        # Make the variant
+                        hgvs_protein = hgvs.sequencevariant.SequenceVariant(ac=associated_protein_accession, type='p', posedit='?')
                     hgvs_transcript_to_hgvs_protein['hgvs_protein'] = hgvs_protein
                     return hgvs_transcript_to_hgvs_protein
                 else:
@@ -467,14 +474,36 @@ format protein description into single letter aa code
 """
 
 def single_letter_protein(hgvs_protein):
-	hgvs_protein_slc = hgvs_protein.format({'p_3_letter': False})
-	return hgvs_protein_slc
-	
-	
+    hgvs_protein_slc = hgvs_protein.format({'p_3_letter': False})
+    return hgvs_protein_slc
+    
+    
 """
 format nucleotide descriptions to not display reference base
 """
 
 def remove_reference(hgvs_nucleotide):
-	hgvs_nucleotide_refless = hgvs_nucleotide.format({'max_ref_length': 0})
-	return hgvs_nucleotide_refless
+    hgvs_nucleotide_refless = hgvs_nucleotide.format({'max_ref_length': 0})
+    return hgvs_nucleotide_refless
+    
+    
+
+
+
+
+# <LICENSE>
+# Copyright (C) 2018  Peter Causey-Freeman, University of Leicester
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# </LICENSE>
