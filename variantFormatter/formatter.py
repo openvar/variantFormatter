@@ -200,7 +200,7 @@ Function takes a genomic HGVS description and returns the component parts of a V
 
 
 def hgvs_genomic2vcf(hgvs_genomic, genome_build):
-    vcf_dictionary = hgvs2vcf.report_hgvs2vcf(hgvs_genomic, genome_build, hdp, reverse_splign_normalizer, sf)
+    vcf_dictionary = hgvs2vcf.report_hgvs2vcf(hgvs_genomic, genome_build, reverse_splign_normalizer, sf)
     return vcf_dictionary
 
 
@@ -577,7 +577,7 @@ check RefSeq hgvs_tx descriptions for gaps
 """
 
 
-def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic):
+def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_build):
 	
     tx_id = hgvs_transcript.ac
     if re.match('ENST', tx_id):
@@ -591,7 +591,7 @@ def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic):
 
 	checked = gapGenes.compensate_g_to_t(hgvs_transcript, hgvs_genomic, 
 										un_norm_hgvs_genomic, vm, hn, rhn, 
-										hdp, hp, sf, hgvs_version)
+										genome_build, hdp, hp, sf, hgvs_version)
 
 	return checked
 	
