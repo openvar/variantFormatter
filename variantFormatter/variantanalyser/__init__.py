@@ -1,16 +1,7 @@
-[variantFormatter]
-version = 0.0.1
-release_date = tbc
+# -*- coding: utf-8 -*-
 
-[EntrezID]
-entrezid = admin@variantvalidator.org
-access_key = ''
-
-[SeqRepo]
-seqrepo_dir = /local/seqrepo/2017-11-18
-
-[UTA]
-uta_url = postgresql://uta_admin:uta_admin@127.0.0.1/uta/uta_20171026
+# Import functions from functions.py
+from functions import *
 
 # <LICENSE>
 # Copyright (C) 2018  Peter Causey-Freeman, University of Leicester
