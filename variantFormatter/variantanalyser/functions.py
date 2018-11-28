@@ -10,9 +10,25 @@ seqfetcher.py
 # IMPORT REQUIRED PYTHON MODULES
 import re
 import os
-import sys
 import copy
 import warnings
+import hgvs
+import hgvs.exceptions
+from hgvs.exceptions import HGVSDataNotAvailableError
+
+
+
+# Needs functions from variantFormatter - directory above, unless in a single directory
+try:
+    from variantFormatter import supportedChromosomeBuilds as supported_chromosome_builds
+except ImportError:
+    parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.sys.path.insert(0, parentdir)
+    import supportedChromosomeBuilds as supported_chromosome_builds
+except AttributeError:
+    parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.sys.path.insert(0, parentdir)
+    import supportedChromosomeBuilds as supported_chromosome_builds
 
 
 """
@@ -33,24 +49,12 @@ returns parsed hgvs g. object
 """
 
 
-def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_vm):
+def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_vm, utilise_gap_code):
 
     # store the input
     stored_hgvs_c = copy.deepcopy(hgvs_c)
     expand_out = 'false'
-    utilise_gap_code = True
-    
-    # Gap gene black list
-    try:
-        gene_symbol = dbControls.data.get_gene_symbol_from_transcriptID(hgvs_c.ac)
-    except Exception:
-        utilise_gap_code = False
-    else:
-        # If the gene symbol is not in the list, the value False will be returned
-        utilise_gap_code = gap_genes.gap_black_list(gene_symbol)
-    # Warn gap code in use
-    warnings.warn("gap_compensation_myevm = " + str(utilise_gap_code))
-        
+
     if utilise_gap_code is True and (hgvs_c.posedit.edit.type == 'identity' or hgvs_c.posedit.edit.type == 'del' or hgvs_c.posedit.edit.type =='delins' or hgvs_c.posedit.edit.type == 'dup' or hgvs_c.posedit.edit.type == 'sub' or hgvs_c.posedit.edit.type == 'ins' or hgvs_c.posedit.edit.type == 'inv'):
 
         # if NM_ need the n. position
@@ -609,7 +613,55 @@ def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_
                     warnings.warn('Ins mapping error in myt_to_g ' + error) 
 
     return hgvs_genomic
-    
+
+
+"""
+Returns exon information for a given transcript
+e.g. how the exons align to the genomic reference
+see hgvs.dataproviders.uta.py for details
+"""
+
+
+def tx_exons(tx_ac, alt_ac, alt_aln_method, hdp):
+    # Interface with the UTA database via get_tx_exons in uta.py
+    try:
+        tx_exons = hdp.get_tx_exons(tx_ac, alt_ac, alt_aln_method)
+    except hgvs.exceptions.HGVSError as e:
+        tx_exons = 'hgvs Exception: ' + str(e)
+        return tx_exons
+    try:
+        tx_exons[0]['alt_strand']
+    except TypeError:
+        tx_exons = 'error'
+        return tx_exons
+    # If on the reverse strand, reverse the order of elements
+    if tx_exons[0]['alt_strand'] == -1:
+        tx_exons = tx_exons[::-1]
+        return tx_exons
+    else:
+        return tx_exons
+
+"""
+Simple reverse complement function for nucleotide sequences
+"""
+
+def revcomp(bases):
+    l2 = []
+    l = list(bases)
+    element = 0
+    for base in l:
+        element = element + 1
+        if base == 'G':
+            l2.append('C')
+        if base == 'C':
+            l2.append('G')
+        if base == 'A':
+            l2.append('T')
+        if base == 'T':
+            l2.append('A')
+    revcomp = ''.join(l2)
+    revcomp = revcomp[::-1]
+    return revcomp
     
 # <LICENSE>
 # Copyright (C) 2018  Peter Causey-Freeman, University of Leicester
