@@ -60,8 +60,6 @@ if HGVS_SEQREPO_DIR is None:
 if UTA_DB_URL is None:
     UTA_DB_URL = ConfigSectionMap("UTA")['uta_url']
     os.environ['UTA_DB_URL'] = UTA_DB_URL
-__version__ = ConfigSectionMap("variantFormatter")['version']
-__released__ = ConfigSectionMap("variantFormatter")['release_date']
 hgvs_version = hgvs.__version__,
 hgvs_version = str(hgvs_version[0])
 
@@ -318,7 +316,8 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build):
                                              )    
     
     # Create dictionary to store the information    
-    hgvs_transcript_to_hgvs_protein = protein_dict = va_func.myc_to_p(hgvs_transcript, evm, hdp, hp, rhn, vm, sf, re_to_p=False)
+    hgvs_transcript_to_hgvs_protein = va_func.myc_to_p(hgvs_transcript, evm, hdp, hp, rhn, vm, sf, re_to_p=False)
+    hgvs_transcript_to_hgvs_protein = hgvs_transcript_to_hgvs_protein['hgvs_protein']
     
     return hgvs_transcript_to_hgvs_protein
 
@@ -327,13 +326,26 @@ Return all aligned transcripts for a given genomic hgvs object
 """
 
 
-def fetch_aligned_transcripts(hgvs_genomic):
-    enst_list = hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base - 1,
-                                      hgvs_genomic.posedit.pos.end.base)
-    tx_list = enst_list
-    refseq_list = hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
-                                        hgvs_genomic.posedit.pos.end.base)
-    tx_list.append(refseq_list)
+def fetch_aligned_transcripts(hgvs_genomic, transcript_model):
+    tx_list = []
+    
+    if transcript_model == 'ensembl' or transcript_model == 'all':
+        enst_list = hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base - 1,
+                                          hgvs_genomic.posedit.pos.end.base)
+        
+        # Remove transcripts with incomplete identifiers
+        cp_enst_list = []
+        for et in enst_list:
+            if re.search('\d+\.\d+', et[0]):
+                cp_enst_list.append(et)
+    
+        tx_list = tx_list + cp_enst_list
+                          
+    if transcript_model == 'refseq' or transcript_model == 'all':   
+        refseq_list = hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
+                                            hgvs_genomic.posedit.pos.end.base)
+        tx_list = tx_list + refseq_list
+        
     return tx_list
 
 """

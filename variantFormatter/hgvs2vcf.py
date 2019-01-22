@@ -162,8 +162,7 @@ def report_hgvs2vcf(hgvs_genomic_variant, primary_assembly, reverse_normalize, s
         pos = ''
 
     # Dictionary the VCF
-    vcf_dict = {'pos': str(pos), 'ref': ref, 'alt': alt, 'ucsc_chr': ucsc_chr, 'grc_chr': grc_chr,
-                'normalized_hgvs': reverse_normalized_hgvs_genomic}
+    vcf_dict = {'pos': str(pos), 'ref': ref, 'alt': alt, 'ucsc_chr': ucsc_chr, 'grc_chr': grc_chr}
     return vcf_dict
 
 
