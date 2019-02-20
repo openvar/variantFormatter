@@ -4,6 +4,7 @@
 import formatter
 import re
 import collections
+import VariantFormatter
  
 # Custom Exceptions
 class vcf2hgvsError(Exception):
@@ -176,6 +177,7 @@ class FormatVariant(object):
     # Create ordered output
     def stucture_data(self):        
     	bring_order = collections.OrderedDict()
+    	
     	# Add the data to the ordered dictionary structure
     	bring_order['submitted_variant'] = str(self.variant_description)
     	bring_order['p_vcf'] = str(self.genomic_descriptions.p_vcf)
@@ -183,6 +185,15 @@ class FormatVariant(object):
     	bring_order['g_hgvs_ref'] = str(self.genomic_descriptions.g_hgvs_ref)
     	bring_order['hgvs_t_and_p'] = self.t_and_p_descriptions
     	return bring_order
+    	
+    def collect_metadata(self):	
+    	meta = collections.OrderedDict()
+    	meta['api_version'] = VariantFormatter.__version__
+    	meta['api_released'] = VariantFormatter.__released__
+    	meta['hgvs_version'] = VariantFormatter.__hgvs_version__
+    	meta['uta_schema'] = VariantFormatter.__uta_schema__
+    	meta['seqrepo_db'] = VariantFormatter.__seqrepo_db__
+    	return meta
                 
 # <LICENSE>
 # Copyright (C) 2019  Peter Causey-Freeman, University of Leicester
