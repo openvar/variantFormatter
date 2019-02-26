@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 # import modules
-import formatter
+import os
 import re
+import formatter
 import collections
-import VariantFormatter
+from configparser import ConfigParser, RawConfigParser
+import hgvs
+import hgvs.dataproviders.uta
  
 # Custom Exceptions
 class vcf2hgvsError(Exception):
@@ -13,8 +16,117 @@ class hgvs2VcfError(Exception):
     pass
 class variableError(Exception):
     pass
-
     
+
+# Configure databases  
+class initializeFormatter(object):
+    """
+    Sets paths to the UTA and SeqRepo databses
+    """
+    def __init__(self):
+
+        # First load from the configuration file, if it exists.
+        configName="config.ini"
+        homePath=os.path.expanduser("~")
+        configPath=os.path.join(homePath,".config","VariantFormatter")
+        if not os.path.isdir(configPath):
+            os.makedirs(configPath)
+        # Now configpath points to the config file itself.
+        configPath=os.path.join(configPath,configName)
+        # Does the file exist?
+        if not os.path.exists(configPath):
+            self.createConfig(configPath)
+
+        # Load the configuration file.
+        config=RawConfigParser(allow_no_value=True)
+        with open(configPath) as file:
+            config.read_file(file)
+
+        # Set up versions
+        __version__ = config["variantFormatter"]['version']
+        self.version=__version__
+        if re.match('^\d+\.\d+\.\d+$', __version__) is not None:
+            self.releasedVersion=True
+            _is_released_version = True
+
+        # Handle databases
+        if config["seqrepo"]["location"]!=None:
+            self.seqrepoPath=config["seqrepo"]["location"]
+            self.seqrepoVersion=str(self.seqrepoPath).split('/')[-1]
+            os.environ['HGVS_SEQREPO_DIR']=self.seqrepoPath
+        else:
+            raise ValueError("The seqrepo database location has not been set in ~/.config/VariantFormatter/config.ini")
+
+        if config["uta"]["location"]!=None:
+            self.utaPath=config["uta"]["location"]
+            self.utaVersion=str(self.utaPath).split('/')[-1]
+            os.environ['UTA_DB_URL']=self.utaPath
+        else:
+            raise ValueError("The uta database location has not been set in ~/.config/VariantFormatter/config.ini")
+        
+        # Set up HGVS
+        # Configure hgvs package global settings
+        self.hgvsVersion=hgvs.__version__
+        hgvs.global_config.uta.pool_max = 25
+        hgvs.global_config.formatting.max_ref_length = 1000000
+        self.hdp = hgvs.dataproviders.uta.connect(pooling=True)
+        self.hp = hgvs.parser.Parser()
+        self.vm = hgvs.variantmapper.VariantMapper(self.hdp, replace_reference=True)
+        self.vr = hgvs.validator.Validator(self.hdp)
+        self.sf = hgvs.dataproviders.seqfetcher.SeqFetcher()
+        self.splign_normalizer = hgvs.normalizer.Normalizer(self.hdp,
+                                               cross_boundaries=False,
+                                               shuffle_direction=hgvs.global_config.normalizer.shuffle_direction,
+                                               alt_aln_method='splign'
+                                               )
+                                               
+        self.genebuild_normalizer = hgvs.normalizer.Normalizer(self.hdp,
+                                                  cross_boundaries=False,
+                                                  shuffle_direction=hgvs.global_config.normalizer.shuffle_direction,
+                                                  alt_aln_method='genebuild'
+                                                  )
+                                                  
+        self.reverse_splign_normalizer = hgvs.normalizer.Normalizer(self.hdp,
+                                                       cross_boundaries=False,
+                                                       shuffle_direction=5,
+                                                       alt_aln_method='splign'
+                                                       )
+                                                       
+        self.reverse_genebuild_normalizer = hgvs.normalizer.Normalizer(self.hdp,
+                                                          cross_boundaries=False,
+                                                          shuffle_direction=5,
+                                                          alt_aln_method='genebuild'
+                                                          )
+                                                          
+    def myConfig(self):
+        '''
+        #Returns configuration:
+        #version, hgvs version, uta schema, seqrepo db.
+        '''
+        return {
+            'variantvalidator_version': self.version,
+            'variantvalidator_hgvs_version': self.hgvsVersion,
+            'uta_schema': self.utaSchema,
+            'seqrepo_db': self.seqrepoPath
+        }
+
+
+    def createConfig(self,outPath):
+        '''
+        # This function reads from the default configuration file stored in the same folder as this module,
+        # and transfers it to outPath.
+        # Outpath should include a filename.
+        '''
+        lines=[]
+        inPath=os.path.join(os.path.dirname(os.path.realpath(__file__)),"configuration/config.ini")
+        with open(inPath) as file:
+            for l in file:
+                lines.append(l)
+        with open(outPath, "w") as file:
+            for l in lines:
+                file.write(l)                                                                 
+                        
+
 # Create variantformatter object
 class GenomicDescriptions(object):
     """
@@ -31,6 +143,7 @@ class GenomicDescriptions(object):
         self.g_hgvs_ref = hgvs_ref_bases
 
     
+
 # Create variantformatter object
 class FormatVariant(object):
     """
@@ -41,9 +154,10 @@ class FormatVariant(object):
     transcript and protein level descriptions - includes gap checking!    
     """
     # Initialise and add initialisation data to the object
-    def __init__(self, variant_description, genome_build, transcript_model=None, specify_transcripts=None):
+    def __init__(self, variant_description, genome_build, vfo, transcript_model=None, specify_transcripts=None):
         
         self.variant_description = variant_description
+        self.varForm = vfo
         
         if genome_build not in ['GRCh37', 'GRCh38']:
             raise variableError("genome_build must be one of: 'GRCh37'; 'GRCh38'")
@@ -62,14 +176,14 @@ class FormatVariant(object):
         # vcf2hgvs route
         if re.match('N[CTW]_', self.variant_description):
             try:
-                hgvs_genomic = formatter.parse(self.variant_description)
-                vcf_dictionary = formatter.hgvs_genomic2vcf(hgvs_genomic, self.genome_build)
+                hgvs_genomic = formatter.parse(self.variant_description, self.varForm)
+                vcf_dictionary = formatter.hgvs_genomic2vcf(hgvs_genomic, self.genome_build, self.varForm)
                 vcf_list = [vcf_dictionary['grc_chr'], vcf_dictionary['pos'], vcf_dictionary['ref'], vcf_dictionary['alt']]
                 p_vcf = ':'.join(vcf_list)
             except Exception as e:
                 raise hgvs2VcfError(str(e)) 
             try:
-                genomic_level = formatter.vcf2hgvs_genomic(p_vcf, self.genome_build)
+                genomic_level = formatter.vcf2hgvs_genomic(p_vcf, self.genome_build, self.varForm)
             except Exception as e:
                 raise vcf2hgvsError(str(e))
             else:
@@ -82,7 +196,7 @@ class FormatVariant(object):
         # hgvs2vcf route
         elif re.match('chr\d+\-', self.variant_description) or re.match('chr\d+:', self.variant_description) or re.match('\d+\-', self.variant_description)  or re.match('\d+:', self.variant_description):        
             try:
-                genomic_level = formatter.vcf2hgvs_genomic(self.variant_description, self.genome_build)
+                genomic_level = formatter.vcf2hgvs_genomic(self.variant_description, self.genome_build, self.varForm)
             except Exception as e:
                 raise vcf2hgvsError(str(e))
             else:
@@ -106,22 +220,27 @@ class FormatVariant(object):
         prelim_transcript_descriptions = {}
         transcript_list = []
         
-        # Transcripts specified
+        # Transcripts specified        
         if self.specify_transcripts is not None:
             transcript_list = str(self.specify_transcripts).split('|')
-        
+            transcript_list = [transcript_list]
+            
         # No transcripts specified
         else:
-            transcript_list = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model)
+            transcript_list = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model, self.varForm)
             
         # Create transcript level descriptions
         for tx_alignment_data in transcript_list:
             tx_id = tx_alignment_data[0]
-            hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id)
+            hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.varForm)
            
+            #import json
+            #print json.dumps(str(hgvs_transcript_dict), sort_keys=False, indent=4, separators=(',', ': '))
+
+            
             # Gap checking            
             try:
-                am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs, un_norm_hgvs, self.genome_build)
+                am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs, un_norm_hgvs, self.genome_build, self.varForm)
             except Exception as e:
 
                 am_i_gapped = {'hgvs_transcript': None,
@@ -142,7 +261,7 @@ class FormatVariant(object):
                                                         
                 # map to Protein
                 if am_i_gapped['hgvs_transcript'].type == 'c':
-                    hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build)
+                    hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.varForm)
                     hgvs_protein_slc = formatter.single_letter_protein(hgvs_protein_tlc)
                 if am_i_gapped['hgvs_transcript'].type == 'n':
                     hgvs_protein_tlc = 'non-coding'
@@ -176,25 +295,25 @@ class FormatVariant(object):
     
     # Create ordered output
     def stucture_data(self):        
-    	bring_order = collections.OrderedDict()
-    	
-    	# Add the data to the ordered dictionary structure
-    	bring_order['submitted_variant'] = str(self.variant_description)
-    	bring_order['p_vcf'] = str(self.genomic_descriptions.p_vcf)
-    	bring_order['g_hgvs'] = str(self.genomic_descriptions.g_hgvs)
-    	bring_order['g_hgvs_ref'] = str(self.genomic_descriptions.g_hgvs_ref)
-    	bring_order['hgvs_t_and_p'] = self.t_and_p_descriptions
-    	return bring_order
-    	
-    def collect_metadata(self):	
-    	meta = collections.OrderedDict()
-    	meta['api_version'] = VariantFormatter.__version__
-    	meta['api_released'] = VariantFormatter.__released__
-    	meta['hgvs_version'] = VariantFormatter.__hgvs_version__
-    	meta['uta_schema'] = VariantFormatter.__uta_schema__
-    	meta['seqrepo_db'] = VariantFormatter.__seqrepo_db__
-    	return meta
+        bring_order = collections.OrderedDict()
+        
+        # Add the data to the ordered dictionary structure
+        bring_order['p_vcf'] = str(self.genomic_descriptions.p_vcf)
+        bring_order['g_hgvs'] = str(self.genomic_descriptions.g_hgvs)
+        bring_order['g_hgvs_ref'] = str(self.genomic_descriptions.g_hgvs_ref)
+        bring_order['hgvs_t_and_p'] = self.t_and_p_descriptions
+        brought_order = {str(self.variant_description): bring_order}
+        return brought_order
+        
+    def collect_metadata(self): 
+        meta = collections.OrderedDict()
+        meta['api_version'] = self.varForm.version
+        meta['hgvs_version'] = self.varForm.hgvsVersion
+        meta['uta_schema'] = self.varForm.utaVersion
+        meta['seqrepo_db'] = self.varForm.seqrepoVersion
+        return meta
                 
+
 # <LICENSE>
 # Copyright (C) 2019  Peter Causey-Freeman, University of Leicester
 # 

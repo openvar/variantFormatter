@@ -593,7 +593,7 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
                     StrictVersion('1.1.3') is True):
         # Push to absolute position
         normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer,
-                                             hdp)
+                                             hdp, vm)
         hgvs_tx_returns = [normalized_tx, False, None, None, None]
 
     else:
@@ -602,24 +602,24 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
         gap_compensation = gap_black_list(gene_symbol)
         if gap_compensation is False:
             normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, 
-                                                reverse_normalizer, hdp)
+                                                reverse_normalizer, hdp, vm)
             hgvs_tx_returns = [normalized_tx, False, None, None, None]
         else:
             # At this stage, we know that:
-                # the gene is on the gap list
-                # the hgvs version is <= 1.1.3
-                # The requested transcript set is RefSeq
-                gap_compensated_tx = g_to_t_compensation_code(hgvs_tx, hgvs_genomic, 
+            # the gene is on the gap list
+            # the hgvs version is <= 1.1.3
+            # The requested transcript set is RefSeq
+            gap_compensated_tx = g_to_t_compensation_code(hgvs_tx, hgvs_genomic, 
                                                                 un_norm_hgvs_genomic, 
                                                                 vm, hn, 
                                                                 reverse_normalizer,
                                                                 primary_assembly,
                                                                 hdp, hp, sf)
-                if gap_compensated_tx[1] is False:
-                    hgvs_tx_returns = fully_normalize(hgvs_tx, hgvs_genomic, hn,
-                                                reverse_normalizer, hdp)
-                else:
-                    hgvs_tx_returns = gap_compensated_tx
+            if gap_compensated_tx[1] is False:
+                refresh_hgvs_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
+                                                reverse_normalizer, hdp, vm)
+                gap_compensated_tx[0] = refresh_hgvs_tx                                         
+            hgvs_tx_returns = gap_compensated_tx
                         
     
     hgvs_tx_dict = {'hgvs_transcript': hgvs_tx_returns[0],
@@ -639,7 +639,7 @@ Is only activated if the g_to_t_compensation_code IS NOT USED!
 """
 
 
-def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp):
+def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm):
     
     # set required variables
     tx_id = hgvs_tx.ac
@@ -658,10 +658,14 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp):
     else:
         hgvs_genomic = hn.normalize(hgvs_genomic)
     try:
+        hgvs_tx = vm.g_to_t(hgvs_genomic, hgvs_tx.ac)
+    except hgvs.exceptions.HGVSError:
+        pass    
+    try:
         hgvs_tx = hn.normalize(hgvs_tx)
     except hgvs.exceptions.HGVSError:
         pass
-    
+        
     return hgvs_tx
 
 
@@ -1515,7 +1519,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                         stored_hgvs_not_delins.posedit.pos) + ' contains ' + str(
                         disparity_deletion_in[
                             1]) + ' genomic base(s) that fail to align to transcript ' + str(
-                        tx_hgvs_not_delins.ac) + '\n'
+                        tx_hgvs_not_delins.ac)
                     hgvs_refreshed_variant = tx_hgvs_not_delins
                     gapped_transcripts = gapped_transcripts + ' ' + str(tx_hgvs_not_delins.ac)
 
@@ -1530,7 +1534,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
             auto_info = str(hgvs_refreshed_variant.ac) + ':c.' + str(
                 hgvs_refreshed_variant.posedit.pos) + ' contains ' + str(disparity_deletion_in[
                                                                              1]) + ' transcript base(s) that fail to align to chromosome ' + str(
-                hgvs_genomic.ac) + '\n'
+                hgvs_genomic.ac)
             gapped_transcripts = gapped_transcripts + str(hgvs_refreshed_variant.ac) + ' '
         else:
             # Try the push

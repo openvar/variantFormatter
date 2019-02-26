@@ -6,7 +6,7 @@ import configuration
 from configparser import ConfigParser
 import hgvs
 
-CONF_ROOT = os.environ.get('CONF_ROOT')
+CONF_ROOT = os.environ.get('HOME')
 
 
 # Config Section Mapping function
@@ -26,25 +26,9 @@ def ConfigSectionMap(section):
 
 # Configure
 Config = ConfigParser()
-Config.read(os.path.join(CONF_ROOT, 'config.ini'))
-
-# Set SeqRepo and UTA environment variables
-HGVS_SEQREPO_DIR = os.environ.get('HGVS_SEQREPO_DIR')
-UTA_DB_URL = os.environ.get('UTA_DB_URL')
-if HGVS_SEQREPO_DIR is None:
-    HGVS_SEQREPO_DIR = ConfigSectionMap("SeqRepo")['seqrepo_dir']
-    os.environ['HGVS_SEQREPO_DIR'] = HGVS_SEQREPO_DIR
-if UTA_DB_URL is None:
-    UTA_DB_URL = ConfigSectionMap("UTA")['uta_url']
-    os.environ['UTA_DB_URL'] = UTA_DB_URL
+Config.read(os.path.join(CONF_ROOT, '.config', 'VariantFormatter', 'config.ini'))
 __version__ = ConfigSectionMap("variantFormatter")['version']
-__released__ = ConfigSectionMap("variantFormatter")['release_date']
 
-# Collect metadata objects
-hgvs_version = hgvs.__version__,
-__hgvs_version__ = str(hgvs_version[0])
-__seqrepo_db__ = str(HGVS_SEQREPO_DIR.split('/')[-1])
-__uta_schema__ = str(UTA_DB_URL.split('/')[-1])
 
 
 # <LICENSE>
