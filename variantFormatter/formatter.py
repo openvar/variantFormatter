@@ -207,7 +207,7 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, varForm):
     
     
     # Create varForm.vm
-    varForm.vm = hgvs.assemblymapper.AssemblyMapper(varForm.hdp,
+    evm = hgvs.assemblymapper.AssemblyMapper(varForm.hdp,
                                              assembly_name=genome_build,
                                              alt_aln_method=alt_aln_method, # Only RefSeq should be here!!!
                                              normalize=True,
@@ -215,7 +215,7 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, varForm):
                                              )    
     
     # Create dictionary to store the information    
-    hgvs_transcript_to_hgvs_protein = va_func.myc_to_p(hgvs_transcript, varForm.vm, varForm.hdp, varForm.hp, rhn, varForm.vm, varForm.sf, re_to_p=False)
+    hgvs_transcript_to_hgvs_protein = va_func.myc_to_p(hgvs_transcript, evm, varForm.hdp, varForm.hp, rhn, varForm.vm, varForm.sf, re_to_p=False)
     hgvs_transcript_to_hgvs_protein = hgvs_transcript_to_hgvs_protein['hgvs_protein']
     
     return hgvs_transcript_to_hgvs_protein

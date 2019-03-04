@@ -591,6 +591,7 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
     # Not required in these instances
     if re.match('ENST', hgvs_tx.ac) or (StrictVersion(str(hgvs_version)) > 
                     StrictVersion('1.1.3') is True):
+        
         # Push to absolute position
         normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer,
                                              hdp, vm)
@@ -615,6 +616,7 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
                                                                 reverse_normalizer,
                                                                 primary_assembly,
                                                                 hdp, hp, sf)
+
             if gap_compensated_tx[1] is False:
                 refresh_hgvs_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
                                                 reverse_normalizer, hdp, vm)
@@ -1170,8 +1172,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                 disparity_deletion_in[1] = str(g_gap - t_gap - 1)
             
             gap_position = ''
-            gapped_alignment_warning = str(
-                hgvs_genomic_5pr) + ' may be an artefact of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
+            gapped_alignment_warning = 'The displayed variants may be artefacts of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
 
             # ANY VARIANT WHOLLY WITHIN THE GAP
             if (re.search('\+', str(tx_hgvs_not_delins.posedit.pos.start)) or re.search('\-',
@@ -1317,7 +1318,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                     gps = for_location_c.posedit.pos.start.base
                     gpe = for_location_c.posedit.pos.start.base + 1
                 gap_position = ' between positions c.' + str(gps) + '_' + str(gpe)
-                auto_info = '%s' % (gap_position)
+                # auto_info = '%s' % (gap_position)
             else:
                 if tx_hgvs_not_delins.posedit.pos.start.offset == 0 and tx_hgvs_not_delins.posedit.pos.end.offset == 0:
                     # In this instance, we have identified a transcript gap but the n. version of
@@ -1388,13 +1389,12 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                         gpe = for_location_c.posedit.pos.start.base + 1
                     gap_position = ' between positions c.' + str(gps) + '_' + str(gpe)
                     # Warn update
-                    auto_info = '%s' % (gap_position)
+                    # auto_info = '%s' % (gap_position)
                 elif re.search('\+', str(tx_hgvs_not_delins.posedit.pos.end)) and not re.search(
                         '\+', str(tx_hgvs_not_delins.posedit.pos.start)):
                     auto_info = 'Genome position ' + str(
                         stored_hgvs_not_delins.ac) + ':g.' + str(
-                        stored_hgvs_not_delins.posedit.pos.end.base + 1) + ' aligns within a ' + str(
-                        disparity_deletion_in[1]) + '-bp gap in transcript ' + str(
+                        stored_hgvs_not_delins.posedit.pos.end.base) + ' aligns within a gap in transcript ' + str(
                         tx_hgvs_not_delins.ac)
                     gapped_transcripts = gapped_transcripts + ' ' + str(tx_hgvs_not_delins.ac)
                     non_valid_caution = 'true'
@@ -1432,7 +1432,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                     gpe = for_location_c.posedit.pos.end.base + 1
                     gap_position = ' between positions c.' + str(gps) + '_' + str(gpe)
                     # Warn update
-                    auto_info = '%s' % (gap_position)
+                    # auto_info = '%s' % (gap_position)
                 elif re.search('\-',
                                str(tx_hgvs_not_delins.posedit.pos.start)) and not re.search(
                     '\-', str(tx_hgvs_not_delins.posedit.pos.end)):
@@ -1476,13 +1476,12 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                     gpe = for_location_c.posedit.pos.start.base
                     gap_position = ' between positions c.' + str(gps) + '_' + str(gpe)
                     # Warn update
-                    auto_info = '%s' % (gap_position)
+                    # auto_info = '%s' % (gap_position)
                 elif re.search('\-', str(tx_hgvs_not_delins.posedit.pos.end)) and not re.search(
                         '\-', str(tx_hgvs_not_delins.posedit.pos.start)):
                     auto_info = 'Genome position ' + str(
                         stored_hgvs_not_delins.ac) + ':g.' + str(
-                        stored_hgvs_not_delins.posedit.pos.end.base + 1) + ' aligns within a ' + str(
-                        disparity_deletion_in[1]) + '-bp gap in transcript ' + str(
+                        stored_hgvs_not_delins.posedit.pos.end.base) + ' aligns within a gap in transcript ' + str(
                         tx_hgvs_not_delins.ac)
                     gapped_transcripts = gapped_transcripts + ' ' + str(tx_hgvs_not_delins.ac)
                     non_valid_caution = 'true'
@@ -1513,7 +1512,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                     gpe = for_location_c.posedit.pos.end.base
                     gap_position = ' between positions c.' + str(gps) + '_' + str(gpe)
                     # Warn update
-                    auto_info = '%s' % (gap_position)
+                    # auto_info = '%s' % (gap_position)
                 else:
                     auto_info = str(stored_hgvs_not_delins.ac) + ':g.' + str(
                         stored_hgvs_not_delins.posedit.pos) + ' contains ' + str(
@@ -1527,8 +1526,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
         elif disparity_deletion_in[0] == 'chromosome':
             # Set warning variables
             gap_position = ''
-            gapped_alignment_warning = str(
-                hgvs_genomic_5pr) + ' may be an artefact of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
+            gapped_alignment_warning = 'The displayed variants may be artefacts of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
             hgvs_refreshed_variant = tx_hgvs_not_delins
             # Warn
             auto_info = str(hgvs_refreshed_variant.ac) + ':c.' + str(
@@ -1577,16 +1575,14 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                     tx_hard_right.posedit.edit.ref):
                 tx_hard_right = hn.normalize(tx_hard_right)
                 gap_position = ''
-                gapped_alignment_warning = str(
-                    hgvs_genomic_5pr) + ' may be an artefact of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
+                gapped_alignment_warning = 'The displayed variants may be artefacts of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
                 hgvs_refreshed_variant = tx_hard_right
                 gapped_transcripts = gapped_transcripts + str(tx_hard_right.ac) + ' '
             elif len(stash_hgvs_not_delins_left.posedit.edit.ref) < len(
                     tx_hard_left.posedit.edit.ref):
                 tx_hard_left = hn.normalize(tx_hard_left)
                 gap_position = ''
-                gapped_alignment_warning = str(
-                    hgvs_genomic_5pr) + ' may be an artefact of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
+                gapped_alignment_warning = 'The displayed variants may be artefacts of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
                 hgvs_refreshed_variant = tx_hard_left
                 gapped_transcripts = gapped_transcripts + str(tx_hard_left.ac) + ' '
             else:

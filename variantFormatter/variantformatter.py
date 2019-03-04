@@ -234,8 +234,8 @@ class FormatVariant(object):
             tx_id = tx_alignment_data[0]
             hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.varForm)
            
-            #import json
-            #print json.dumps(str(hgvs_transcript_dict), sort_keys=False, indent=4, separators=(',', ': '))
+            # import json
+            # print json.dumps(str(hgvs_transcript_dict), sort_keys=False, indent=4, separators=(',', ': '))
 
             
             # Gap checking            
@@ -279,14 +279,10 @@ class FormatVariant(object):
             # Order the tx_p output
             order_my_tp = collections.OrderedDict()
             order_my_tp['t_hgvs'] = am_i_gapped['hgvs_transcript']
-            order_my_tp['t_hgvs_ref'] = hgvs_transcript_dict['ref_bases']
             order_my_tp['p_hgvs_tlc'] = am_i_gapped['hgvs_protein_tlc']
             order_my_tp['p_hgvs_slc'] = am_i_gapped['hgvs_protein_slc']
             order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
-            order_my_tp['gap_position'] = am_i_gapped['gap_position']
-            order_my_tp['corrective_action'] = am_i_gapped['corrective_action']            
-            order_my_tp['position_lock'] = am_i_gapped['position_lock']
-
+            order_my_tp['gap_statement'] = am_i_gapped['gap_position']
             
             # add to output dictionary keyed by tx_ac
             prelim_transcript_descriptions[tx_id] = order_my_tp
@@ -300,7 +296,6 @@ class FormatVariant(object):
         # Add the data to the ordered dictionary structure
         bring_order['p_vcf'] = str(self.genomic_descriptions.p_vcf)
         bring_order['g_hgvs'] = str(self.genomic_descriptions.g_hgvs)
-        bring_order['g_hgvs_ref'] = str(self.genomic_descriptions.g_hgvs_ref)
         bring_order['hgvs_t_and_p'] = self.t_and_p_descriptions
         brought_order = {str(self.variant_description): bring_order}
         return brought_order

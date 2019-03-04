@@ -16,6 +16,7 @@ import hgvs
 import hgvs.exceptions
 from hgvs.exceptions import HGVSDataNotAvailableError
 import supportFunctions as links
+from Bio.Seq import Seq
 
 
 
