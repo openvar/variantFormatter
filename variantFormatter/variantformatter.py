@@ -26,13 +26,11 @@ class initializeFormatter(object):
     def __init__(self):
 
         # First load from the configuration file, if it exists.
-        configName="config.ini"
-        homePath=os.path.expanduser("~")
-        configPath=os.path.join(homePath,".config","VariantFormatter")
-        if not os.path.isdir(configPath):
-            os.makedirs(configPath)
+        configName=".VariantFormatter.conf"
+        configRoot=os.environ.get('HOME')
+
         # Now configpath points to the config file itself.
-        configPath=os.path.join(configPath,configName)
+        configPath=os.path.join(configRoot,configName)
         # Does the file exist?
         if not os.path.exists(configPath):
             self.createConfig(configPath)
@@ -43,7 +41,7 @@ class initializeFormatter(object):
             config.read_file(file)
 
         # Set up versions
-        __version__ = config["variantFormatter"]['version']
+        __version__ = config["VariantFormatter"]['version']
         self.version=__version__
         if re.match('^\d+\.\d+\.\d+$', __version__) is not None:
             self.releasedVersion=True
@@ -55,14 +53,20 @@ class initializeFormatter(object):
             self.seqrepoVersion=str(self.seqrepoPath).split('/')[-1]
             os.environ['HGVS_SEQREPO_DIR']=self.seqrepoPath
         else:
-            raise ValueError("The seqrepo database location has not been set in ~/.config/VariantFormatter/config.ini")
+            valueerror = "\nThe seqrepo database location has not been set in %s" % configPath
+            example = "example: location = %s/seqrepo/2018-08-21\n" % configRoot
+            valueerror = valueerror + '\n' + example
+            raise ValueError(valueerror)
 
         if config["uta"]["location"]!=None:
             self.utaPath=config["uta"]["location"]
             self.utaVersion=str(self.utaPath).split('/')[-1]
             os.environ['UTA_DB_URL']=self.utaPath
         else:
-            raise ValueError("The uta database location has not been set in ~/.config/VariantFormatter/config.ini")
+            valueerror = "\nThe uta database location has not been set in %s" % configPath
+            example = "example: location = postgresql://uta_admin:uta_admin@127.0.0.1/uta/uta_20180821\n"
+            valueerror = valueerror + '\n' + example
+            raise ValueError(valueerror)
         
         # Set up HGVS
         # Configure hgvs package global settings
@@ -194,7 +198,7 @@ class FormatVariant(object):
                 hgvs_ref_bases = genomic_level['ref_bases']
             
         # hgvs2vcf route
-        elif re.match('chr\d+\-', self.variant_description) or re.match('chr\d+:', self.variant_description) or re.match('\d+\-', self.variant_description)  or re.match('\d+:', self.variant_description):        
+        elif re.match('chr\d+\-', self.variant_description) or re.match('chr\d+:', self.variant_description) or re.match('[\w\d]+\-', self.variant_description)  or re.match('[\w\d]+:', self.variant_description):
             try:
                 genomic_level = formatter.vcf2hgvs_genomic(self.variant_description, self.genome_build, self.varForm)
             except Exception as e:

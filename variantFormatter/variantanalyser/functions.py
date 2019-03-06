@@ -20,9 +20,9 @@ from Bio.Seq import Seq
 
 
 
-# Needs functions from variantFormatter - directory above, unless in a single directory
+# Needs functions from VariantFormatter - directory above, unless in a single directory
 try:
-    from variantFormatter import supportedChromosomeBuilds as supported_chromosome_builds
+    from VariantFormatter import supportedChromosomeBuilds as supported_chromosome_builds
 except ImportError:
     parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.sys.path.insert(0, parentdir)

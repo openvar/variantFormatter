@@ -16,7 +16,7 @@ import hgvs.sequencevariant
 # import other required modules
 from Bio.Seq import Seq
 
-# Import variantFormatter modules
+# Import VariantFormatter modules
 import supportedChromosomeBuilds as chr_dict
 import hgvs2vcf
 import gapGenes
@@ -70,7 +70,7 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, varForm):
             if ac is None:
                 vcf_to_hgvs_genomic[
                     'error'] = 'chromosome ID %s is not associated with genome build %s' % (
-                    ac, genome_build)
+                    chrom, genome_build)
             else:
                 # Create a genomic HGVS string then parse into an hgvs variant object
                 gen_var = '%s:g.%s_%sdel%sins%s' % (ac, str(pos), str(int(pos) + (len(ref) - 1)), ref, alt)

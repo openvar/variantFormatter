@@ -715,7 +715,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
     auto_info = None
     
     # Set variables
-    stash_input = un_norm_hgvs_genomic
+    stash_input = hgvs_genomic
     hgvs_genomic_variant = hgvs_genomic
     # Reverse normalize hgvs_genomic_variant: NOTE will replace ref
     reverse_normalized_hgvs_genomic = reverse_normalizer.normalize(hgvs_genomic_variant)

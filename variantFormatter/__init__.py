@@ -5,29 +5,36 @@ import re
 import configuration
 from configparser import ConfigParser
 import hgvs
+import backports
 
 CONF_ROOT = os.environ.get('HOME')
 
+try:
+    # Config Section Mapping function
+    def ConfigSectionMap(section):
+        dict1 = {}
+        options = Config.options(section)
+        for option in options:
+            try:
+                dict1[option] = Config.get(section, option)
+                if dict1[option] == -1:
+                    print ("skip: %s" % option)
+            except:
+                print("exception on %s!" % option)
+                dict1[option] = None
+        return dict1
 
-# Config Section Mapping function
-def ConfigSectionMap(section):
-    dict1 = {}
-    options = Config.options(section)
-    for option in options:
-        try:
-            dict1[option] = Config.get(section, option)
-            if dict1[option] == -1:
-                print ("skip: %s" % option)
-        except:
-            print("exception on %s!" % option)
-            dict1[option] = None
-    return dict1
 
+    # Configure
+    Config = ConfigParser()
+    Config.read(os.path.join(CONF_ROOT, '.VariantFormatter.conf'))
+    __version__ = ConfigSectionMap("VariantFormatter")['version']
 
-# Configure
-Config = ConfigParser()
-Config.read(os.path.join(CONF_ROOT, '.config', 'VariantFormatter', 'config.ini'))
-__version__ = ConfigSectionMap("variantFormatter")['version']
+except backports.configparser.NoSectionError:
+    pass
+except backports.configparser.ParsingError:
+    pass
+
 
 
 
