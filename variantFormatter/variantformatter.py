@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module creates an initialization object.
+This object connects to the hgvs Python library and soosciated databses
+
+The Initialization object is used by FormatVariant
+The FormatVariant object contains all HGVS descriptions available for a given genomic variant, g_to_p
+"""
+
 # import modules
 import os
 import re
@@ -16,7 +24,7 @@ class hgvs2VcfError(Exception):
     pass
 class variableError(Exception):
     pass
-    
+
 
 # Configure databases  
 class initializeFormatter(object):
@@ -139,12 +147,28 @@ class GenomicDescriptions(object):
     description reference nucleotide sequence corresponding to the specified range 
     """
     # Initialise and add initialisation data to the object
-    def __init__(self, p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases):
+    def __init__(self, p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error):
+        if p_vcf == "None":
+            p_vcf = None
+        if g_hgvs == "None":
+            g_hgvs = None
+        if un_norm_hgvs == "None":
+            un_norm_hgvs = None
+        if hgvs_ref_bases == "None":
+            hgvs_ref_bases = None
+        if gen_error == "None":
+            gen_error = None
+
+        # Create object
         self.p_vcf = p_vcf
-        removed_ref_hgvs_g = formatter.remove_reference(g_hgvs)
+        try:
+            removed_ref_hgvs_g = formatter.remove_reference(g_hgvs)
+        except AttributeError:
+            removed_ref_hgvs_g = None
         self.g_hgvs = removed_ref_hgvs_g
         self.un_norm_hgvs = un_norm_hgvs
         self.g_hgvs_ref = hgvs_ref_bases
+        self.gen_error = gen_error
 
     
 
@@ -177,7 +201,7 @@ class FormatVariant(object):
         
         self.specify_transcripts = specify_transcripts
                 
-        # vcf2hgvs route
+        # hgvs2vcf route
         if re.match('N[CTW]_', self.variant_description):
             try:
                 hgvs_genomic = formatter.parse(self.variant_description, self.varForm)
@@ -185,27 +209,42 @@ class FormatVariant(object):
                 vcf_list = [vcf_dictionary['grc_chr'], vcf_dictionary['pos'], vcf_dictionary['ref'], vcf_dictionary['alt']]
                 p_vcf = ':'.join(vcf_list)
             except Exception as e:
-                raise hgvs2VcfError(str(e)) 
+                raise hgvs2VcfError(str(e))
             try:
                 genomic_level = formatter.vcf2hgvs_genomic(p_vcf, self.genome_build, self.varForm)
             except Exception as e:
                 raise vcf2hgvsError(str(e))
             else:
                 if genomic_level['error'] != '':
-                    raise vcf2hgvsError(str(genomic_level['error']))
+                    p_vcf = None
+                    g_hgvs = None
+                    hgvs_ref_bases = None
+                    un_norm_hgvs = None
+                    gen_error = genomic_level['error']
+                    gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error)
+                    self.genomic_descriptions = gds
+                    return
                 g_hgvs = genomic_level['hgvs_genomic']
                 un_norm_hgvs = genomic_level['un_normalized_hgvs_genomic']
                 hgvs_ref_bases = genomic_level['ref_bases']
             
-        # hgvs2vcf route
-        elif re.match('chr\d+\-', self.variant_description) or re.match('chr\d+:', self.variant_description) or re.match('[\w\d]+\-', self.variant_description)  or re.match('[\w\d]+:', self.variant_description):
+        # vcf2hgvs route
+        elif re.match('chr[\w\d]+\-', self.variant_description) or re.match('chr[\w\d]+:', self.variant_description) or re.match('[\w\d]+\-', self.variant_description)  or re.match('[\w\d]+:', self.variant_description):
             try:
                 genomic_level = formatter.vcf2hgvs_genomic(self.variant_description, self.genome_build, self.varForm)
             except Exception as e:
                 raise vcf2hgvsError(str(e))
+                return
             else:
                 if genomic_level['error'] != '':
-                    raise vcf2hgvsError(str(genomic_level['error']))
+                    p_vcf = None
+                    g_hgvs = None
+                    hgvs_ref_bases = None
+                    un_norm_hgvs = None
+                    gen_error = genomic_level['error']
+                    gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error)
+                    self.genomic_descriptions = gds
+                    return
                 p_vcf = self.variant_description
                 g_hgvs = genomic_level['hgvs_genomic']
                 un_norm_hgvs = genomic_level['un_normalized_hgvs_genomic']
@@ -216,9 +255,8 @@ class FormatVariant(object):
             raise variableError('Variant description ' + self.variant_description + ' is not in a supported format') 
         
         # Create genomic_descriptions object
-        gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases)
+        gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=None)
         self.genomic_descriptions = gds
-        
         
         # Add transcript and protein data
         prelim_transcript_descriptions = {}
@@ -226,9 +264,10 @@ class FormatVariant(object):
         
         # Transcripts specified        
         if self.specify_transcripts is not None:
-            transcript_list = str(self.specify_transcripts).split('|')
-            transcript_list = [transcript_list]
-            
+            trans_list = str(self.specify_transcripts).split('|')
+            for tx in trans_list:
+                transcript_list.append([tx,''])
+
         # No transcripts specified
         else:
             transcript_list = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model, self.varForm)
@@ -237,15 +276,13 @@ class FormatVariant(object):
         for tx_alignment_data in transcript_list:
             tx_id = tx_alignment_data[0]
             hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.varForm)
-           
-            # import json
-            # print json.dumps(str(hgvs_transcript_dict), sort_keys=False, indent=4, separators=(',', ': '))
-
             
             # Gap checking            
             try:
                 am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs, un_norm_hgvs, self.genome_build, self.varForm)
             except Exception as e:
+                if hgvs_transcript_dict['error'] == '':
+                    hgvs_transcript_dict['error'] = None
 
                 am_i_gapped = {'hgvs_transcript': None,
                                 'position_lock': False,
@@ -262,7 +299,9 @@ class FormatVariant(object):
                 am_i_gapped['hgvs_protein_slc'] = None                          
             
             else:   
-                                                        
+                if hgvs_transcript_dict['error'] == '':
+                    hgvs_transcript_dict['error'] = None
+
                 # map to Protein
                 if am_i_gapped['hgvs_transcript'].type == 'c':
                     hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.varForm)
@@ -279,14 +318,17 @@ class FormatVariant(object):
                 # Remove ref bases
                 removed_ref_tx = formatter.remove_reference(am_i_gapped['hgvs_transcript'])
                 am_i_gapped['hgvs_transcript'] = str(removed_ref_tx)
-            
+
             # Order the tx_p output
+            if am_i_gapped['error'] == '':
+                am_i_gapped['error'] = None
             order_my_tp = collections.OrderedDict()
             order_my_tp['t_hgvs'] = am_i_gapped['hgvs_transcript']
             order_my_tp['p_hgvs_tlc'] = am_i_gapped['hgvs_protein_tlc']
             order_my_tp['p_hgvs_slc'] = am_i_gapped['hgvs_protein_slc']
             order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
             order_my_tp['gap_statement'] = am_i_gapped['gap_position']
+            order_my_tp['transcript_variant_error'] = am_i_gapped['error']
             
             # add to output dictionary keyed by tx_ac
             prelim_transcript_descriptions[tx_id] = order_my_tp
@@ -298,9 +340,16 @@ class FormatVariant(object):
         bring_order = collections.OrderedDict()
         
         # Add the data to the ordered dictionary structure
-        bring_order['p_vcf'] = str(self.genomic_descriptions.p_vcf)
-        bring_order['g_hgvs'] = str(self.genomic_descriptions.g_hgvs)
-        bring_order['hgvs_t_and_p'] = self.t_and_p_descriptions
+        bring_order['p_vcf'] = self.genomic_descriptions.p_vcf
+        bring_order['g_hgvs'] = self.genomic_descriptions.g_hgvs # Is the removed ref version!
+        bring_order['genomic_variant_error'] = self.genomic_descriptions.gen_error
+        try:
+            if self.t_and_p_descriptions == {}:
+                bring_order['hgvs_t_and_p'] = None
+            else:
+                bring_order['hgvs_t_and_p'] = self.t_and_p_descriptions
+        except AttributeError:
+            bring_order['hgvs_t_and_p'] = None
         brought_order = {str(self.variant_description): bring_order}
         return brought_order
         

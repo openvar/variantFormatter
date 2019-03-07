@@ -1,5 +1,22 @@
 # -*- coding: utf-8 -*-
 
+"""
+The core variantformatter functions:
+
+vcf2hgvs_genomic
+hgvs_genomic2vcf
+format_hgvs_genomic
+hgvs_genomic2hgvs_transcript
+hgvs_transcript2hgvs_protein
+fetch_aligned_transcripts
+fetch_encoded_protein
+single_letter_protein
+remove_reference
+gap_checker
+
+A brief description is given above each function
+"""
+
 # Import Python modules
 import re
 import os
