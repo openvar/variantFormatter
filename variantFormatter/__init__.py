@@ -1,41 +1,10 @@
 # -*- coding: utf-8 -*-
-
-import os
 import re
-import configuration
-from configparser import ConfigParser
-import hgvs
-import backports
 
-CONF_ROOT = os.environ.get('HOME')
-
-try:
-    # Config Section Mapping function
-    def ConfigSectionMap(section):
-        dict1 = {}
-        options = Config.options(section)
-        for option in options:
-            try:
-                dict1[option] = Config.get(section, option)
-                if dict1[option] == -1:
-                    print ("skip: %s" % option)
-            except:
-                print("exception on %s!" % option)
-                dict1[option] = None
-        return dict1
-
-
-    # Configure
-    Config = ConfigParser()
-    Config.read(os.path.join(CONF_ROOT, '.VariantFormatter.conf'))
-    __version__ = ConfigSectionMap("VariantFormatter")['version']
-
-except backports.configparser.NoSectionError:
-    pass
-except backports.configparser.ParsingError:
-    pass
-
-
+# Set version number at import
+__version__ = '0.0.1'
+if re.match('^\d+\.\d+\.\d+$', __version__) is not None:
+    _is_released_version = True
 
 
 # <LICENSE>

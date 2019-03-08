@@ -11,6 +11,7 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 # import modules
 import os
 import re
+import VariantFormatter
 import formatter
 import collections
 from configparser import ConfigParser, RawConfigParser
@@ -49,11 +50,9 @@ class initializeFormatter(object):
             config.read_file(file)
 
         # Set up versions
-        __version__ = config["VariantFormatter"]['version']
+        __version__ = VariantFormatter.__version__
         self.version=__version__
-        if re.match('^\d+\.\d+\.\d+$', __version__) is not None:
-            self.releasedVersion=True
-            _is_released_version = True
+        self.released_version = VariantFormatter._is_released_version
 
         # Handle databases
         if config["seqrepo"]["location"]!=None:
@@ -115,13 +114,12 @@ class initializeFormatter(object):
         #Returns configuration:
         #version, hgvs version, uta schema, seqrepo db.
         '''
-        return {
-            'variantvalidator_version': self.version,
-            'variantvalidator_hgvs_version': self.hgvsVersion,
-            'uta_schema': self.utaSchema,
-            'seqrepo_db': self.seqrepoPath
-        }
-
+        meta = collections.OrderedDict()
+        meta['VariantFormatter_version'] = self.version
+        meta['biocommons.hgvs_version'] = self.hgvsVersion
+        meta['biocommons.uta_schema'] = self.utaVersion
+        meta['biocommons.seqrepo_db'] = self.seqrepoVersion
+        return meta
 
     def createConfig(self,outPath):
         '''
@@ -182,20 +180,34 @@ class FormatVariant(object):
     transcript and protein level descriptions - includes gap checking!    
     """
     # Initialise and add initialisation data to the object
-    def __init__(self, variant_description, genome_build, vfo, transcript_model=None, specify_transcripts=None):
+    def __init__(self, variant_description, genome_build, vfo, transcript_model=None, specify_transcripts=None, checkOnly=False):
         
         self.variant_description = variant_description
         self.varForm = vfo
         
         if genome_build not in ['GRCh37', 'GRCh38']:
-            raise variableError("genome_build must be one of: 'GRCh37'; 'GRCh38'")
+            p_vcf = None
+            g_hgvs = None
+            hgvs_ref_bases = None
+            un_norm_hgvs = None
+            gen_error = "genome_build must be one of: 'GRCh37'; 'GRCh38'"
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error)
+            self.genomic_descriptions = gds
+            return
         else:
             self.genome_build = genome_build
         
         if transcript_model is None:
             transcript_model = 'all' 
         elif transcript_model not in ['ensembl', 'refseq', 'all']:
-            raise variableError("transcript_model must be one of: 'ensembl'; 'refseq'; 'all'")
+            p_vcf = None
+            g_hgvs = None
+            hgvs_ref_bases = None
+            un_norm_hgvs = None
+            gen_error = "transcript_model must be one of: 'ensembl'; 'refseq'; 'all'"
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error)
+            self.genomic_descriptions = gds
+            return
         else:
             self.transcript_model = transcript_model
         
@@ -257,7 +269,11 @@ class FormatVariant(object):
         # Create genomic_descriptions object
         gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=None)
         self.genomic_descriptions = gds
-        
+
+        # Return on checkonly
+        if checkOnly is True:
+            return
+
         # Add transcript and protein data
         prelim_transcript_descriptions = {}
         transcript_list = []
@@ -353,7 +369,7 @@ class FormatVariant(object):
         brought_order = {str(self.variant_description): bring_order}
         return brought_order
         
-    def collect_metadata(self): 
+    def collect_metadata(self):
         meta = collections.OrderedDict()
         meta['api_version'] = self.varForm.version
         meta['hgvs_version'] = self.varForm.hgvsVersion

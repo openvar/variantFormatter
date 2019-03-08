@@ -17,7 +17,7 @@ vfo = vf.initializeFormatter()
 # Collect metadata
 metadata = vfo.myConfig()
 
-def batchformat(batch_input, genome_build, transcript_model=None, specify_transcripts=None):
+def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False):
     is_a_list = type(batch_input) is list
     if is_a_list is True:
         batch_list = batch_input
@@ -38,7 +38,8 @@ def batchformat(batch_input, genome_build, transcript_model=None, specify_transc
                 vcf_list = pseudo_vcf.split('-')
                 delimiter = '-'
             if len(vcf_list) != 4:
-                formatted_variants[variant]['errors'].append('%s is an unsupported variant description format') % pseudo_vcf
+                formatted_variants[variant]['errors'].append(
+                    '%s is an unsupported format: For assistance, submit variant description to https://rest.variantvalidator.org') % pseudo_vcf
                 continue
             if ',' in str(vcf_list[-1]):
                 alts = vcf_list[-1].split(',')
@@ -48,13 +49,19 @@ def batchformat(batch_input, genome_build, transcript_model=None, specify_transc
                     pv = delimiter.join(base)
                     format_these.append(pv)
             else:
-                format_these.append(variant)
+                try:
+                    format_these.append(variant)
+                except Exception:
+                    formatted_variants[variant]['errors'].append(
+                        '%s is an unsupported format: For assistance, submit variant description to https://rest.variantvalidator.org') % variant
+                    continue
+
         else:
             format_these.append(variant)
 
         # Processing
         for needs_formatting in format_these:
-            result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model, specify_transcripts)
+            result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model, specify_transcripts, checkOnly)
             res = result.stucture_data()
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
 
