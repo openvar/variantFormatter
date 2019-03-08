@@ -199,7 +199,7 @@ class FormatVariant(object):
         
         if transcript_model is None:
             transcript_model = 'all' 
-        elif transcript_model not in ['ensembl', 'refseq', 'all']:
+        if transcript_model not in ['ensembl', 'refseq', 'all']:
             p_vcf = None
             g_hgvs = None
             hgvs_ref_bases = None
