@@ -1,4 +1,4 @@
-                         # About VariantFormatter
+# About VariantFormatter
 
 VariantValidator is a software tool designed to accept genomic level sequence variant 
 descriptions in the pseudo-VCF or HGVS formats (see MANUAL.md), and automatically generate 
