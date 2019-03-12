@@ -8,7 +8,7 @@ setup(
     version='0.0.1',
     description='Accurate conversion of Pseudo VCF variants into the HGVS format and mapping between reference sequences',
     long_description=open('README.txt').read(),
-    url='',
+    url='https://github.com/openvar/variantFormatter',
     author='Peter J. Causey-Freeman',
     author_email='pjf9@leicester.ac.uk',
 	package_data={"VariantFormatter": ["configuration/*.ini"],},
@@ -49,12 +49,18 @@ setup(
     install_requires=[
         "hgvs == 1.1.3", # This will install BioPython
 		"biocommons.seqrepo == 0.4.4",
-		"configparser == 3.5.0",
+		"configparser",
+        "mysql-connector-python",
+        "httplib2",
+        "docutils",
+        "biotools",
+        "python-daemon",
+        "numpy",
     ],
 )
 
 # <LICENSE>
-# Copyright (C) 2018  Peter Causey-Freeman, University of Leicester
+# Copyright (C) 2019  Peter Causey-Freeman, University of Leicester
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as

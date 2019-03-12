@@ -26,6 +26,11 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
     batch_vars = []
     formatted_variants = collections.OrderedDict()
     for variant in batch_list:
+        # remove external whitespace
+        variant = variant.strip()
+        # Remove internal whitespace
+        wsl = variant.split()
+        variant = ''.join(wsl)
         formatted_variants[variant] = collections.OrderedDict()
         formatted_variants[variant]['errors'] = []
         format_these = []

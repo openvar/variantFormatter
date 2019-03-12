@@ -325,7 +325,7 @@ def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_buil
     
 
 # <LICENSE>
-# Copyright (C) 2018  Peter Causey-Freeman, University of Leicester
+# Copyright (C) 2019  Peter Causey-Freeman, University of Leicester
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
