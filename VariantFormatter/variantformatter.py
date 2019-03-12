@@ -217,6 +217,16 @@ class FormatVariant(object):
         if re.match('N[CTW]_', self.variant_description):
             try:
                 hgvs_genomic = formatter.parse(self.variant_description, self.varForm)
+            except Exception as e:
+                p_vcf = None
+                g_hgvs = None
+                hgvs_ref_bases = None
+                un_norm_hgvs = None
+                gen_error = str(e)
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error)
+                self.genomic_descriptions = gds
+                return
+            try:
                 vcf_dictionary = formatter.hgvs_genomic2vcf(hgvs_genomic, self.genome_build, self.varForm)
                 vcf_list = [vcf_dictionary['grc_chr'], vcf_dictionary['pos'], vcf_dictionary['ref'], vcf_dictionary['alt']]
                 p_vcf = ':'.join(vcf_list)
