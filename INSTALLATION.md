@@ -1,4 +1,4 @@
-# VarianFormatter Installation
+# VariantFormatter Installation
 
 These instructions will allow you to configure the software on Linux and Mac OS X computers.
 
