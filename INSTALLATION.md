@@ -1,4 +1,4 @@
-# VarianFormatter Installation
+# VariantFormatter Installation
 
 These instructions will allow you to configure the software on Linux and Mac OS X computers.
 
@@ -16,8 +16,6 @@ We recommend using conda.
 $ conda create -n VFenv
 $ conda activate VFenv
 $ conda install -c conda-forge sqlite python=2.7 protobuf=3.5.1
-$ conda install -c auto
-$ conda install -c conda-forge setuptools
 ```
 The packages required for variant validator to function are now set up in the environment "VVenv".
 
