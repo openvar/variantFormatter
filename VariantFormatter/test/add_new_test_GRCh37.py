@@ -4,7 +4,7 @@ vfo = vf.initializeFormatter()
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-class NumberNotSetError(Exception):
+class NotSetError(Exception):
     pass
 
 inputfile = os.path.join(ROOT, 'newVariants.txt')
@@ -13,9 +13,12 @@ out = open(outputfile, 'a')
 
 # Set number by referring to test_inputs_auto.py
 number = None
+tx_set = None
 
 if number is None:
-    raise NumberNotSetError('Add start nukber from test_inputs_auto.py')
+    raise NotSetError('Add start number from test_inputs_auto.py')
+if tx_set is None:
+    raise NotSetError('Add requested transcript set')
 
 out.write('import VariantFormatter\n'
           'import VariantFormatter.variantformatter as vf\n'
@@ -29,8 +32,8 @@ with open(inputfile) as ins:
     for l in ins:
         number += 1
         testline = '\n\tdef test_variant%s(self):\n' % number
-        testline += "\t\tvariant = '%s'\n\t\tresults = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)\n\t\tprint results\n\n" % l.strip()
-        result = vf.FormatVariant(l.strip(), 'GRCh37', vfo,  'all', None)
+        testline += "\t\tvariant = '%s'\n\t\tresults = vf.FormatVariant(variant, 'GRCh37', vfo,  '%s', None)\n\t\tprint results\n\n" % (l.strip(), tx_set)
+        result = vf.FormatVariant(l.strip(), 'GRCh37', vfo,  tx_set, None)
         res = result.stucture_data()
         print(("Variant %s: %s" % (number, l.strip())))
         for key in list(res.keys()):

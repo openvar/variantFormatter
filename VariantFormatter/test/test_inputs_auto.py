@@ -10,7 +10,7 @@ class TestVariantsAuto(object):
 
 	def test_variant1(self):
 		variant = 'NC_000019.10:g.50378563_50378564insTAC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000019.10:g.50378563_50378564insTAC' in results.keys()
@@ -22,7 +22,7 @@ class TestVariantsAuto(object):
 
 	def test_variant2(self):
 		variant = '11-5248232-A-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '11-5248232-A-T' in results.keys()
@@ -34,7 +34,7 @@ class TestVariantsAuto(object):
 
 	def test_variant3(self):
 		variant = 'NC_000012.11:g.122064777A>C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000012.11:g.122064777A>C' in results.keys()
@@ -46,7 +46,7 @@ class TestVariantsAuto(object):
 
 	def test_variant4(self):
 		variant = 'NC_000002.11:g.73613030C>T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000002.11:g.73613030C>T' in results.keys()
@@ -62,7 +62,7 @@ class TestVariantsAuto(object):
 
 	def test_variant5(self):
 		variant = 'NC_000023.10:g.33229673A>T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.10:g.33229673A>T' in results.keys()
@@ -83,7 +83,7 @@ class TestVariantsAuto(object):
 
 	def test_variant6(self):
 		variant = 'NC_000017.10:g.48279242G>T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000017.10:g.48279242G>T' in results.keys()
@@ -95,7 +95,7 @@ class TestVariantsAuto(object):
 
 	def test_variant7(self):
 		variant = 'NC_000017.10:g.48261457_48261463TTATGTT='
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000017.10:g.48261457_48261463TTATGTT=' in results.keys()
@@ -111,7 +111,7 @@ class TestVariantsAuto(object):
 
 	def test_variant8(self):
 		variant = 'NC_000017.10:g.48275363C>A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000017.10:g.48275363C>A' in results.keys()
@@ -127,7 +127,7 @@ class TestVariantsAuto(object):
 
 	def test_variant9(self):
 		variant = '11-5248232-T-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '11-5248232-T-A' in results.keys()
@@ -148,7 +148,7 @@ class TestVariantsAuto(object):
 
 	def test_variant10(self):
 		variant = '1-150550916-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-150550916-G-A' in results.keys()
@@ -174,7 +174,7 @@ class TestVariantsAuto(object):
 
 	def test_variant11(self):
 		variant = 'HSCHR6_MHC_SSTO_CTG1-3852542-C-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HSCHR6_MHC_SSTO_CTG1-3852542-C-G' in results.keys()
@@ -190,7 +190,7 @@ class TestVariantsAuto(object):
 
 	def test_variant12(self):
 		variant = 'NC_000013.10:g.32929387T>C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000013.10:g.32929387T>C' in results.keys()
@@ -206,8 +206,14 @@ class TestVariantsAuto(object):
 
 	def test_variant13(self):
 		variant = '19-41123094-G-GG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+		"""
+        This variant is taken from https://doi.org/10.1186/s13073-016-0396-7 and is equivalent to VariantValidator test_variant64
+        Chromosome 19 of GRCh37 has an additional base not found in Three overlapping transcripts
+        Approved by PCF, 2019-03-12 14:53 
+        """
 
 		assert '19-41123094-G-GG' in results.keys()
 		assert results['19-41123094-G-GG']['p_vcf'] == '19-41123094-G-GG'
@@ -232,8 +238,15 @@ class TestVariantsAuto(object):
 
 	def test_variant14(self):
 		variant = '15-72105928-AC-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant is taken from https://doi.org/10.1186/s13073-016-0396-7 and is equivalent to VariantValidator test_variant65
+        Chromosome 15 of GRCh37 has an absent base which is found in Four overlapping transcripts
+        The c.= window it 2nt rather then 3nt. This is expected due to the complexities of processing c.= in VariantValidator
+        Approved by PCF, 2019-03-12 14:56 
+        """		
 
 		assert '15-72105928-AC-A' in results.keys()
 		assert results['15-72105928-AC-A']['p_vcf'] == '15-72105928-AC-A'
@@ -263,8 +276,26 @@ class TestVariantsAuto(object):
 
 	def test_variant15(self):
 		variant = '12-122064773-CCCGCCA-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents the common allele in ExAc  http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        This variant is equivalent to VariantValidator test_variant66
+        The c.= window it 2nt rather then 3nt. This is expected due to the complexities of processing c.= in VariantValidator
+
+        
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780        
+        
+        Approved by PCF, 2019-03-13 09:37   
+        """
 
 		assert '12-122064773-CCCGCCA-C' in results.keys()
 		assert results['12-122064773-CCCGCCA-C']['p_vcf'] == '12-122064773-CCCGCCA-C'
@@ -279,8 +310,26 @@ class TestVariantsAuto(object):
 
 	def test_variant16(self):
 		variant = '12-122064774-CCGCCA-CCGCCA'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents the false negative of http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        This variant is equivalent to VariantValidator test_variant67
+
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+
+        Approved by PCF, 2019-03-13 09:39   
+        """
 
 		assert '12-122064774-CCGCCA-CCGCCA' in results.keys()
 		assert results['12-122064774-CCGCCA-CCGCCA']['p_vcf'] == '12-122064774-CCGCCA-CCGCCA'
@@ -295,8 +344,26 @@ class TestVariantsAuto(object):
 
 	def test_variant17(self):
 		variant = '12-122064773-CCCGCCACCGCCACCGC-CCCGCCACCGCCGCCGTC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant is an unlikely scenario but is handled correctly
+        The variant spans the gap of http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        This variant was removed from the VariantValidator test_variants
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+
+        Approved by PCF, 2019-03-13 09:43   
+        """
 
 		assert '12-122064773-CCCGCCACCGCCACCGC-CCCGCCACCGCCGCCGTC' in results.keys()
 		assert results['12-122064773-CCCGCCACCGCCACCGC-CCCGCCACCGCCGCCGTC']['p_vcf'] == '12-122064773-CCCGCCACCGCCACCGC-CCCGCCACCGCCGCCGTC'
@@ -311,8 +378,27 @@ class TestVariantsAuto(object):
 
 	def test_variant18(self):
 		variant = 'NC_000012.11:g.122064777C>A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 asserts that the 6 genomic bases exist, thus an insertion into the transcript
+        This variant is equivalent to VariantValidator test_variant69
+
+        
+ 
+                                                       126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+ 
+        Approved by PCF, 2019-03-13 09:50   
+        """
 
 		assert 'NC_000012.11:g.122064777C>A' in results.keys()
 		assert results['NC_000012.11:g.122064777C>A']['p_vcf'] == '12:122064777:C:A'
@@ -327,8 +413,26 @@ class TestVariantsAuto(object):
 
 	def test_variant19(self):
 		variant = 'NC_000012.11:g.122064776delG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 asserts that the 6 genomic bases exist, thus an insertion into the transcript
+        This variant is equivalent to VariantValidator test_variant70
+  
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+        Approved by PCF, 2019-03-13 09:53   
+        """
 
 		assert 'NC_000012.11:g.122064776delG' in results.keys()
 		assert results['NC_000012.11:g.122064776delG']['p_vcf'] == '12:122064775:CG:C'
@@ -343,8 +447,26 @@ class TestVariantsAuto(object):
 
 	def test_variant20(self):
 		variant = 'NC_000012.11:g.122064776dupG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 asserts that the 6 genomic bases exist, thus an insertion into the transcript
+        This variant is equivalent to VariantValidator test_variant71
+
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+        Approved by PCF, 2019-033-13 10:01  
+        """		
 
 		assert 'NC_000012.11:g.122064776dupG' in results.keys()
 		assert results['NC_000012.11:g.122064776dupG']['p_vcf'] == '12:122064775:C:CG'
@@ -359,8 +481,26 @@ class TestVariantsAuto(object):
 
 	def test_variant21(self):
 		variant = 'NC_000012.11:g.122064776_122064777insTTT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 asserts that the 6 genomic bases exist, thus an insertion into the transcript
+        This variant is equivalent to VariantValidator test_variant72
+
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+        Approved by PCF, 2019-03-13 10:05  
+        """
 
 		assert 'NC_000012.11:g.122064776_122064777insTTT' in results.keys()
 		assert results['NC_000012.11:g.122064776_122064777insTTT']['p_vcf'] == '12:122064776:G:GTTT'
@@ -375,8 +515,26 @@ class TestVariantsAuto(object):
 
 	def test_variant22(self):
 		variant = 'NC_000012.11:g.122064772_122064775del'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 spans the 5' flank of the gap
+        This variant is equivalent to VariantValidator test_variant73
+
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+                                              
+        Approved by PCF, 2019-03-13 10:10  
+        """
 
 		assert 'NC_000012.11:g.122064772_122064775del' in results.keys()
 		assert results['NC_000012.11:g.122064772_122064775del']['p_vcf'] == '12:122064771:GCCCC:G'
@@ -391,8 +549,26 @@ class TestVariantsAuto(object):
 
 	def test_variant23(self):
 		variant = 'NC_000012.11:g.122064772_122064775dup'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 spans the 5' flank of the gap
+        This variant is equivalent to VariantValidator test_variant74
+
+        
+                                                    126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+        
+        Approved by PCF, 2019-03-13 10:16  
+        """
 
 		assert 'NC_000012.11:g.122064772_122064775dup' in results.keys()
 		assert results['NC_000012.11:g.122064772_122064775dup']['p_vcf'] == '12:122064771:G:GCCCC'
@@ -407,8 +583,26 @@ class TestVariantsAuto(object):
 
 	def test_variant24(self):
 		variant = 'NC_000012.11:g.122064773_122064774insTTTT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 spans the 5' flank of the gap
+        This variant is equivalent to VariantValidator test_variant75
+
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+        Approved by PCF, 2019-03-13 10:19  
+        """
 
 		assert 'NC_000012.11:g.122064773_122064774insTTTT' in results.keys()
 		assert results['NC_000012.11:g.122064773_122064774insTTTT']['p_vcf'] == '12:122064773:C:CTTTT'
@@ -423,8 +617,25 @@ class TestVariantsAuto(object):
 
 	def test_variant25(self):
 		variant = 'NC_000012.11:g.122064772_122064777del'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 spans 5' flank of the gap
+        This variant is equivalent to VariantValidator test_variant76
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+        Approved by PCF, 2019-03-13 10:23  
+        """
 
 		assert 'NC_000012.11:g.122064772_122064777del' in results.keys()
 		assert results['NC_000012.11:g.122064772_122064777del']['p_vcf'] == '12:122064771:GCCCCGC:G'
@@ -439,8 +650,26 @@ class TestVariantsAuto(object):
 
 	def test_variant26(self):
 		variant = 'NC_000012.11:g.122064772_122064777dup'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+		
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 spans the 5'flank of the gap
+        This variant is equivalent to VariantValidator test_variant76
+
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+        Approved by PCF, 2019-03-04 10:27 
+        """
 
 		assert 'NC_000012.11:g.122064772_122064777dup' in results.keys()
 		assert results['NC_000012.11:g.122064772_122064777dup']['p_vcf'] == '12:122064771:G:GCCCCGC'
@@ -455,7 +684,7 @@ class TestVariantsAuto(object):
 
 	def test_variant27(self):
 		variant = 'NC_000012.11:g.122064779_122064782dup'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000012.11:g.122064779_122064782dup' in results.keys()
@@ -471,7 +700,7 @@ class TestVariantsAuto(object):
 
 	def test_variant28(self):
 		variant = 'NC_000012.11:g.122064772_122064782del'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000012.11:g.122064772_122064782del' in results.keys()
@@ -487,7 +716,7 @@ class TestVariantsAuto(object):
 
 	def test_variant29(self):
 		variant = 'NC_000002.11:g.95847041_95847043GCG='
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000002.11:g.95847041_95847043GCG=' in results.keys()
@@ -533,7 +762,7 @@ class TestVariantsAuto(object):
 
 	def test_variant30(self):
 		variant = 'NC_000017.10:g.5286863_5286889AGTGTTTGGAATTTTCTGTTCATATAG='
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000017.10:g.5286863_5286889AGTGTTTGGAATTTTCTGTTCATATAG=' in results.keys()
@@ -569,7 +798,7 @@ class TestVariantsAuto(object):
 
 	def test_variant31(self):
 		variant = 'NC_000003.11:g.14561629_14561630GC='
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000003.11:g.14561629_14561630GC=' in results.keys()
@@ -590,7 +819,7 @@ class TestVariantsAuto(object):
 
 	def test_variant32(self):
 		variant = 'NC_000003.11:g.14561629_14561630insG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000003.11:g.14561629_14561630insG' in results.keys()
@@ -611,7 +840,7 @@ class TestVariantsAuto(object):
 
 	def test_variant33(self):
 		variant = 'NC_000004.11:g.140811111_140811122del'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000004.11:g.140811111_140811122del' in results.keys()
@@ -632,7 +861,7 @@ class TestVariantsAuto(object):
 
 	def test_variant34(self):
 		variant = 'NC_000004.11:g.140811111_140811122CTGCTGCTGCTG='
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000004.11:g.140811111_140811122CTGCTGCTGCTG=' in results.keys()
@@ -653,7 +882,7 @@ class TestVariantsAuto(object):
 
 	def test_variant35(self):
 		variant = 'NC_000004.11:g.140811117_140811122del'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000004.11:g.140811117_140811122del' in results.keys()
@@ -674,7 +903,7 @@ class TestVariantsAuto(object):
 
 	def test_variant36(self):
 		variant = 'NC_000004.11:g.140811111_140811117del'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000004.11:g.140811111_140811117del' in results.keys()
@@ -695,7 +924,7 @@ class TestVariantsAuto(object):
 
 	def test_variant37(self):
 		variant = 'NC_000004.11:g.140811117C>A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000004.11:g.140811117C>A' in results.keys()
@@ -716,7 +945,7 @@ class TestVariantsAuto(object):
 
 	def test_variant38(self):
 		variant = 'NC_000002.11:g.73675227_73675228insCTC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000002.11:g.73675227_73675228insCTC' in results.keys()
@@ -732,7 +961,7 @@ class TestVariantsAuto(object):
 
 	def test_variant39(self):
 		variant = '9-136132908-T-TC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '9-136132908-T-TC' in results.keys()
@@ -748,7 +977,7 @@ class TestVariantsAuto(object):
 
 	def test_variant40(self):
 		variant = '9-136132908-TAC-TCA'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '9-136132908-TAC-TCA' in results.keys()
@@ -764,7 +993,7 @@ class TestVariantsAuto(object):
 
 	def test_variant41(self):
 		variant = '9-136132908-TA-TA'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '9-136132908-TA-TA' in results.keys()
@@ -780,7 +1009,7 @@ class TestVariantsAuto(object):
 
 	def test_variant42(self):
 		variant = 'NC_012920.1:m.1011C>T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_012920.1:m.1011C>T' in results.keys()
@@ -792,7 +1021,7 @@ class TestVariantsAuto(object):
 
 	def test_variant43(self):
 		variant = 'NC_000006.11:g.90403795G='
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000006.11:g.90403795G=' in results.keys()
@@ -813,7 +1042,7 @@ class TestVariantsAuto(object):
 
 	def test_variant44(self):
 		variant = 'NC_000005.9:g.35058667_35058668AG='
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000005.9:g.35058667_35058668AG=' in results.keys()
@@ -864,7 +1093,7 @@ class TestVariantsAuto(object):
 
 	def test_variant45(self):
 		variant = '2-73675227-TCTC-TCTCCTC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-73675227-TCTC-TCTCCTC' in results.keys()
@@ -880,7 +1109,7 @@ class TestVariantsAuto(object):
 
 	def test_variant46(self):
 		variant = '2-73675227-TC-TC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-73675227-TC-TC' in results.keys()
@@ -896,7 +1125,7 @@ class TestVariantsAuto(object):
 
 	def test_variant47(self):
 		variant = '3-14561627-AG-AGG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '3-14561627-AG-AGG' in results.keys()
@@ -917,7 +1146,7 @@ class TestVariantsAuto(object):
 
 	def test_variant48(self):
 		variant = '3-14561630-CC-CC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '3-14561630-CC-CC' in results.keys()
@@ -938,7 +1167,7 @@ class TestVariantsAuto(object):
 
 	def test_variant49(self):
 		variant = '6-90403795-G-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '6-90403795-G-G' in results.keys()
@@ -959,7 +1188,7 @@ class TestVariantsAuto(object):
 
 	def test_variant50(self):
 		variant = '6-90403795-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '6-90403795-G-A' in results.keys()
@@ -980,7 +1209,7 @@ class TestVariantsAuto(object):
 
 	def test_variant51(self):
 		variant = '6-32012992-CG-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '6-32012992-CG-C' in results.keys()
@@ -1011,7 +1240,7 @@ class TestVariantsAuto(object):
 
 	def test_variant52(self):
 		variant = '17-48275363-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-48275363-C-A' in results.keys()
@@ -1027,7 +1256,7 @@ class TestVariantsAuto(object):
 
 	def test_variant53(self):
 		variant = '17-48275364-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-48275364-C-A' in results.keys()
@@ -1043,7 +1272,7 @@ class TestVariantsAuto(object):
 
 	def test_variant54(self):
 		variant = '17-48275359-GGA-TCC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-48275359-GGA-TCC' in results.keys()
@@ -1059,7 +1288,7 @@ class TestVariantsAuto(object):
 
 	def test_variant55(self):
 		variant = '7-94039128-CTTG-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-94039128-CTTG-C' in results.keys()
@@ -1075,7 +1304,7 @@ class TestVariantsAuto(object):
 
 	def test_variant56(self):
 		variant = '9-135800972-AC-ACC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '9-135800972-AC-ACC' in results.keys()
@@ -1106,7 +1335,7 @@ class TestVariantsAuto(object):
 
 	def test_variant57(self):
 		variant = '1-43212925-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-43212925-C-T' in results.keys()
@@ -1132,7 +1361,7 @@ class TestVariantsAuto(object):
 
 	def test_variant58(self):
 		variant = 'HG987_PATCH-355171-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HG987_PATCH-355171-C-A' in results.keys()
@@ -1148,7 +1377,7 @@ class TestVariantsAuto(object):
 
 	def test_variant59(self):
 		variant = '20-43252915-T-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '20-43252915-T-C' in results.keys()
@@ -1184,7 +1413,7 @@ class TestVariantsAuto(object):
 
 	def test_variant60(self):
 		variant = '1-216219781-A-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-216219781-A-C' in results.keys()
@@ -1200,7 +1429,7 @@ class TestVariantsAuto(object):
 
 	def test_variant61(self):
 		variant = 'NC_000005.9:g.35058665_35058666CA='
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000005.9:g.35058665_35058666CA=' in results.keys()
@@ -1251,7 +1480,7 @@ class TestVariantsAuto(object):
 
 	def test_variant62(self):
 		variant = 'NC_000002.11:g.73675227_73675229delTCTinsTCTCTC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000002.11:g.73675227_73675229delTCTinsTCTCTC' in results.keys()
@@ -1267,7 +1496,7 @@ class TestVariantsAuto(object):
 
 	def test_variant63(self):
 		variant = 'X-122318386-A-AGG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'X-122318386-A-AGG' in results.keys()
@@ -1293,7 +1522,7 @@ class TestVariantsAuto(object):
 
 	def test_variant64(self):
 		variant = 'X-122318386-A-AT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'X-122318386-A-AT' in results.keys()
@@ -1319,7 +1548,7 @@ class TestVariantsAuto(object):
 
 	def test_variant65(self):
 		variant = '15-72105929-C-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-72105929-C-C' in results.keys()
@@ -1350,7 +1579,7 @@ class TestVariantsAuto(object):
 
 	def test_variant66(self):
 		variant = '15-72105928-AC-ATT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-72105928-AC-ATT' in results.keys()
@@ -1381,7 +1610,7 @@ class TestVariantsAuto(object):
 
 	def test_variant67(self):
 		variant = '15-72105928-ACC-ATT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-72105928-ACC-ATT' in results.keys()
@@ -1412,7 +1641,7 @@ class TestVariantsAuto(object):
 
 	def test_variant68(self):
 		variant = '15-72105927-GACC-GTT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-72105927-GACC-GTT' in results.keys()
@@ -1443,7 +1672,7 @@ class TestVariantsAuto(object):
 
 	def test_variant69(self):
 		variant = '19-41123093-A-AG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '19-41123093-A-AG' in results.keys()
@@ -1469,7 +1698,7 @@ class TestVariantsAuto(object):
 
 	def test_variant70(self):
 		variant = '19-41123093-A-AT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '19-41123093-A-AT' in results.keys()
@@ -1495,7 +1724,7 @@ class TestVariantsAuto(object):
 
 	def test_variant71(self):
 		variant = '19-41123093-AG-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '19-41123093-AG-A' in results.keys()
@@ -1521,7 +1750,7 @@ class TestVariantsAuto(object):
 
 	def test_variant72(self):
 		variant = '19-41123093-AG-AG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '19-41123093-AG-AG' in results.keys()
@@ -1547,7 +1776,7 @@ class TestVariantsAuto(object):
 
 	def test_variant73(self):
 		variant = '1-5935162-A-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-5935162-A-T' in results.keys()
@@ -1583,7 +1812,7 @@ class TestVariantsAuto(object):
 
 	def test_variant74(self):
 		variant = '1-12065948-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-12065948-C-T' in results.keys()
@@ -1604,7 +1833,7 @@ class TestVariantsAuto(object):
 
 	def test_variant75(self):
 		variant = '1-46655125-CTCAC-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-46655125-CTCAC-C' in results.keys()
@@ -1635,7 +1864,7 @@ class TestVariantsAuto(object):
 
 	def test_variant76(self):
 		variant = '1-68912523-TGAGCCAGAG-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-68912523-TGAGCCAGAG-T' in results.keys()
@@ -1651,7 +1880,7 @@ class TestVariantsAuto(object):
 
 	def test_variant77(self):
 		variant = '1-68912526-GCCAGAG-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-68912526-GCCAGAG-G' in results.keys()
@@ -1667,7 +1896,7 @@ class TestVariantsAuto(object):
 
 	def test_variant78(self):
 		variant = '1-109817590-G-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-109817590-G-T' in results.keys()
@@ -1683,7 +1912,7 @@ class TestVariantsAuto(object):
 
 	def test_variant79(self):
 		variant = '1-145597475-GAAGT-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-145597475-GAAGT-G' in results.keys()
@@ -1709,7 +1938,7 @@ class TestVariantsAuto(object):
 
 	def test_variant80(self):
 		variant = '1-153791300-CTG-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-153791300-CTG-C' in results.keys()
@@ -1730,7 +1959,7 @@ class TestVariantsAuto(object):
 
 	def test_variant81(self):
 		variant = '1-156104666-TTGAGAGCCGGCTGGCGGATGCGCT-TCCCC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-156104666-TTGAGAGCCGGCTGGCGGATGCGCT-TCCCC' in results.keys()
@@ -1781,7 +2010,7 @@ class TestVariantsAuto(object):
 
 	def test_variant82(self):
 		variant = '1-156108541-G-GG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-156108541-G-GG' in results.keys()
@@ -1817,7 +2046,7 @@ class TestVariantsAuto(object):
 
 	def test_variant83(self):
 		variant = '1-161279695-T-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-161279695-T-A' in results.keys()
@@ -1843,7 +2072,7 @@ class TestVariantsAuto(object):
 
 	def test_variant84(self):
 		variant = '1-169519049-T-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-169519049-T-T' in results.keys()
@@ -1859,7 +2088,7 @@ class TestVariantsAuto(object):
 
 	def test_variant85(self):
 		variant = '1-226125468-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '1-226125468-G-A' in results.keys()
@@ -1890,7 +2119,7 @@ class TestVariantsAuto(object):
 
 	def test_variant86(self):
 		variant = '10-89623035-CGCA-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '10-89623035-CGCA-C' in results.keys()
@@ -1906,7 +2135,7 @@ class TestVariantsAuto(object):
 
 	def test_variant87(self):
 		variant = '11-62457852-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '11-62457852-C-A' in results.keys()
@@ -1947,7 +2176,7 @@ class TestVariantsAuto(object):
 
 	def test_variant88(self):
 		variant = '11-108178710-A-AT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '11-108178710-A-AT' in results.keys()
@@ -1968,7 +2197,7 @@ class TestVariantsAuto(object):
 
 	def test_variant89(self):
 		variant = '11-111735981-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '11-111735981-G-A' in results.keys()
@@ -2079,7 +2308,7 @@ class TestVariantsAuto(object):
 
 	def test_variant90(self):
 		variant = '12-11023080-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '12-11023080-C-A' in results.keys()
@@ -2095,7 +2324,7 @@ class TestVariantsAuto(object):
 
 	def test_variant91(self):
 		variant = '12-22018712-TC-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '12-22018712-TC-T' in results.keys()
@@ -2126,7 +2355,7 @@ class TestVariantsAuto(object):
 
 	def test_variant92(self):
 		variant = '12-52912946-T-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '12-52912946-T-C' in results.keys()
@@ -2142,7 +2371,7 @@ class TestVariantsAuto(object):
 
 	def test_variant93(self):
 		variant = '12-103234292-TC-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '12-103234292-TC-T' in results.keys()
@@ -2168,7 +2397,7 @@ class TestVariantsAuto(object):
 
 	def test_variant94(self):
 		variant = '12-103311124-T-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '12-103311124-T-C' in results.keys()
@@ -2194,7 +2423,7 @@ class TestVariantsAuto(object):
 
 	def test_variant95(self):
 		variant = '12-111064166-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '12-111064166-G-A' in results.keys()
@@ -2255,7 +2484,7 @@ class TestVariantsAuto(object):
 
 	def test_variant96(self):
 		variant = '12-123738430-CA-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '12-123738430-CA-C' in results.keys()
@@ -2281,7 +2510,7 @@ class TestVariantsAuto(object):
 
 	def test_variant97(self):
 		variant = '13-31789169-CT-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '13-31789169-CT-C' in results.keys()
@@ -2297,7 +2526,7 @@ class TestVariantsAuto(object):
 
 	def test_variant98(self):
 		variant = '14-62187287-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '14-62187287-G-A' in results.keys()
@@ -2328,7 +2557,7 @@ class TestVariantsAuto(object):
 
 	def test_variant99(self):
 		variant = '14-62188231-TT-GA'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '14-62188231-TT-GA' in results.keys()
@@ -2359,7 +2588,7 @@ class TestVariantsAuto(object):
 
 	def test_variant100(self):
 		variant = '14-63174827-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '14-63174827-C-A' in results.keys()
@@ -2390,7 +2619,7 @@ class TestVariantsAuto(object):
 
 	def test_variant101(self):
 		variant = '15-42680000-CA-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-42680000-CA-C' in results.keys()
@@ -2416,7 +2645,7 @@ class TestVariantsAuto(object):
 
 	def test_variant102(self):
 		variant = '15-42680000-CA-CAA'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-42680000-CA-CAA' in results.keys()
@@ -2442,7 +2671,7 @@ class TestVariantsAuto(object):
 
 	def test_variant103(self):
 		variant = '15-42703179-T-TTCA'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-42703179-T-TTCA' in results.keys()
@@ -2483,7 +2712,7 @@ class TestVariantsAuto(object):
 
 	def test_variant104(self):
 		variant = '15-42703179-TAG-TTCATCT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-42703179-TAG-TTCATCT' in results.keys()
@@ -2524,7 +2753,7 @@ class TestVariantsAuto(object):
 
 	def test_variant105(self):
 		variant = '15-48782203-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-48782203-C-T' in results.keys()
@@ -2540,7 +2769,7 @@ class TestVariantsAuto(object):
 
 	def test_variant106(self):
 		variant = '15-72105929-CC-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-72105929-CC-C' in results.keys()
@@ -2571,7 +2800,7 @@ class TestVariantsAuto(object):
 
 	def test_variant107(self):
 		variant = '15-89873415-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '15-89873415-G-A' in results.keys()
@@ -2592,7 +2821,7 @@ class TestVariantsAuto(object):
 
 	def test_variant108(self):
 		variant = '16-2103394-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-2103394-C-T' in results.keys()
@@ -2663,7 +2892,7 @@ class TestVariantsAuto(object):
 
 	def test_variant109(self):
 		variant = '16-3779300-C-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-3779300-C-G' in results.keys()
@@ -2684,7 +2913,7 @@ class TestVariantsAuto(object):
 
 	def test_variant110(self):
 		variant = '16-5128843-C-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-5128843-C-G' in results.keys()
@@ -2705,7 +2934,7 @@ class TestVariantsAuto(object):
 
 	def test_variant111(self):
 		variant = '16-74808559-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-74808559-C-T' in results.keys()
@@ -2721,7 +2950,7 @@ class TestVariantsAuto(object):
 
 	def test_variant112(self):
 		variant = '16-89574804-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89574804-C-A' in results.keys()
@@ -2747,7 +2976,7 @@ class TestVariantsAuto(object):
 
 	def test_variant113(self):
 		variant = '16-89574826-A-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89574826-A-C' in results.keys()
@@ -2783,7 +3012,7 @@ class TestVariantsAuto(object):
 
 	def test_variant114(self):
 		variant = '16-89574914-G-GT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89574914-G-GT' in results.keys()
@@ -2819,7 +3048,7 @@ class TestVariantsAuto(object):
 
 	def test_variant115(self):
 		variant = '16-89574916-C-CGTC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89574916-C-CGTC' in results.keys()
@@ -2855,7 +3084,7 @@ class TestVariantsAuto(object):
 
 	def test_variant116(self):
 		variant = '16-89575009-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89575009-G-A' in results.keys()
@@ -2891,7 +3120,7 @@ class TestVariantsAuto(object):
 
 	def test_variant117(self):
 		variant = '16-89576896-A-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89576896-A-C' in results.keys()
@@ -2927,7 +3156,7 @@ class TestVariantsAuto(object):
 
 	def test_variant118(self):
 		variant = '16-89576931-G-GTG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89576931-G-GTG' in results.keys()
@@ -2963,7 +3192,7 @@ class TestVariantsAuto(object):
 
 	def test_variant119(self):
 		variant = '16-89598368-CGGCCCCCCCGGCTGTGGGAAGACGCT-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89598368-CGGCCCCCCCGGCTGTGGGAAGACGCT-C' in results.keys()
@@ -2999,7 +3228,7 @@ class TestVariantsAuto(object):
 
 	def test_variant120(self):
 		variant = '16-89613064-AGGAGAGGCG-AT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89613064-AGGAGAGGCG-AT' in results.keys()
@@ -3025,7 +3254,7 @@ class TestVariantsAuto(object):
 
 	def test_variant121(self):
 		variant = '16-89613069-AGGCGGGAGA-AT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89613069-AGGCGGGAGA-AT' in results.keys()
@@ -3051,7 +3280,7 @@ class TestVariantsAuto(object):
 
 	def test_variant122(self):
 		variant = '16-89613145-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '16-89613145-C-T' in results.keys()
@@ -3077,7 +3306,7 @@ class TestVariantsAuto(object):
 
 	def test_variant123(self):
 		variant = '17-7578194-GCAC-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-7578194-GCAC-G' in results.keys()
@@ -3163,7 +3392,7 @@ class TestVariantsAuto(object):
 
 	def test_variant124(self):
 		variant = '17-7578523-T-TG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-7578523-T-TG' in results.keys()
@@ -3249,7 +3478,7 @@ class TestVariantsAuto(object):
 
 	def test_variant125(self):
 		variant = '17-17119692-A-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-17119692-A-C' in results.keys()
@@ -3285,7 +3514,7 @@ class TestVariantsAuto(object):
 
 	def test_variant126(self):
 		variant = '17-41197588-GGACA-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-41197588-GGACA-G' in results.keys()
@@ -3326,7 +3555,7 @@ class TestVariantsAuto(object):
 
 	def test_variant127(self):
 		variant = '17-41256884-C-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-41256884-C-G' in results.keys()
@@ -3367,7 +3596,7 @@ class TestVariantsAuto(object):
 
 	def test_variant128(self):
 		variant = '17-42991428-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-42991428-C-A' in results.keys()
@@ -3398,7 +3627,7 @@ class TestVariantsAuto(object):
 
 	def test_variant129(self):
 		variant = '17-48252809-A-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-48252809-A-T' in results.keys()
@@ -3434,7 +3663,7 @@ class TestVariantsAuto(object):
 
 	def test_variant130(self):
 		variant = '17-62022709-G-GTC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-62022709-G-GTC' in results.keys()
@@ -3450,7 +3679,7 @@ class TestVariantsAuto(object):
 
 	def test_variant131(self):
 		variant = '17-62022711-C-CT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-62022711-C-CT' in results.keys()
@@ -3466,7 +3695,7 @@ class TestVariantsAuto(object):
 
 	def test_variant132(self):
 		variant = '17-62023005-G-GGC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-62023005-G-GGC' in results.keys()
@@ -3482,7 +3711,7 @@ class TestVariantsAuto(object):
 
 	def test_variant133(self):
 		variant = '17-62023006-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-62023006-C-A' in results.keys()
@@ -3498,7 +3727,7 @@ class TestVariantsAuto(object):
 
 	def test_variant134(self):
 		variant = '17-62034787-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '17-62034787-G-A' in results.keys()
@@ -3514,7 +3743,7 @@ class TestVariantsAuto(object):
 
 	def test_variant135(self):
 		variant = '18-24128261-GTCCTCC-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '18-24128261-GTCCTCC-G' in results.keys()
@@ -3560,7 +3789,7 @@ class TestVariantsAuto(object):
 
 	def test_variant136(self):
 		variant = '19-15291774-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '19-15291774-G-A' in results.keys()
@@ -3576,7 +3805,7 @@ class TestVariantsAuto(object):
 
 	def test_variant137(self):
 		variant = '19-15311794-A-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '19-15311794-A-G' in results.keys()
@@ -3588,7 +3817,7 @@ class TestVariantsAuto(object):
 
 	def test_variant138(self):
 		variant = '19-39076592-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '19-39076592-G-A' in results.keys()
@@ -3609,7 +3838,7 @@ class TestVariantsAuto(object):
 
 	def test_variant139(self):
 		variant = '2-50149352-T-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-50149352-T-C' in results.keys()
@@ -3750,7 +3979,7 @@ class TestVariantsAuto(object):
 
 	def test_variant140(self):
 		variant = '2-50847195-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-50847195-G-A' in results.keys()
@@ -3846,7 +4075,7 @@ class TestVariantsAuto(object):
 
 	def test_variant141(self):
 		variant = '2-71825797-C-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-71825797-C-G' in results.keys()
@@ -3927,7 +4156,7 @@ class TestVariantsAuto(object):
 
 	def test_variant142(self):
 		variant = '2-166179712-G-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-166179712-G-C' in results.keys()
@@ -3953,7 +4182,7 @@ class TestVariantsAuto(object):
 
 	def test_variant143(self):
 		variant = '2-166183371-A-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-166183371-A-G' in results.keys()
@@ -3979,7 +4208,7 @@ class TestVariantsAuto(object):
 
 	def test_variant144(self):
 		variant = '2-166929889-GTCCAGGTCCT-GAC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-166929889-GTCCAGGTCCT-GAC' in results.keys()
@@ -4090,7 +4319,7 @@ class TestVariantsAuto(object):
 
 	def test_variant145(self):
 		variant = '2-166929891-CCAGGTCCT-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-166929891-CCAGGTCCT-C' in results.keys()
@@ -4201,7 +4430,7 @@ class TestVariantsAuto(object):
 
 	def test_variant146(self):
 		variant = '2-179393504-G-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-179393504-G-T' in results.keys()
@@ -4262,7 +4491,7 @@ class TestVariantsAuto(object):
 
 	def test_variant147(self):
 		variant = '2-185803444-TGCAGCTGCTGCAGCTGCAGCTGCA-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-185803444-TGCAGCTGCTGCAGCTGCAGCTGCA-T' in results.keys()
@@ -4278,7 +4507,7 @@ class TestVariantsAuto(object):
 
 	def test_variant148(self):
 		variant = '2-201950249-G-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-201950249-G-T' in results.keys()
@@ -4299,7 +4528,7 @@ class TestVariantsAuto(object):
 
 	def test_variant149(self):
 		variant = '2-238268730-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '2-238268730-C-A' in results.keys()
@@ -4325,7 +4554,7 @@ class TestVariantsAuto(object):
 
 	def test_variant150(self):
 		variant = '21-43897396-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '21-43897396-C-T' in results.keys()
@@ -4351,7 +4580,7 @@ class TestVariantsAuto(object):
 
 	def test_variant151(self):
 		variant = '22-30064360-G-GCGACGC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '22-30064360-G-GCGACGC' in results.keys()
@@ -4412,7 +4641,7 @@ class TestVariantsAuto(object):
 
 	def test_variant152(self):
 		variant = '3-10188187-TGTCCCGATAG-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '3-10188187-TGTCCCGATAG-T' in results.keys()
@@ -4438,7 +4667,7 @@ class TestVariantsAuto(object):
 
 	def test_variant153(self):
 		variant = '3-50402127-T-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '3-50402127-T-G' in results.keys()
@@ -4489,7 +4718,7 @@ class TestVariantsAuto(object):
 
 	def test_variant154(self):
 		variant = '3-50402890-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '3-50402890-G-A' in results.keys()
@@ -4550,7 +4779,7 @@ class TestVariantsAuto(object):
 
 	def test_variant155(self):
 		variant = '3-57851007-AG-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '3-57851007-AG-A' in results.keys()
@@ -4596,7 +4825,7 @@ class TestVariantsAuto(object):
 
 	def test_variant156(self):
 		variant = '3-122003832-G-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '3-122003832-G-C' in results.keys()
@@ -4617,7 +4846,7 @@ class TestVariantsAuto(object):
 
 	def test_variant157(self):
 		variant = '4-153332910-C-CAGG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '4-153332910-C-CAGG' in results.keys()
@@ -4648,7 +4877,7 @@ class TestVariantsAuto(object):
 
 	def test_variant158(self):
 		variant = '5-1295183-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '5-1295183-G-A' in results.keys()
@@ -4660,7 +4889,7 @@ class TestVariantsAuto(object):
 
 	def test_variant159(self):
 		variant = '5-77396835-TTTC-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '5-77396835-TTTC-T' in results.keys()
@@ -4686,7 +4915,7 @@ class TestVariantsAuto(object):
 
 	def test_variant160(self):
 		variant = '5-118811422-GGTGA-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '5-118811422-GGTGA-G' in results.keys()
@@ -4727,7 +4956,7 @@ class TestVariantsAuto(object):
 
 	def test_variant161(self):
 		variant = '5-118811422-GGTGAG-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '5-118811422-GGTGAG-G' in results.keys()
@@ -4768,7 +4997,7 @@ class TestVariantsAuto(object):
 
 	def test_variant162(self):
 		variant = '5-131705587-CG-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '5-131705587-CG-C' in results.keys()
@@ -4794,7 +5023,7 @@ class TestVariantsAuto(object):
 
 	def test_variant163(self):
 		variant = '5-148406482-T-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '5-148406482-T-C' in results.keys()
@@ -4810,7 +5039,7 @@ class TestVariantsAuto(object):
 
 	def test_variant164(self):
 		variant = '6-110036337-T-TCAG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '6-110036337-T-TCAG' in results.keys()
@@ -4826,7 +5055,7 @@ class TestVariantsAuto(object):
 
 	def test_variant165(self):
 		variant = '6-110036337-TGAT-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '6-110036337-TGAT-T' in results.keys()
@@ -4842,7 +5071,7 @@ class TestVariantsAuto(object):
 
 	def test_variant166(self):
 		variant = '6-152651802-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '6-152651802-C-A' in results.keys()
@@ -4863,7 +5092,7 @@ class TestVariantsAuto(object):
 
 	def test_variant167(self):
 		variant = '6-152737643-C-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '6-152737643-C-G' in results.keys()
@@ -4884,7 +5113,7 @@ class TestVariantsAuto(object):
 
 	def test_variant168(self):
 		variant = '7-6026775-T-C'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-6026775-T-C' in results.keys()
@@ -4980,7 +5209,7 @@ class TestVariantsAuto(object):
 
 	def test_variant169(self):
 		variant = '7-55242465-GGAATTAAGAGAAGCA-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-55242465-GGAATTAAGAGAAGCA-G' in results.keys()
@@ -5026,7 +5255,7 @@ class TestVariantsAuto(object):
 
 	def test_variant170(self):
 		variant = '7-55248992-T-TTCCAGGAAGCCT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-55248992-T-TTCCAGGAAGCCT' in results.keys()
@@ -5077,7 +5306,7 @@ class TestVariantsAuto(object):
 
 	def test_variant171(self):
 		variant = '7-75932111-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-75932111-C-A' in results.keys()
@@ -5098,7 +5327,7 @@ class TestVariantsAuto(object):
 
 	def test_variant172(self):
 		variant = '7-91652178-A-AAAC'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-91652178-A-AAAC' in results.keys()
@@ -5119,7 +5348,7 @@ class TestVariantsAuto(object):
 
 	def test_variant173(self):
 		variant = '7-117199644-ATCT-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-117199644-ATCT-A' in results.keys()
@@ -5140,7 +5369,7 @@ class TestVariantsAuto(object):
 
 	def test_variant174(self):
 		variant = '7-140453136-AC-CT'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-140453136-AC-CT' in results.keys()
@@ -5171,7 +5400,7 @@ class TestVariantsAuto(object):
 
 	def test_variant175(self):
 		variant = '7-140453136-A-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-140453136-A-T' in results.keys()
@@ -5202,7 +5431,7 @@ class TestVariantsAuto(object):
 
 	def test_variant176(self):
 		variant = '7-140453137-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-140453137-C-T' in results.keys()
@@ -5233,7 +5462,7 @@ class TestVariantsAuto(object):
 
 	def test_variant177(self):
 		variant = '7-143013488-A-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-143013488-A-T' in results.keys()
@@ -5254,7 +5483,7 @@ class TestVariantsAuto(object):
 
 	def test_variant178(self):
 		variant = '7-143018934-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-143018934-G-A' in results.keys()
@@ -5275,7 +5504,7 @@ class TestVariantsAuto(object):
 
 	def test_variant179(self):
 		variant = '7-143048771-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '7-143048771-C-T' in results.keys()
@@ -5296,7 +5525,7 @@ class TestVariantsAuto(object):
 
 	def test_variant180(self):
 		variant = '8-1871951-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '8-1871951-C-T' in results.keys()
@@ -5327,7 +5556,7 @@ class TestVariantsAuto(object):
 
 	def test_variant181(self):
 		variant = '9-13112056-T-TG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '9-13112056-T-TG' in results.keys()
@@ -5358,7 +5587,7 @@ class TestVariantsAuto(object):
 
 	def test_variant182(self):
 		variant = '9-21971208-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '9-21971208-C-A' in results.keys()
@@ -5394,7 +5623,7 @@ class TestVariantsAuto(object):
 
 	def test_variant183(self):
 		variant = '9-35683240-T-TG'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '9-35683240-T-TG' in results.keys()
@@ -5425,7 +5654,7 @@ class TestVariantsAuto(object):
 
 	def test_variant184(self):
 		variant = '9-135796754-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert '9-135796754-G-A' in results.keys()
@@ -5456,7 +5685,7 @@ class TestVariantsAuto(object):
 
 	def test_variant185(self):
 		variant = 'HG536_PATCH-10391-AC-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HG536_PATCH-10391-AC-A' in results.keys()
@@ -5472,7 +5701,7 @@ class TestVariantsAuto(object):
 
 	def test_variant186(self):
 		variant = 'HG865_PATCH-33547-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HG865_PATCH-33547-G-A' in results.keys()
@@ -5508,7 +5737,7 @@ class TestVariantsAuto(object):
 
 	def test_variant187(self):
 		variant = 'HG865_PATCH-569441-G-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HG865_PATCH-569441-G-T' in results.keys()
@@ -5529,7 +5758,7 @@ class TestVariantsAuto(object):
 
 	def test_variant188(self):
 		variant = 'HG865_PATCH-574546-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HG865_PATCH-574546-C-T' in results.keys()
@@ -5550,7 +5779,7 @@ class TestVariantsAuto(object):
 
 	def test_variant189(self):
 		variant = 'HSCHR1_1_CTG31-133178-TAG-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HSCHR1_1_CTG31-133178-TAG-T' in results.keys()
@@ -5566,7 +5795,7 @@ class TestVariantsAuto(object):
 
 	def test_variant190(self):
 		variant = 'HSCHR6_MHC_MANN_CTG1-3848158-T-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HSCHR6_MHC_MANN_CTG1-3848158-T-G' in results.keys()
@@ -5582,7 +5811,7 @@ class TestVariantsAuto(object):
 
 	def test_variant191(self):
 		variant = 'HSCHR6_MHC_MANN_CTG1-3851043-C-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'HSCHR6_MHC_MANN_CTG1-3851043-C-A' in results.keys()
@@ -5598,7 +5827,7 @@ class TestVariantsAuto(object):
 
 	def test_variant192(self):
 		variant = 'X-70443101-C-T'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'X-70443101-C-T' in results.keys()
@@ -5619,7 +5848,7 @@ class TestVariantsAuto(object):
 
 	def test_variant193(self):
 		variant = 'X-153296777-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
 		assert 'X-153296777-G-A' in results.keys()
@@ -5654,7 +5883,7 @@ class TestVariantsAuto(object):
 
 	def test_variant194(self):
 		variant = 'NC_000023.11:g.33215693T>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.33215693T>G' in results.keys()
@@ -5670,7 +5899,7 @@ class TestVariantsAuto(object):
 
 	def test_variant195(self):
 		variant = 'NC_000023.11:g.33211557T>C'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.33211557T>C' in results.keys()
@@ -5686,7 +5915,7 @@ class TestVariantsAuto(object):
 
 	def test_variant196(self):
 		variant = 'NC_000023.11:g.33211556A>T'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.33211556A>T' in results.keys()
@@ -5707,7 +5936,7 @@ class TestVariantsAuto(object):
 
 	def test_variant197(self):
 		variant = 'NC_000023.11:g.33211450C>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.33211450C>G' in results.keys()
@@ -5728,7 +5957,7 @@ class TestVariantsAuto(object):
 
 	def test_variant198(self):
 		variant = 'NC_000006.12:g.152637185C>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000006.12:g.152637185C>A' in results.keys()
@@ -5744,7 +5973,7 @@ class TestVariantsAuto(object):
 
 	def test_variant199(self):
 		variant = 'NC_000006.12:g.152636926C>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000006.12:g.152636926C>A' in results.keys()
@@ -5760,7 +5989,7 @@ class TestVariantsAuto(object):
 
 	def test_variant200(self):
 		variant = 'NC_000023.11:g.33211312T>C'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.33211312T>C' in results.keys()
@@ -5781,7 +6010,7 @@ class TestVariantsAuto(object):
 
 	def test_variant201(self):
 		variant = 'NC_000023.11:g.33211311A>T'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.33211311A>T' in results.keys()
@@ -5802,7 +6031,7 @@ class TestVariantsAuto(object):
 
 	def test_variant202(self):
 		variant = 'NC_000023.11:g.33211310C>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.33211310C>G' in results.keys()
@@ -5823,7 +6052,7 @@ class TestVariantsAuto(object):
 
 	def test_variant203(self):
 		variant = 'NC_000023.11:g.32849793A>T'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32849793A>T' in results.keys()
@@ -5854,7 +6083,7 @@ class TestVariantsAuto(object):
 
 	def test_variant204(self):
 		variant = 'NC_000023.11:g.32823295C>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32823295C>G' in results.keys()
@@ -5885,7 +6114,7 @@ class TestVariantsAuto(object):
 
 	def test_variant205(self):
 		variant = 'NC_000023.11:g.32823294C>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32823294C>A' in results.keys()
@@ -5916,7 +6145,7 @@ class TestVariantsAuto(object):
 
 	def test_variant206(self):
 		variant = 'NC_000023.11:g.32823293A>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32823293A>G' in results.keys()
@@ -5947,7 +6176,7 @@ class TestVariantsAuto(object):
 
 	def test_variant207(self):
 		variant = 'NC_000023.11:g.32823292T>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32823292T>G' in results.keys()
@@ -5978,7 +6207,7 @@ class TestVariantsAuto(object):
 
 	def test_variant208(self):
 		variant = 'NC_000023.11:g.32823291T>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32823291T>G' in results.keys()
@@ -6009,7 +6238,7 @@ class TestVariantsAuto(object):
 
 	def test_variant209(self):
 		variant = 'NC_000023.11:g.32823290C>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32823290C>G' in results.keys()
@@ -6040,7 +6269,7 @@ class TestVariantsAuto(object):
 
 	def test_variant210(self):
 		variant = 'NC_000023.11:g.32823289T>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32823289T>A' in results.keys()
@@ -6071,7 +6300,7 @@ class TestVariantsAuto(object):
 
 	def test_variant211(self):
 		variant = 'NC_000023.11:g.32823288T>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32823288T>G' in results.keys()
@@ -6102,7 +6331,7 @@ class TestVariantsAuto(object):
 
 	def test_variant212(self):
 		variant = 'NC_000023.11:g.32820903T>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32820903T>A' in results.keys()
@@ -6133,7 +6362,7 @@ class TestVariantsAuto(object):
 
 	def test_variant213(self):
 		variant = 'NC_000023.11:g.32819968A>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32819968A>G' in results.keys()
@@ -6164,7 +6393,7 @@ class TestVariantsAuto(object):
 
 	def test_variant214(self):
 		variant = 'NC_000023.11:g.32698556G>C'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32698556G>C' in results.keys()
@@ -6195,7 +6424,7 @@ class TestVariantsAuto(object):
 
 	def test_variant215(self):
 		variant = 'NC_000023.11:g.32698555T>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32698555T>G' in results.keys()
@@ -6226,7 +6455,7 @@ class TestVariantsAuto(object):
 
 	def test_variant216(self):
 		variant = 'NC_000023.11:g.32698554A>C'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32698554A>C' in results.keys()
@@ -6257,7 +6486,7 @@ class TestVariantsAuto(object):
 
 	def test_variant217(self):
 		variant = 'NC_000023.11:g.32819967G>T'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32819967G>T' in results.keys()
@@ -6288,7 +6517,7 @@ class TestVariantsAuto(object):
 
 	def test_variant218(self):
 		variant = 'NC_000023.11:g.32819475T>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32819475T>A' in results.keys()
@@ -6319,7 +6548,7 @@ class TestVariantsAuto(object):
 
 	def test_variant219(self):
 		variant = 'NC_000023.11:g.32816643A>C'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32816643A>C' in results.keys()
@@ -6350,7 +6579,7 @@ class TestVariantsAuto(object):
 
 	def test_variant220(self):
 		variant = 'NC_000023.11:g.32816642T>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32816642T>A' in results.keys()
@@ -6381,7 +6610,7 @@ class TestVariantsAuto(object):
 
 	def test_variant221(self):
 		variant = 'NC_000023.11:g.32816641C>T'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32816641C>T' in results.keys()
@@ -6412,7 +6641,7 @@ class TestVariantsAuto(object):
 
 	def test_variant222(self):
 		variant = 'NC_000023.11:g.32816640C>T'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32816640C>T' in results.keys()
@@ -6443,7 +6672,7 @@ class TestVariantsAuto(object):
 
 	def test_variant223(self):
 		variant = 'NC_000023.11:g.31121921A>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.31121921A>G' in results.keys()
@@ -6534,7 +6763,7 @@ class TestVariantsAuto(object):
 
 	def test_variant224(self):
 		variant = 'NC_000023.11:g.31121920T>C'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.31121920T>C' in results.keys()
@@ -6625,7 +6854,7 @@ class TestVariantsAuto(object):
 
 	def test_variant225(self):
 		variant = 'NC_000023.11:g.31121919C>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.31121919C>A' in results.keys()
@@ -6716,7 +6945,7 @@ class TestVariantsAuto(object):
 
 	def test_variant226(self):
 		variant = 'NC_000023.11:g.31121131T>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.31121131T>G' in results.keys()
@@ -6807,7 +7036,7 @@ class TestVariantsAuto(object):
 
 	def test_variant227(self):
 		variant = 'NC_000023.11:g.31119228G>T'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.31119228G>T' in results.keys()
@@ -6898,7 +7127,7 @@ class TestVariantsAuto(object):
 
 	def test_variant228(self):
 		variant = 'NC_000023.11:g.31119227T>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.31119227T>G' in results.keys()
@@ -6910,7 +7139,7 @@ class TestVariantsAuto(object):
 
 	def test_variant229(self):
 		variant = 'NC_000023.11:g.31118748C>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.31118748C>A' in results.keys()
@@ -6922,7 +7151,7 @@ class TestVariantsAuto(object):
 
 	def test_variant230(self):
 		variant = 'NC_000011.10:g.70487682T>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000011.10:g.70487682T>A' in results.keys()
@@ -6948,7 +7177,7 @@ class TestVariantsAuto(object):
 
 	def test_variant231(self):
 		variant = 'NC_000011.10:g.70487682T>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000011.10:g.70487682T>A' in results.keys()
@@ -6974,7 +7203,7 @@ class TestVariantsAuto(object):
 
 	def test_variant232(self):
 		variant = 'NC_000023.11:g.32485077T>C'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32485077T>C' in results.keys()
@@ -7005,7 +7234,7 @@ class TestVariantsAuto(object):
 
 	def test_variant233(self):
 		variant = 'NC_000011.10:g.70487682T>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000011.10:g.70487682T>A' in results.keys()
@@ -7031,7 +7260,7 @@ class TestVariantsAuto(object):
 
 	def test_variant234(self):
 		variant = 'NC_000023.11:g.32503194A>N'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32503194A>N' in results.keys()
@@ -7043,7 +7272,7 @@ class TestVariantsAuto(object):
 
 	def test_variant235(self):
 		variant = 'NC_000023.11:g.32503194C>N'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32503194C>N' in results.keys()
@@ -7074,7 +7303,7 @@ class TestVariantsAuto(object):
 
 	def test_variant236(self):
 		variant = 'NC_000023.11:g.32644229='
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32644229=' in results.keys()
@@ -7105,7 +7334,7 @@ class TestVariantsAuto(object):
 
 	def test_variant237(self):
 		variant = 'NC_000023.11:g.32849761C>A'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'NC_000023.11:g.32849761C>A' in results.keys()
@@ -7117,7 +7346,7 @@ class TestVariantsAuto(object):
 
 	def test_variant238(self):
 		variant = '14-105246588-TCT-T'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert '14-105246588-TCT-T' in results.keys()
@@ -7129,7 +7358,7 @@ class TestVariantsAuto(object):
 
 	def test_variant239(self):
 		variant = '11-108218120-C-CT'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert '11-108218120-C-CT' in results.keys()
@@ -7150,7 +7379,7 @@ class TestVariantsAuto(object):
 
 	def test_variant240(self):
 		variant = '11-108218120-CT-C'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert '11-108218120-CT-C' in results.keys()
@@ -7171,7 +7400,7 @@ class TestVariantsAuto(object):
 
 	def test_variant241(self):
 		variant = 'X-76813149-AT-AATA'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'all', None)
+		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
 		print results
 
 		assert 'X-76813149-AT-AATA' in results.keys()
