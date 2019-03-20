@@ -657,7 +657,7 @@ class TestVariantsAuto(object):
         This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
         The GRCh37 chr12 has an additional 6 bases not found in the transcript
         In this example, the HGVS genomic GRCh37 spans the 5'flank of the gap
-        This variant is equivalent to VariantValidator test_variant76
+        This variant is equivalent to VariantValidator test_variant77
 
 
                                                       126    127
@@ -687,6 +687,23 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        In this example, the HGVS genomic GRCh37 spans the 3' flank of the gap
+        This variant is equivalent to VariantValidator test_variant78
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780        
+
+        Approved by PCF, 2019-03-18 17:59 
+        """
+
 		assert 'NC_000012.11:g.122064779_122064782dup' in results.keys()
 		assert results['NC_000012.11:g.122064779_122064782dup']['p_vcf'] == '12:122064778:C:CACCG'
 		assert results['NC_000012.11:g.122064779_122064782dup']['g_hgvs'] == 'NC_000012.11:g.122064779_122064782dup'
@@ -703,6 +720,27 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+
+        """
+        This variant represents possible variation of the ExAc variant http://exac.broadinstitute.org/variant/12-122064773-CCCGCCA-C
+        The GRCh37 chr12 has an additional 6 bases not found in the transcript
+        This variant spans the entire gap
+        This variant is equivalent to VariantValidator test_variant79
+
+
+                                                      126    127
+                                                      |      |
+        NM_032790.3  c        108 > CGGGGAGCCCCCGGGGGCC------CCGCCACCGCCGCCGT
+                                    |||||||||||||||||||------||||||||||||||||
+        NC_000012.11 g  122064755 > CGGGGAGCCCCCGGGGGCCCCGCCACCGCCACCGCCGCCGT
+                                                      |      |
+                                              122064773      122064780
+
+        Note, VV collapses the GRCh37 genomic description further to NC_000012.11:g.122064774_122064778del. VF connot 
+        achieve this since the processing is g2t2p only. However, all descriptions are accurate
+        Approved by PCF, 2019-03-18 18:06 
+        """
+
 		assert 'NC_000012.11:g.122064772_122064782del' in results.keys()
 		assert results['NC_000012.11:g.122064772_122064782del']['p_vcf'] == '12:122064770:GGCCCCGCCACC:G'
 		assert results['NC_000012.11:g.122064772_122064782del']['g_hgvs'] == 'NC_000012.11:g.122064774_122064784del'
@@ -718,6 +756,19 @@ class TestVariantsAuto(object):
 		variant = 'NC_000002.11:g.95847041_95847043GCG='
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+
+
+        """
+        This variant represents a 3bp gap in the transcript
+        This is the false negative of the ExAc variant http://exac.broadinstitute.org/variant/2-95847040-TGCG-T
+        The GRCh37 chr2 has an additional 3 bases not found in the transcript
+        
+        This variant is equivalent to VariantValidator test_variant80
+        
+        Note, VV maps the g. description to a wider coordinate range. This is expected behavior. VF maintains the input range 
+        achieve this since the processing is g2t2p only. However, all descriptions are accurate
+        Approved by PCF, 2019-03-18 18:09 
+        """
 
 		assert 'NC_000002.11:g.95847041_95847043GCG=' in results.keys()
 		assert results['NC_000002.11:g.95847041_95847043GCG=']['p_vcf'] == '2:95847041:GCG:GCG'
@@ -765,6 +816,19 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+
+        """
+        This variant represents a 25bp gap in the transcript
+        This is the false negative variant, but is not found in ExAC, probably due to the size of the deletion
+        The exact deletion position is 17:5286861:GTAGTGTTTGGAATTTTCTGTTCATA:G
+                                       NM_001291581.1:c.*343_*344=
+        The GRCh37 chr17 has an additional 25 bases not found in the transcript
+
+        This variant is equivalent to VariantValidator test_variant81
+
+        Approved by PCF, 2019-03-18 18:12
+        """
+
 		assert 'NC_000017.10:g.5286863_5286889AGTGTTTGGAATTTTCTGTTCATATAG=' in results.keys()
 		assert results['NC_000017.10:g.5286863_5286889AGTGTTTGGAATTTTCTGTTCATATAG=']['p_vcf'] == '17:5286863:AGTGTTTGGAATTTTCTGTTCATATAG:AGTGTTTGGAATTTTCTGTTCATATAG'
 		assert results['NC_000017.10:g.5286863_5286889AGTGTTTGGAATTTTCTGTTCATATAG=']['g_hgvs'] == 'NC_000017.10:g.5286863_5286889='
@@ -801,6 +865,18 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+        """
+        This variant represents a 1bp gap in the genome
+        This is the false negative variant of http://exac.broadinstitute.org/variant/3-14561627-A-AG
+        The exact deletion position is 3:14561627:A:AG 
+                                       NM_001080423.2:c.1307_1311=
+        The GRCh37 chr3 has 1 base less than the transcript
+
+        This variant is equivalent to VariantValidator test_variant82
+
+        Approved by PCF, 2019-03-18 18:15
+        """
+
 		assert 'NC_000003.11:g.14561629_14561630GC=' in results.keys()
 		assert results['NC_000003.11:g.14561629_14561630GC=']['p_vcf'] == '3:14561629:GC:GC'
 		assert results['NC_000003.11:g.14561629_14561630GC=']['g_hgvs'] == 'NC_000003.11:g.14561629_14561630='
@@ -821,6 +897,20 @@ class TestVariantsAuto(object):
 		variant = 'NC_000003.11:g.14561629_14561630insG'
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+
+
+        """
+        This variant represents a 1bp gap in the genome
+        This is ExAC variant ExAC http://exac.broadinstitute.org/variant/3-14561627-A-AG
+        The exact deletion position is 3:14561627:A:AG
+                                       NM_001080423.2:c.1307_1311=
+        This variant demonstrates the normalizationm of an insertion into the correct descriptions which is a duplication
+        The GRCh37 chr3 has 1 base less than the transcript
+
+        This variant is equivalent to VariantValidator test_variant83
+
+        Approved by PCF, 2019-03-18 18:34
+        """
 
 		assert 'NC_000003.11:g.14561629_14561630insG' in results.keys()
 		assert results['NC_000003.11:g.14561629_14561630insG']['p_vcf'] == '3:14561627:A:AG'
@@ -843,6 +933,18 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+
+        """
+        This variant represents a 12bp gap in the transcript
+        This is ExAC variant ExAC http://exac.broadinstitute.org/variant/4-140811063-TTGCTGCTGCTGC-T
+        The GRCh37 chr4 has an additional 12 bases not found in the transcript
+        Note the gap in each case is wrt NM_018717.4. NM_018717.5 is corrected to match the genome
+
+        This variant is equivalent to VariantValidator test_variant84
+        
+        Approved by PCF, 2019-03-18 18:37
+        """
+
 		assert 'NC_000004.11:g.140811111_140811122del' in results.keys()
 		assert results['NC_000004.11:g.140811111_140811122del']['p_vcf'] == '4:140811063:TTGCTGCTGCTGC:T'
 		assert results['NC_000004.11:g.140811111_140811122del']['g_hgvs'] == 'NC_000004.11:g.140811111_140811122del'
@@ -864,7 +966,19 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
-		assert 'NC_000004.11:g.140811111_140811122CTGCTGCTGCTG=' in results.keys()
+
+        """
+        This variant represents a 12bp gap in the transcript
+        This is the false negative of ExAC variant ExAC http://exac.broadinstitute.org/variant/4-140811063-TTGCTGCTGCTGC-T
+        The GRCh37 chr4 has an additional 12 bases not found in the transcript
+        Note the gap in each case is wrt NM_018717.4. NM_018717.5 is corrected to match the genome
+
+        This variant is equivalent to VariantValidator test_variant85
+
+        Approved by PCF, 2019-03-19 07:48
+        """
+
+        assert 'NC_000004.11:g.140811111_140811122CTGCTGCTGCTG=' in results.keys()
 		assert results['NC_000004.11:g.140811111_140811122CTGCTGCTGCTG=']['p_vcf'] == '4:140811111:CTGCTGCTGCTG:CTGCTGCTGCTG'
 		assert results['NC_000004.11:g.140811111_140811122CTGCTGCTGCTG=']['g_hgvs'] == 'NC_000004.11:g.140811111_140811122='
 		assert results['NC_000004.11:g.140811111_140811122CTGCTGCTGCTG=']['genomic_variant_error'] == 'None'
@@ -884,6 +998,18 @@ class TestVariantsAuto(object):
 		variant = 'NC_000004.11:g.140811117_140811122del'
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+
+
+        """
+        This variant represents a 12bp gap in the transcript
+        This variant spans into the 3' flank of ExAC variant ExAC http://exac.broadinstitute.org/variant/4-140811063-TTGCTGCTGCTGC-T
+        The GRCh37 chr4 has an additional 12 bases not found in the transcript
+        Note the gap in each case is wrt NM_018717.4. NM_018717.5 is corrected to match the genome
+        
+        This variant is equivalent to VariantValidator test_variant86        
+        
+        Approved by PCF, 2019-03-19 07:53
+        """
 
 		assert 'NC_000004.11:g.140811117_140811122del' in results.keys()
 		assert results['NC_000004.11:g.140811117_140811122del']['p_vcf'] == '4:140811063:TTGCTGC:T'
@@ -906,6 +1032,18 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+
+        """
+        This variant represents a 12bp gap in the transcript
+        This variant spans into the 5' flank of ExAC variant ExAC http://exac.broadinstitute.org/variant/4-140811063-TTGCTGCTGCTGC-T
+        The GRCh37 chr4 has an additional 12 bases not found in the transcript
+        Note the gap in each case is wrt NM_018717.4. NM_018717.5 is corrected to match the genome
+
+        This variant is equivalent to VariantValidator test_variant87        
+
+        Approved by PCF, 2019-03-19 07:59
+        """
+
 		assert 'NC_000004.11:g.140811111_140811117del' in results.keys()
 		assert results['NC_000004.11:g.140811111_140811117del']['p_vcf'] == '4:140811110:GCTGCTGC:G'
 		assert results['NC_000004.11:g.140811111_140811117del']['g_hgvs'] == 'NC_000004.11:g.140811111_140811117del'
@@ -926,6 +1064,18 @@ class TestVariantsAuto(object):
 		variant = 'NC_000004.11:g.140811117C>A'
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+
+
+        """
+        This variant represents a 12bp gap in the transcript
+        This variant os a base substitution close to the 3' flank of ExAC variant ExAC http://exac.broadinstitute.org/variant/4-140811063-TTGCTGCTGCTGC-T
+        The GRCh37 chr4 has an additional 12 bases not found in the transcript
+        Note the gap in each case is wrt NM_018717.4. NM_018717.5 is corrected to match the genome
+        
+        This variant is equivalent to VariantValidator test_variant88      
+        
+        Approved by PCF, 2019-03-19 07:57
+        """
 
 		assert 'NC_000004.11:g.140811117C>A' in results.keys()
 		assert results['NC_000004.11:g.140811117C>A']['p_vcf'] == '4:140811117:C:A'
@@ -948,6 +1098,17 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+
+        """
+        This variant represents a 3bp gap in the chromosome
+        GRCh38 chr 2 lacks 3 bases found in the overlapping transcript
+        The variant also shows correction of the ins into a dup
+        
+        This variant is equivalent to VariantValidator test_variant89
+        
+        Approved by PCF, 2019-03-19 08:07
+        """
+
 		assert 'NC_000002.11:g.73675227_73675228insCTC' in results.keys()
 		assert results['NC_000002.11:g.73675227_73675228insCTC']['p_vcf'] == '2:73675227:T:TCTC'
 		assert results['NC_000002.11:g.73675227_73675228insCTC']['g_hgvs'] == 'NC_000002.11:g.73675228_73675230dup'
@@ -964,14 +1125,24 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+		"""
+		This variant represents variation around the knoen ABO frameshift
+		The location of the frameshift is noted in the RefSeq record 
+		There is also a 1bp gap in the ABO transcript
+		
+        This variant is equivalent to VariantValidator test_variant90
+        
+		Approved by PCF, 2019-03-20 18:57
+		"""
+
 		assert '9-136132908-T-TC' in results.keys()
 		assert results['9-136132908-T-TC']['p_vcf'] == '9-136132908-T-TC'
 		assert results['9-136132908-T-TC']['g_hgvs'] == 'NC_000009.11:g.136132908_136132909insC'
 		assert results['9-136132908-T-TC']['genomic_variant_error'] == 'None'
 			assert 'NM_020469.2' in results['9-136132908-T-TC']['hgvs_t_and_p'].keys()
-				assert results['9-136132908-T-TC']['hgvs_t_and_p']['NM_020469.2']['t_hgvs'] == 'None'
-				assert results['9-136132908-T-TC']['hgvs_t_and_p']['NM_020469.2']['p_hgvs_tlc'] == 'None'
-				assert results['9-136132908-T-TC']['hgvs_t_and_p']['NM_020469.2']['p_hgvs_slc'] == 'None'
+				assert results['9-136132908-T-TC']['hgvs_t_and_p']['NM_020469.2']['t_hgvs'] == 'NM_020469.2:c.260_262='
+				assert results['9-136132908-T-TC']['hgvs_t_and_p']['NM_020469.2']['p_hgvs_tlc'] == 'NP_065202.2:p.(Val87=)'
+				assert results['9-136132908-T-TC']['hgvs_t_and_p']['NM_020469.2']['p_hgvs_slc'] == 'NP_065202.2:p.(V87=)'
 				assert results['9-136132908-T-TC']['hgvs_t_and_p']['NM_020469.2']['transcript_variant_error'] == 'None'
 
 
@@ -979,6 +1150,18 @@ class TestVariantsAuto(object):
 		variant = '9-136132908-TAC-TCA'
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+
+
+        """
+        This variant represents variation around the knoen ABO frameshift
+        The location of the frameshift is noted in the RefSeq record 
+        There is also a 1bp gap in the ABO transcript
+
+        This is what we believe to be the correctly normalized posirtion of the ABO frameshifting deletion
+        This variant is equivalent to VariantValidator test_variant91
+
+        Approved by PCF, 2019-03-20 18:58
+        """
 
 		assert '9-136132908-TAC-TCA' in results.keys()
 		assert results['9-136132908-TAC-TCA']['p_vcf'] == '9-136132908-TAC-TCA'
@@ -996,6 +1179,18 @@ class TestVariantsAuto(object):
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
 
+
+        """
+        This variant represents variation around the knoen ABO frameshift
+        The location of the frameshift is noted in the RefSeq record 
+        There is also a 1bp gap in the ABO transcript
+
+        This is what we believe to be the correctly normalized posirtion of the ABO frameshifting deletion
+        This variant is equivalent to VariantValidator test_variant91
+
+        Approved by PCF, 2019-03-20 19:03
+        """
+
 		assert '9-136132908-TA-TA' in results.keys()
 		assert results['9-136132908-TA-TA']['p_vcf'] == '9-136132908-TA-TA'
 		assert results['9-136132908-TA-TA']['g_hgvs'] == 'NC_000009.11:g.136132908_136132909='
@@ -1011,6 +1206,15 @@ class TestVariantsAuto(object):
 		variant = 'NC_012920.1:m.1011C>T'
 		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
 		print results
+
+
+        """
+        Currently no NM_ mito transcripts
+        This is what we believe to be the correctly normalized posirtion of the ABO frameshifting deletion
+        This variant is equivalent to VariantValidator test_variant135
+
+        Approved by PCF, 2019-03-20 19:05
+        """
 
 		assert 'NC_012920.1:m.1011C>T' in results.keys()
 		assert results['NC_012920.1:m.1011C>T']['p_vcf'] == 'M:1011:C:T'

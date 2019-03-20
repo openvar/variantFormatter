@@ -610,12 +610,19 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
             # the gene is on the gap list
             # the hgvs version is <= 1.1.3
             # The requested transcript set is RefSeq
-            gap_compensated_tx = g_to_t_compensation_code(hgvs_tx, hgvs_genomic, 
+            gap_compensated_tx = g_to_t_compensation_code(hgvs_tx, hgvs_genomic,
                                                                 un_norm_hgvs_genomic, 
                                                                 vm, hn, 
                                                                 reverse_normalizer,
                                                                 primary_assembly,
                                                                 hdp, hp, sf)
+            # except Exception as e:
+            #     import sys
+            #     import traceback
+            #     exc_type, exc_value, last_traceback = sys.exc_info()
+            #     te = traceback.format_exc()
+            #     tbk = [str(exc_type), str(exc_value), str(te)]
+            #     er = str('\n'.join(tbk))
 
             if gap_compensated_tx[1] is False:
                 refresh_hgvs_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
@@ -683,6 +690,14 @@ Also requres a hgvs_genomic and tx id
                         
 def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn, 
                                 reverse_normalizer, primary_assembly, hdp, hp, sf):
+
+    # Ensure hgvs_tx is good to go
+    try:
+        hn.normalize(hgvs_tx)
+    except hgvs.exceptions.HGVSInvalidVariantError as e:
+        if 'insertion length must be 1' in str(e):
+            hgvs_tx_anew = '%s:%s.%sdelins%s' % (hgvs_tx.ac, hgvs_tx.type, str(hgvs_tx.posedit.pos), hgvs_tx.posedit.edit.alt)
+            hgvs_tx = hp.parse_hgvs_variant(hgvs_tx_anew)
 
     """
     Gap aware projection from g. to c.
