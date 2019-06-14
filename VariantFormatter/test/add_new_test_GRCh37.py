@@ -7,13 +7,13 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 class NotSetError(Exception):
     pass
 
-inputfile = os.path.join(ROOT, 'newVariants.txt')
+inputfile = os.path.join(ROOT, 'inputVariants.txt')
 outputfile = os.path.join(ROOT, 'test_inputs_auto.py')
 out = open(outputfile, 'a')
 
 # Set number by referring to test_inputs_auto.py
-number = None
-tx_set = None
+number = 0
+tx_set = 'refseq'
 
 if number is None:
     raise NotSetError('Add start number from test_inputs_auto.py')
@@ -32,7 +32,7 @@ with open(inputfile) as ins:
     for l in ins:
         number += 1
         testline = '\n\tdef test_variant%s(self):\n' % number
-        testline += "\t\tvariant = '%s'\n\t\tresults = vf.FormatVariant(variant, 'GRCh37', vfo,  '%s', None)\n\t\tprint results\n\n" % (l.strip(), tx_set)
+        testline += "\t\tvariant = '%s'\n\t\tresults = vf.FormatVariant(variant, 'GRCh37', vfo,  '%s', None)\n\t\tresults = results.stucture_data()\n\t\tprint(results)\n\n" % (l.strip(), tx_set)
         result = vf.FormatVariant(l.strip(), 'GRCh37', vfo,  tx_set, None)
         res = result.stucture_data()
         print(("Variant %s: %s" % (number, l.strip())))
@@ -41,21 +41,25 @@ with open(inputfile) as ins:
             for secondkey, item in list(res[key].items()):
                 if secondkey == "hgvs_t_and_p":
                     if res[key]["hgvs_t_and_p"] is None:
-                        testline += "\t\t\tassert results['%s']['%s'] = 'None'\n" % (key, "hgvs_t_and_p")
+                        testline += "\t\tassert results['%s']['%s'] is None\n" % (key, "hgvs_t_and_p")
                         continue
                     else:
                         for thirdkey, itm in list(res[key]["hgvs_t_and_p"].items()):
-                            testline += "\t\t\tassert '%s' in results['%s']['%s'].keys()\n" % (thirdkey, key, "hgvs_t_and_p")
+                            testline += "\t\tassert '%s' in results['%s']['%s'].keys()\n" % (thirdkey, key, "hgvs_t_and_p")
                             for forthkey, it_m in list(res[key]["hgvs_t_and_p"][thirdkey].items()):
                                 if 'gap' in forthkey:
                                     continue
+                                elif it_m is None:
+                                    testline += "\t\tassert results['%s']['%s']['%s']['%s'] is None\n" % (
+                                        key, 'hgvs_t_and_p', thirdkey, forthkey)
                                 else:
-                                    testline += "\t\t\t\tassert results['%s']['%s']['%s']['%s'] == '%s'\n" % (
+                                    testline += "\t\tassert results['%s']['%s']['%s']['%s'] == '%s'\n" % (
                                     key, 'hgvs_t_and_p', thirdkey, forthkey, it_m)
                         continue
+                elif item is None:
+                    testline += "\t\tassert results['%s']['%s'] is None\n" % (key, secondkey)
                 else:
-                    pass
-                testline += "\t\tassert results['%s']['%s'] == '%s'\n" % (key, secondkey, item)
+                    testline += "\t\tassert results['%s']['%s'] == '%s'\n" % (key, secondkey, item)
             testline += '\n'
         out.write(testline)
 
@@ -63,7 +67,7 @@ with open(inputfile) as ins:
 out.close()
 
 # <LICENSE>
-# Copyright (C) 2019  Peter Causey-Freeman, University of Leicester
+# Copyright (C) 2019  Peter Causey-Freeman, University of Manchester
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
