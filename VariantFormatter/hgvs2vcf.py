@@ -15,7 +15,8 @@ pos_lock, hard_right and hard_left are used to compensate for gapped alignments
 
 # Import  modules
 import re
-import supportedChromosomeBuilds
+import VariantFormatter
+import VariantFormatter.supportedChromosomeBuilds as supportedChromosomeBuilds
 import copy
 
 # Import Biopython modules

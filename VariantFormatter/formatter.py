@@ -34,10 +34,11 @@ import hgvs.sequencevariant
 from Bio.Seq import Seq
 
 # Import VariantFormatter modules
-import supportedChromosomeBuilds as chr_dict
-import hgvs2vcf
-import gapGenes
-import variantanalyser.functions as va_func
+import VariantFormatter
+import VariantFormatter.supportedChromosomeBuilds as chr_dict
+import VariantFormatter.hgvs2vcf as hgvs2vcf
+import VariantFormatter.gapGenes as gapGenes
+import VariantFormatter.variantanalyser.functions as va_func
 
 
                                                           
@@ -149,7 +150,7 @@ level hgvs python object is returned.
 
 
 def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, varForm):
-    
+
     # Create dictionary to store the information
     hgvs_genomic_to_hgvs_transcript = {'error': '', 'hgvs_transcript': '', 'ref_bases': ''}
     if re.match('ENST', tx_id):
@@ -184,7 +185,7 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, varForm):
             # Ensure complete normalization
             try:
                 hgvs_tx = hn.normalize(hgvs_tx)
-            except hgvs.exceptions.HGVSError as e: 
+            except hgvs.exceptions.HGVSError as e:
                 pass # No restorative action required. Suspected intronic variant
             
             hgvs_genomic_to_hgvs_transcript['hgvs_transcript'] = hgvs_tx
@@ -256,7 +257,7 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, varForm):
                 cp_enst_list.append(et)
     
         tx_list = tx_list + cp_enst_list
-                          
+
     if transcript_model == 'refseq' or transcript_model == 'all':   
         refseq_list = varForm.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
                                             hgvs_genomic.posedit.pos.end.base)

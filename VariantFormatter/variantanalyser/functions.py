@@ -15,7 +15,9 @@ import warnings
 import hgvs
 import hgvs.exceptions
 from hgvs.exceptions import HGVSDataNotAvailableError
-import supportFunctions as links
+import VariantFormatter
+import VariantFormatter.variantanalyser
+from VariantFormatter.variantanalyser import supportFunctions as links
 from Bio.Seq import Seq
 
 
@@ -205,7 +207,7 @@ def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_
                     except Exception as e:
                         attempted_mapping_error = attempted_mapping_error + str(e) + "/" + hgvs_c.ac + "/" + option[
                             1] + '~'
-                        print e
+                        print(e)
                         continue
 
         # If not mapped, raise error
@@ -227,7 +229,7 @@ def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_
                             else:
                                 attempted_mapping_error = attempted_mapping_error + str(e) + "/" + hgvs_c.ac + "/" + option[
                                     1] + '~'
-                            print e
+                            print(e)
                             continue
             try:
                 hn.normalize(hgvs_genomic)
@@ -244,7 +246,7 @@ def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_
                             except Exception as e:
                                 attempted_mapping_error = attempted_mapping_error + str(e) + "/" + hgvs_c.ac + "/" + option[
                                     1] + '~'
-                                print e
+                                print(e)
                                 continue
                 try:
                     hn.normalize(hgvs_genomic)
@@ -263,7 +265,7 @@ def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_
                                     attempted_mapping_error = attempted_mapping_error + str(e) + "/" + hgvs_c.ac + "/" + \
                                                               option[
                                                                   1] + '~'
-                                    print e
+                                    print(e)
                                     continue
                     try:
                         hn.normalize(hgvs_genomic)
@@ -281,7 +283,7 @@ def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_
                                     except Exception as e:
                                         attempted_mapping_error = attempted_mapping_error + str(e) + "/" + hgvs_c.ac + "/" + \
                                                                   option[1] + '~'
-                                        print e
+                                        print(e)
                                         continue
                         try:
                             hn.normalize(hgvs_genomic)
@@ -300,7 +302,7 @@ def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_
                                             attempted_mapping_error = attempted_mapping_error + str(
                                                 e) + "/" + hgvs_c.ac + "/" + \
                                                                       option[1] + '~'
-                                            print e
+                                            print(e)
                                             continue
 
                             # Only a RefSeqGene available
@@ -317,7 +319,7 @@ def myevm_t_to_g(hgvs_c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_
                                         except Exception as e:
                                             attempted_mapping_error = attempted_mapping_error + str(e) + "/" + hgvs_c.ac + "/" + \
                                                                       option[1] + '~'
-                                            print e
+                                            print(e)
                                             continue
 
     # If not mapped, raise error

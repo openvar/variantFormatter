@@ -12,10 +12,11 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 import os
 import re
 import VariantFormatter
-import formatter
+import VariantFormatter.formatter as formatter
 import collections
 from configparser import ConfigParser, RawConfigParser
 import hgvs
+import hgvs.parser
 import hgvs.dataproviders.uta
  
 # Custom Exceptions
@@ -272,7 +273,7 @@ class FormatVariant(object):
                 un_norm_hgvs = genomic_level['un_normalized_hgvs_genomic']
                 hgvs_ref_bases = genomic_level['ref_bases']
         
-        # Not recognidsed
+        # Not recognised
         else:
             raise variableError('Variant description ' + self.variant_description + ' is not in a supported format') 
         

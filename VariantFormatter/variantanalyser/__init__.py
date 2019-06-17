@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
 # Import functions from functions.py
-from functions import *
+import VariantFormatter
+import VariantFormatter.variantanalyser
+import VariantFormatter.variantanalyser.functions
+from VariantFormatter.variantanalyser.functions import *
+import VariantFormatter.variantanalyser.supportFunctions
+from VariantFormatter.variantanalyser.supportFunctions import *
 
 # <LICENSE>
 # Copyright (C) 2019  Peter Causey-Freeman, University of Leicester
@@ -10,7 +15,7 @@ from functions import *
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the

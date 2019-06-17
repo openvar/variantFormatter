@@ -56,6 +56,7 @@ setup(
         "biotools",
         "python-daemon",
         "numpy",
+        "pytest",
     ],
 )
 

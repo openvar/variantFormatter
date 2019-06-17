@@ -7,8 +7,9 @@ import copy
 import hgvs.exceptions
 import hgvs.assemblymapper
 import hgvs.variantmapper
-import hgvs2vcf as va_H2V
-import variantanalyser.functions as va_func
+import VariantFormatter
+import VariantFormatter.hgvs2vcf as va_H2V
+import VariantFormatter.variantanalyser.functions as va_func
 
 
 """
@@ -16,6 +17,7 @@ Internal function that returns True if gene symbol is blacklisted and False if n
 """
 def gap_black_list(symbol):
     gapGene = {
+                    "TRPM1": "",
                     "LPP": "",
                     "VPS13D": "",
                     "SSPO": "",
@@ -666,13 +668,20 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm):
         hgvs_genomic = rhn.normalize(hgvs_genomic)
     else:
         hgvs_genomic = hn.normalize(hgvs_genomic)
+
+    print('Try 1')
     try:
         hgvs_tx = vm.g_to_t(hgvs_genomic, hgvs_tx.ac)
-    except hgvs.exceptions.HGVSError:
-        pass    
+    except hgvs.exceptions.HGVSError as e:
+        print('Error area 1')
+        print(e)
+        pass
+    print('Try 2')
     try:
         hgvs_tx = hn.normalize(hgvs_tx)
-    except hgvs.exceptions.HGVSError:
+    except hgvs.exceptions.HGVSError as e:
+        print('Error area 2')
+        print(e)
         pass
         
     return hgvs_tx
