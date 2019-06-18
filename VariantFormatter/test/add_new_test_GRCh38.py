@@ -20,7 +20,8 @@ if number is None:
 if tx_set is None:
     raise NotSetError('Add requested transcript set')
 
-out.write('import VariantFormatter\n'
+if number == 0:
+    out.write('import VariantFormatter\n'
           'import VariantFormatter.variantformatter as vf\n'
           'vfo = vf.initializeFormatter()\n'
           'class TestVariantsAuto(object):\n\n'
