@@ -5,8 +5,6 @@ import VariantFormatter
 import VariantFormatter.variantanalyser
 import VariantFormatter.variantanalyser.functions
 from VariantFormatter.variantanalyser.functions import *
-import VariantFormatter.variantanalyser.supportFunctions
-from VariantFormatter.variantanalyser.supportFunctions import *
 
 # <LICENSE>
 # Copyright (C) 2019  Peter Causey-Freeman, University of Leicester

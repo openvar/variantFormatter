@@ -34,14 +34,13 @@ import hgvs.sequencevariant
 from Bio.Seq import Seq
 
 # Import VariantFormatter modules
+import VariantValidator
+import VariantValidator.modules.hgvs_utils as hgvs_utils
+import VariantValidator.modules.seq_data as chr_dict
+
 import VariantFormatter
-import VariantFormatter.supportedChromosomeBuilds as chr_dict
-import VariantFormatter.hgvs2vcf as hgvs2vcf
 import VariantFormatter.gapGenes as gapGenes
-import VariantFormatter.variantanalyser.functions as va_func
 
-
-                                                          
 """
 Simple function, parses an HGVS string into a hgvs (.py) object
 NOTE: if the string is not valid, hgvs (py) parser will throw up an error
@@ -50,8 +49,8 @@ See hgvs (py) documentation for error types
 """
 
 
-def parse(hgvs_string, varForm):
-    hgvs_object = varForm.hp.parse_hgvs_variant(hgvs_string)
+def parse(hgvs_string, vfo):
+    hgvs_object = vfo.hp.parse_hgvs_variant(hgvs_string)
     return hgvs_object
     
 
@@ -64,7 +63,7 @@ Supported genome builds are GRCh38, GRCh37, hg19, hg38
 """
 
 
-def vcf2hgvs_genomic(pseudo_vcf, genome_build, varForm):
+def vcf2hgvs_genomic(pseudo_vcf, genome_build, vfo):
     # Dictionary to store the output
     vcf_to_hgvs_genomic = {'error': '', 'hgvs_genomic': '', 'ref_bases': '', 'un_normalized_hgvs_genomic': ''}
     # Simple check of the format
@@ -92,19 +91,19 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, varForm):
             else:
                 # Create a genomic HGVS string then parse into an hgvs variant object
                 gen_var = '%s:g.%s_%sdel%sins%s' % (ac, str(pos), str(int(pos) + (len(ref) - 1)), ref, alt)
-                hgvs_genomic = varForm.hp.parse_hgvs_variant(gen_var)
+                hgvs_genomic = vfo.hp.parse_hgvs_variant(gen_var)
                 # validate the reference
                 try:
-                    varForm.vr.validate(hgvs_genomic)
+                    vfo.vr.validate(hgvs_genomic)
                 except hgvs.exceptions.HGVSError as e:
                     vcf_to_hgvs_genomic['error'] = str(e)
                 else:
                     # Normalize the description to its most 3 prime position and apply the correct HGVS grammer
                     vcf_to_hgvs_genomic['un_normalized_hgvs_genomic'] = hgvs_genomic
-                    varForm.splign_normalizer.normalize(hgvs_genomic)
-                    hgvs_genomic = varForm.splign_normalizer.normalize(hgvs_genomic)
+                    vfo.splign_normalizer.normalize(hgvs_genomic)
+                    hgvs_genomic = vfo.splign_normalizer.normalize(hgvs_genomic)
                     vcf_to_hgvs_genomic['hgvs_genomic'] = hgvs_genomic
-                    vcf_to_hgvs_genomic['ref_bases'] = varForm.sf.fetch_seq(hgvs_genomic.ac, start_i=hgvs_genomic.posedit.pos.start.base - 1, end_i=hgvs_genomic.posedit.pos.end.base)
+                    vcf_to_hgvs_genomic['ref_bases'] = vfo.sf.fetch_seq(hgvs_genomic.ac, start_i=hgvs_genomic.posedit.pos.start.base - 1, end_i=hgvs_genomic.posedit.pos.end.base)
     return vcf_to_hgvs_genomic
 
 
@@ -113,8 +112,8 @@ Function takes a genomic HGVS description and returns the component parts of a V
 """
 
 
-def hgvs_genomic2vcf(hgvs_genomic, genome_build, varForm):
-    vcf_dictionary = hgvs2vcf.report_hgvs2vcf(hgvs_genomic, genome_build, varForm.reverse_splign_normalizer, varForm.sf)
+def hgvs_genomic2vcf(hgvs_genomic, genome_build, vfo):
+    vcf_dictionary = hgvs_utils.report_hgvs2vcf(hgvs_genomic, genome_build, vfo.reverse_splign_normalizer, vfo.sf)
     return vcf_dictionary
 
 
@@ -125,21 +124,21 @@ The intention is to also collect the un-normalized variant
 """
 
 
-def format_hgvs_genomic(hgvs_genomic, varForm):
+def format_hgvs_genomic(hgvs_genomic, vfo):
     format_hgvs_genomic = {'error': '', 'hgvs_genomic': '', 'ref_bases': '', 'un_normalized_hgvs_genomic': ''}
     
     # Simple check of the format
     try:
-        varForm.vr.validate(hgvs_genomic)
+        vfo.vr.validate(hgvs_genomic)
     except hgvs.exceptions.HGVSError as e:
         format_hgvs_genomic['error'] = str(e)
     else:
         # Normalize the description to its most 3 prime position and apply the correct HGVS grammer
         format_hgvs_genomic['un_normalized_hgvs_genomic'] = hgvs_genomic
-        varForm.splign_normalizer.normalize(hgvs_genomic)
-        hgvs_genomic = varForm.splign_normalizer.normalize(hgvs_genomic)
+        vfo.splign_normalizer.normalize(hgvs_genomic)
+        hgvs_genomic = vfo.splign_normalizer.normalize(hgvs_genomic)
         format_hgvs_genomic['hgvs_genomic'] = hgvs_genomic
-        format_hgvs_genomic['ref_bases'] = varForm.sf.fetch_seq(hgvs_genomic.ac, start_i=hgvs_genomic.posedit.pos.start.base - 1, end_i=hgvs_genomic.posedit.pos.end.base)
+        format_hgvs_genomic['ref_bases'] = vfo.sf.fetch_seq(hgvs_genomic.ac, start_i=hgvs_genomic.posedit.pos.start.base - 1, end_i=hgvs_genomic.posedit.pos.end.base)
         return format_hgvs_genomic
     
 
@@ -149,21 +148,21 @@ level hgvs python object is returned.
 """
 
 
-def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, varForm):
+def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
 
     # Create dictionary to store the information
     hgvs_genomic_to_hgvs_transcript = {'error': '', 'hgvs_transcript': '', 'ref_bases': ''}
     if re.match('ENST', tx_id):
         alt_aln_method = 'genebuild'
-        hn = varForm.genebuild_normalizer
-        rhn = varForm.reverse_genebuild_normalizer
+        hn = vfo.genebuild_normalizer
+        rhn = vfo.reverse_genebuild_normalizer
     elif re.match('NM', tx_id) or re.match('NR', tx_id):
         alt_aln_method = 'splign'
-        hn = varForm.splign_normalizer
-        rhn = varForm.reverse_splign_normalizer
+        hn = vfo.splign_normalizer
+        rhn = vfo.reverse_splign_normalizer
     # Obtain the orientation of the transcript wrt selected genomic accession
     try:
-        exon_alignments = varForm.hdp.get_tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
+        exon_alignments = vfo.hdp.get_tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
         orientation = int(exon_alignments[0]['alt_strand'])
 
     # May want to tighten up this exception during testing
@@ -178,7 +177,7 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, varForm):
             hgvs_genomic = hn.normalize(hgvs_genomic)
         # directly map from the normalized genomic variant to the transcript variant
         try:
-            hgvs_tx = varForm.vm.g_to_t(hgvs_genomic, tx_id)
+            hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id)
         except hgvs.exceptions.HGVSError as e:
             hgvs_genomic_to_hgvs_transcript['error'] = str(e)
         else:            
@@ -193,9 +192,9 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, varForm):
                 hgvs_genomic_to_hgvs_transcript['ref_bases'] = hgvs_tx.posedit.edit.ref
             except hgvs.exceptions.HGVSError:
                 if hgvs_tx.type == 'c':
-                    hgvs_tx = varForm.vm.c_to_n(hgvs_t)
+                    hgvs_tx = vfo.vm.c_to_n(hgvs_t)
                 if hgvs_tx.posedit.pos.start.offset == 0 and hgvs_tx.posedit.pos.end.offset == 0:
-                    hgvs_genomic_to_hgvs_transcript['ref_bases'] = varForm.sf.fetch_seq(hgvs_tx.ac, start_i=hgvs_tx.posedit.pos.start.base - 1, end_i=hgvs_tx.posedit.pos.end.base)
+                    hgvs_genomic_to_hgvs_transcript['ref_bases'] = vfo.sf.fetch_seq(hgvs_tx.ac, start_i=hgvs_tx.posedit.pos.start.base - 1, end_i=hgvs_tx.posedit.pos.end.base)
                 else:
                     hgvs_genomic_to_hgvs_transcript['ref_bases'] = ''
                     
@@ -211,21 +210,21 @@ previous g_to_t function
 """
 
 
-def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, varForm):
+def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, vfo):
     
-    # Configure varForm.vm and normalizers (easier to maintain as now matches VV)
+    # Configure vfo.vm and normalizers (easier to maintain as now matches VV)
     if 'ENST' in hgvs_transcript.ac:
         alt_aln_method = 'genebuild'
-        hn = varForm.genebuild_normalizer
-        rhn = varForm.reverse_genebuild_normalizer
+        hn = vfo.genebuild_normalizer
+        rhn = vfo.reverse_genebuild_normalizer
     else:
         alt_aln_method = 'splign'
-        hn = varForm.splign_normalizer
-        rhn = varForm.reverse_splign_normalizer 
+        hn = vfo.splign_normalizer
+        rhn = vfo.reverse_splign_normalizer 
     
     
-    # Create varForm.vm
-    evm = hgvs.assemblymapper.AssemblyMapper(varForm.hdp,
+    # Create vfo.vm
+    evm = hgvs.assemblymapper.AssemblyMapper(vfo.hdp,
                                              assembly_name=genome_build,
                                              alt_aln_method=alt_aln_method, # Only RefSeq should be here!!!
                                              normalize=True,
@@ -233,9 +232,10 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, varForm):
                                              )    
     
     # Create dictionary to store the information    
-    hgvs_transcript_to_hgvs_protein = va_func.myc_to_p(hgvs_transcript, evm, varForm.hdp, varForm.hp, rhn, varForm.vm, varForm.sf, re_to_p=False)
+    # hgvs_transcript_to_hgvs_protein = vfo.myc_to_p(hgvs_transcript, evm, vfo.hdp, vfo.hp, rhn, vfo.vm, vfo.sf, re_to_p=False)
+    re_to_p = False
+    hgvs_transcript_to_hgvs_protein = vfo.myc_to_p(hgvs_transcript, evm, re_to_p, rhn)
     hgvs_transcript_to_hgvs_protein = hgvs_transcript_to_hgvs_protein['hgvs_protein']
-    
     return hgvs_transcript_to_hgvs_protein
 
 """
@@ -243,11 +243,11 @@ Return all aligned transcripts for a given genomic hgvs object
 """
 
 
-def fetch_aligned_transcripts(hgvs_genomic, transcript_model, varForm):
+def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
     tx_list = []
     
     if transcript_model == 'ensembl' or transcript_model == 'all':
-        enst_list = varForm.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base - 1,
+        enst_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base - 1,
                                           hgvs_genomic.posedit.pos.end.base)
         
         # Remove transcripts with incomplete identifiers
@@ -259,7 +259,7 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, varForm):
         tx_list = tx_list + cp_enst_list
 
     if transcript_model == 'refseq' or transcript_model == 'all':   
-        refseq_list = varForm.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
+        refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
                                             hgvs_genomic.posedit.pos.end.base)
         tx_list = tx_list + refseq_list
         
@@ -270,8 +270,8 @@ Return the relevant protein sequence for a given transcript reference sequence
 """
 
 
-def fetch_encoded_protein(tx_ac, varForm):
-    pro_ac = varForm.hdp.get_pro_ac_for_tx_ac(tx_ac)
+def fetch_encoded_protein(tx_ac, vfo):
+    pro_ac = vfo.hdp.get_pro_ac_for_tx_ac(tx_ac)
     return pro_ac
     
 
@@ -298,24 +298,24 @@ check RefSeq hgvs_tx descriptions for gaps
 """
 
 
-def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_build, varForm):
+def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_build, vfo):
     
     tx_id = hgvs_transcript.ac
     if re.match('ENST', tx_id):
         alt_aln_method = 'genebuild'
-        hn = varForm.genebuild_normalizer
-        rhn = varForm.reverse_genebuild_normalizer
+        hn = vfo.genebuild_normalizer
+        rhn = vfo.reverse_genebuild_normalizer
     elif re.match('NM', tx_id) or re.match('NR', tx_id):
         alt_aln_method = 'splign'
-        hn = varForm.splign_normalizer
-        rhn = varForm.reverse_splign_normalizer
+        hn = vfo.splign_normalizer
+        rhn = vfo.reverse_splign_normalizer
     
     # Set other variables
-    hdp = varForm.hdp
-    vm = varForm.vm
-    hp = varForm.hp
-    sf = varForm.sf
-    hgvs_version = varForm.hgvsVersion
+    hdp = vfo.hdp
+    vm = vfo.vm
+    hp = vfo.hp
+    sf = vfo.sf
+    hgvs_version = vfo.hgvsVersion
     
     # Check for gapping
     checked = gapGenes.compensate_g_to_t(hgvs_transcript, hgvs_genomic, 
