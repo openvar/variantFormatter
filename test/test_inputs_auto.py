@@ -1,6 +1,7 @@
 import VariantFormatter
 import VariantFormatter.variantformatter as vf
-vfo = vf.initializeFormatter()
+import VariantValidator
+vfo = VariantValidator.Validator()
 class TestVariantsAuto(object):
 
 	@classmethod
