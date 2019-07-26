@@ -10,8 +10,7 @@ setup(
     long_description=open('README.txt').read(),
     url='https://github.com/openvar/variantFormatter',
     author='Peter J. Causey-Freeman',
-    author_email='pjf9@leicester.ac.uk',
-	package_data={"VariantFormatter": ["configuration/*.ini"],},
+    author_email='admin@variantvalidator.org',
     packages=find_packages(),
     include_package_data=True,
     license="GNU AFFERO GENERAL PUBLIC LICENSE, Version 3 (https://www.gnu.org/licenses/agpl-3.0.en.html)",
@@ -52,7 +51,7 @@ setup(
 )
 
 # <LICENSE>
-# Copyright (C) 2019  Peter Causey-Freeman, University of Leicester
+# Copyright (C) 2019  Peter Causey-Freeman, University of Manchester
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
