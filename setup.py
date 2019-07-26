@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='VariantFormatter',
-    version='0.0.1',
+    version=open('VERSION.txt').read(),
     description='Accurate conversion of Pseudo VCF variants into the HGVS format and mapping between reference sequences',
     long_description=open('README.txt').read(),
     url='https://github.com/openvar/variantFormatter',
@@ -28,7 +28,7 @@ setup(
         'Topic :: Software Development :: Build Tools',
 
         # Specify the Python versions
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python',
     ],
  
     # What does your project relate to?
@@ -47,16 +47,7 @@ setup(
 
 	# List run-time dependencies here.  These will be installed by pip when the project is installed.
     install_requires=[
-        "hgvs == 1.1.3", # This will install BioPython
-		"biocommons.seqrepo == 0.4.4",
-		"configparser",
-        "mysql-connector-python",
-        "httplib2",
-        "docutils",
-        "biotools",
-        "python-daemon",
-        "numpy",
-        "pytest",
+        "VariantValidator >= 1.0.0", # This will install BioPython
     ],
 )
 

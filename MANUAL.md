@@ -1,38 +1,9 @@
 # VariantFormatter Operation Manual
 
-## Configuration
-
-Presently VariantFormatter uses a combination of environment variables to configure itself
-On first use, the configuration file VariantFormatter.conf automatically created in your 
-home directory.  
-
-VariantFormatter.conf should be edited with the current user's details:
-
-```
-[seqrepo]
-location = /PATH/TO/SEQREPO/DATABASE/AND_DATABASE_VERSION
-e.g.
-[seqrepo]
-location = /Users/a_user/seqrepo/2018-08-21
-
-[uta]
-location = postgresql://uta_admin:uta_admin@127.0.0.1/uta/uta_schema_version
-Note - This is the recommended UTA configuration
-
-```
-
-```
-[logging]
-string = error file console trace
-```
-
-Once the tool is configured, VariantFormatter will automatically configure its dependent 
-packages
-
 ## Operation
 simpleVariantFormatter.format(<VARIANT(s)>, GENOMC_BUILD>, <TRANSCRIPT_SET>, <SPECIFY_TRANSCRIPT(s))
 
-# Single variant prcessing
+# Single variant processing
 ```
 import json
 import VariantFormatter
