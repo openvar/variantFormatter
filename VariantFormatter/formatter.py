@@ -232,7 +232,6 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, vfo):
                                              )    
     
     # Create dictionary to store the information    
-    # hgvs_transcript_to_hgvs_protein = vfo.myc_to_p(hgvs_transcript, evm, vfo.hdp, vfo.hp, rhn, vfo.vm, vfo.sf, re_to_p=False)
     re_to_p = False
     hgvs_transcript_to_hgvs_protein = vfo.myc_to_p(hgvs_transcript, evm, re_to_p, rhn)
     hgvs_transcript_to_hgvs_protein = hgvs_transcript_to_hgvs_protein['hgvs_protein']
@@ -320,7 +319,7 @@ def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_buil
     # Check for gapping
     checked = gapGenes.compensate_g_to_t(hgvs_transcript, hgvs_genomic, 
                                         un_norm_hgvs_genomic, vm, hn, rhn, 
-                                        genome_build, hdp, hp, sf, hgvs_version)
+                                        genome_build, hdp, hp, sf, hgvs_version, vfo)
 
     return checked
     

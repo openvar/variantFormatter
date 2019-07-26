@@ -8,7 +8,6 @@ import hgvs.exceptions
 import hgvs.assemblymapper
 import hgvs.variantmapper
 import VariantFormatter
-import VariantFormatter.variantanalyser.functions as va_func
 
 # VV
 import VariantValidator
@@ -33,7 +32,7 @@ hgvs <= 1.1.3
 """
 
 def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, 
-                        hn, reverse_normalizer, primary_assembly, hdp, hp, sf, hgvs_version):
+                        hn, reverse_normalizer, primary_assembly, hdp, hp, sf, hgvs_version, vfo):
 
     # Not required in these instances
     if re.match('ENST', hgvs_tx.ac) or (StrictVersion(str(hgvs_version)) > 
@@ -41,7 +40,7 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
         
         # Push to absolute position
         normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer,
-                                             hdp, vm)
+                                             hdp, vm, vfo)
         hgvs_tx_returns = [normalized_tx, False, None, None, None]
 
     else:
@@ -50,7 +49,7 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
         gap_compensation = gap_black_list(gene_symbol)
         if gap_compensation is False:
             normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, 
-                                                reverse_normalizer, hdp, vm)
+                                                reverse_normalizer, hdp, vm, vfo)
             hgvs_tx_returns = [normalized_tx, False, None, None, None]
         else:
             # At this stage, we know that:
@@ -62,7 +61,7 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
                                                                 vm, hn, 
                                                                 reverse_normalizer,
                                                                 primary_assembly,
-                                                                hdp, hp, sf)
+                                                                hdp, hp, sf, vfo)
             # except Exception as e:
             #     import sys
             #     import traceback
@@ -73,7 +72,7 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
 
             if gap_compensated_tx[1] is False:
                 refresh_hgvs_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
-                                                reverse_normalizer, hdp, vm)
+                                                reverse_normalizer, hdp, vm, vfo)
                 gap_compensated_tx[0] = refresh_hgvs_tx                                         
             hgvs_tx_returns = gap_compensated_tx
                         
@@ -95,7 +94,7 @@ Is only activated if the g_to_t_compensation_code IS NOT USED!
 """
 
 
-def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm):
+def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm, vfo):
     
     # set required variables
     tx_id = hgvs_tx.ac
@@ -106,7 +105,7 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm):
     rhn = reverse_normalizer
 
     # Obtain the orientation of the transcript wrt selected genomic accession
-    exon_alignments = hdp.get_tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
+    exon_alignments = vfo.tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
     orientation = int(exon_alignments[0]['alt_strand'])
     # Normalize the genomic variant 5 prime if antisense or 3 prime if sense
     if orientation == -1:
@@ -143,7 +142,7 @@ Also requres a hgvs_genomic and tx id
 """
                         
 def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn, 
-                                reverse_normalizer, primary_assembly, hdp, hp, sf):
+                                reverse_normalizer, primary_assembly, hdp, hp, sf, vfo):
 
     # Ensure hgvs_tx is good to go
     try:
@@ -218,7 +217,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
             c.posedit.edit.alt = c.posedit.edit.alt.upper()
         except Exception:
             pass
-        stash_input = va_func.myevm_t_to_g(c, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_vm, utilise_gap_code)
+        stash_input = vfo.myevm_t_to_g(c, no_norm_evm, primary_assembly, hn)
     if re.match('NC_', str(stash_input)) or re.match('NT_', str(stash_input)) or re.match('NW_',
                                                                                           str(
                                                                                                   stash_input)):
@@ -260,8 +259,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
     saved_hgvs_coding = hgvs_tx
 
     # Get orientation of the gene wrt genome and a list of exons mapped to the genome
-    ori = va_func.tx_exons(tx_ac=saved_hgvs_coding.ac, alt_ac=hgvs_genomic_5pr.ac,
-                           alt_aln_method=alt_aln_method, hdp=hdp)
+    ori = vfo.tx_exons(saved_hgvs_coding.ac, hgvs_genomic.ac, alt_aln_method)
     orientation = int(ori[0]['alt_strand'])
     intronic_variant = 'false'
 
@@ -475,7 +473,8 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                 else:
                     test_tx_var = rn_tx_hgvs_not_delins
                 # re-make genomic and tx
-                hgvs_not_delins = va_func.myevm_t_to_g(test_tx_var, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_vm, utilise_gap_code)
+                hgvs_not_delins = vfo.myevm_t_to_g(test_tx_var, no_norm_evm, primary_assembly, hn)
+
                 rn_tx_hgvs_not_delins = no_norm_evm.g_to_n(hgvs_not_delins,
                                                            str(saved_hgvs_coding.ac))
             elif re.search('\+', str(rn_tx_hgvs_not_delins.posedit.pos.start)):
@@ -487,12 +486,10 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                 else:
                     test_tx_var = rn_tx_hgvs_not_delins
                 # re-make genomic and tx
-                hgvs_not_delins = va_func.myevm_t_to_g(test_tx_var, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_vm, utilise_gap_code)
+                hgvs_not_delins = vfo.myevm_t_to_g(test_tx_var, no_norm_evm, primary_assembly, hn)
                 rn_tx_hgvs_not_delins = no_norm_evm.g_to_n(hgvs_not_delins,
                                                            str(saved_hgvs_coding.ac))
                 rn_tx_hgvs_not_delins.posedit.pos.start.offset = 0
-            #                                     else:
-            #                                         pass
 
             # Check for -ve base and adjust
             elif re.search('\-', str(rn_tx_hgvs_not_delins.posedit.pos.end)) and re.search('\-',
@@ -522,7 +519,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                 else:
                     test_tx_var = rn_tx_hgvs_not_delins
                 # re-make genomic and tx
-                hgvs_not_delins = va_func.myevm_t_to_g(test_tx_var, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_vm, utilise_gap_code)
+                hgvs_not_delins = vfo.myevm_t_to_g(test_tx_var, no_norm_evm, primary_assembly, hn)
                 rn_tx_hgvs_not_delins = no_norm_evm.g_to_n(hgvs_not_delins,
                                                            str(saved_hgvs_coding.ac))
             elif re.search('\-', str(rn_tx_hgvs_not_delins.posedit.pos.start)):
@@ -535,7 +532,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                 else:
                     test_tx_var = rn_tx_hgvs_not_delins
                 # re-make genomic and tx
-                hgvs_not_delins = va_func.myevm_t_to_g(test_tx_var, hdp, no_norm_evm, primary_assembly, vm, hp, hn, sf, nr_vm, utilise_gap_code)
+                hgvs_not_delins = vfo.myevm_t_to_g(test_tx_var, no_norm_evm, primary_assembly, hn)
                 rn_tx_hgvs_not_delins = no_norm_evm.g_to_n(hgvs_not_delins,
                                                            str(saved_hgvs_coding.ac))
                 rn_tx_hgvs_not_delins.posedit.pos.start.offset = 0
@@ -633,13 +630,13 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                 try:
                     analyse_gap.posedit.edit.alt = ''
                 except AttributeError:
-                    pass                
+                    pass
                 my_g_gap_v = vm.t_to_g(analyse_gap, hgvs_genomic_5pr.ac)
                 g_gap = my_g_gap_v.posedit.pos.end.base - my_g_gap_v.posedit.pos.start.base + 1
                 my_t_gap_v = vm.g_to_t(my_g_gap_v, analyse_gap.ac)
                 t_gap = my_t_gap_v.posedit.pos.end.base - my_t_gap_v.posedit.pos.start.base
                 disparity_deletion_in[1] = str(g_gap - t_gap - 1)
-            
+
             gap_position = ''
             gapped_alignment_warning = 'The displayed variants may be artefacts of aligning ' + tx_hgvs_not_delins.ac + ' with genome build ' + primary_assembly
 
