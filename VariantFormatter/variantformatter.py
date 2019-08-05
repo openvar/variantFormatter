@@ -177,8 +177,9 @@ class FormatVariant(object):
         # Add transcript and protein data
         prelim_transcript_descriptions = {}
         transcript_list = []
-        
-        # Transcripts specified        
+
+
+        # Transcripts specified
         if self.specify_transcripts is not None:
             trans_list = str(self.specify_transcripts).split('|')
             for tx in trans_list:
@@ -187,7 +188,7 @@ class FormatVariant(object):
         # No transcripts specified
         else:
             transcript_list = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model, self.vfo)
-            
+
         # Create transcript level descriptions
         for tx_alignment_data in transcript_list:
             tx_id = tx_alignment_data[0]
@@ -217,7 +218,7 @@ class FormatVariant(object):
                 am_i_gapped['hgvs_protein_tlc'] = None
                 am_i_gapped['hgvs_protein_slc'] = None                          
             
-            else:   
+            else:
                 if hgvs_transcript_dict['error'] == '':
                     hgvs_transcript_dict['error'] = None
 

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 # Import python modules
-from distutils.version import StrictVersion
+# from distutils.version import StrictVersion
 import re
 import copy
-import hgvs.exceptions
-import hgvs.assemblymapper
-import hgvs.variantmapper
+import vvhgvs.exceptions
+import vvhgvs.assemblymapper
+import vvhgvs.variantmapper
 import VariantFormatter
 
 # VV
@@ -35,8 +35,7 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
                         hn, reverse_normalizer, primary_assembly, hdp, hp, sf, hgvs_version, vfo):
 
     # Not required in these instances
-    if re.match('ENST', hgvs_tx.ac) or (StrictVersion(str(hgvs_version)) > 
-                    StrictVersion('1.1.3') is True):
+    if re.match('ENST', hgvs_tx.ac): # or (StrictVersion(str(hgvs_version)) > StrictVersion('1.1.3') is True):
         
         # Push to absolute position
         normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer,
@@ -116,14 +115,14 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm, vfo)
     print('Try 1')
     try:
         hgvs_tx = vm.g_to_t(hgvs_genomic, hgvs_tx.ac)
-    except hgvs.exceptions.HGVSError as e:
+    except vvhgvs.exceptions.HGVSError as e:
         print('Error area 1')
         print(e)
         pass
     print('Try 2')
     try:
         hgvs_tx = hn.normalize(hgvs_tx)
-    except hgvs.exceptions.HGVSError as e:
+    except vvhgvs.exceptions.HGVSError as e:
         print('Error area 2')
         print(e)
         pass
@@ -147,7 +146,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
     # Ensure hgvs_tx is good to go
     try:
         hn.normalize(hgvs_tx)
-    except hgvs.exceptions.HGVSInvalidVariantError as e:
+    except vvhgvs.exceptions.HGVSInvalidVariantError as e:
         if 'insertion length must be 1' in str(e):
             hgvs_tx_anew = '%s:%s.%sdelins%s' % (hgvs_tx.ac, hgvs_tx.type, str(hgvs_tx.posedit.pos), hgvs_tx.posedit.edit.alt)
             hgvs_tx = hp.parse_hgvs_variant(hgvs_tx_anew)
@@ -158,20 +157,20 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
 
     # Create mappers: has to be inline because requires primary_assembly and alt_aln_method
     alt_aln_method = 'splign'
-    no_norm_evm = hgvs.assemblymapper.AssemblyMapper(hdp,
+    no_norm_evm = vvhgvs.assemblymapper.AssemblyMapper(hdp,
                                                      assembly_name=primary_assembly,
                                                      alt_aln_method=alt_aln_method, # Only RefSeq should be here!!!
                                                      normalize=False,
                                                      replace_reference=True
                                                      )
-    evm = hgvs.assemblymapper.AssemblyMapper(hdp,
+    evm = vvhgvs.assemblymapper.AssemblyMapper(hdp,
                                                      assembly_name=primary_assembly,
                                                      alt_aln_method=alt_aln_method, # Only RefSeq should be here!!!
                                                      normalize=True,
                                                      replace_reference=True
                                                      )
 
-    nr_vm = hgvs.variantmapper.VariantMapper(hdp, replace_reference=False)
+    nr_vm = vvhgvs.variantmapper.VariantMapper(hdp, replace_reference=False)
 
     utilise_gap_code = True
     automap = ''
@@ -272,7 +271,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
         # Map to the transcript ant test for movement
         try:
             hgvs_seek_var = evm.g_to_t(query_genomic, saved_hgvs_coding.ac)
-        except hgvs.exceptions.HGVSError as e:
+        except vvhgvs.exceptions.HGVSError as e:
             hgvs_seek_var = saved_hgvs_coding
         else:
             seek_var = str(hgvs_seek_var)
@@ -294,7 +293,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
     # Map to the transcript and test for movement
     try:
         hgvs_seek_var = evm.g_to_t(query_genomic, saved_hgvs_coding.ac)
-    except hgvs.exceptions.HGVSError as e:
+    except vvhgvs.exceptions.HGVSError as e:
         hgvs_seek_var = saved_hgvs_coding
     else:
         #seek_var = str(hgvs_seek_var)
@@ -309,7 +308,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
 
     try:
         intron_test = hn.normalize(hgvs_seek_var)
-    except hgvs.exceptions.HGVSUnsupportedOperationError as e:
+    except vvhgvs.exceptions.HGVSUnsupportedOperationError as e:
         error = str(e)
         if re.match('Normalization of intronic variants is not supported', error) or re.match(
                 'Unsupported normalization of variants spanning the exon-intron boundary',
@@ -440,9 +439,9 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
 
             try:
                 tx_hgvs_not_delins = no_norm_evm.g_to_n(hgvs_not_delins, saved_hgvs_coding.ac)
-            except hgvs.exceptions.HGVSInvalidIntervalError:
+            except vvhgvs.exceptions.HGVSInvalidIntervalError:
                 tx_hgvs_not_delins = no_norm_evm.g_to_n(hgvs_genomic_5pr, saved_hgvs_coding.ac)
-            except hgvs.exceptions.HGVSError:
+            except vvhgvs.exceptions.HGVSError:
                 if str(e) == 'start or end or both are beyond the bounds of transcript record':
                     tx_hgvs_not_delins = saved_hgvs_coding
 
@@ -587,7 +586,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                 disparity_deletion_in = ['false', 'false']
         try:
             hn.normalize(tx_hgvs_not_delins)
-        except hgvs.exceptions.HGVSUnsupportedOperationError as e:
+        except vvhgvs.exceptions.HGVSUnsupportedOperationError as e:
             error = str(e)
             if re.match('Normalization of intronic variants is not supported',
                         error) or re.match(
@@ -619,7 +618,7 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                 analyse_gap = copy.deepcopy(tx_hgvs_not_delins)
                 try:
                     analyse_gap = vm.n_to_c(analyse_gap)
-                except hgvs.exceptions.HGVSError:
+                except vvhgvs.exceptions.HGVSError:
                     pass
                 analyse_gap.posedit.pos.start.offset = 0
                 analyse_gap.posedit.pos.end.offset = 0
@@ -808,9 +807,9 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
                             tx_hgvs_not_delins = c2
                             try:
                                 tx_hgvs_not_delins = vm.c_to_n(tx_hgvs_not_delins)
-                            except hgvs.exceptions.HGVSError:
+                            except vvhgvs.exceptions.HGVSError:
                                 pass
-                    except hgvs.exceptions.HGVSInvalidVariantError:
+                    except vvhgvs.exceptions.HGVSInvalidVariantError:
                         pass
 
                 if re.search('\+', str(tx_hgvs_not_delins.posedit.pos.start)) and not re.search(

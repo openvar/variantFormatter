@@ -23,12 +23,12 @@ import os
 import copy
 
 # Import hgvs modules
-import hgvs.parser
-import hgvs.variantmapper
-import hgvs.exceptions
-import hgvs.normalizer
-import hgvs.validator
-import hgvs.sequencevariant
+import vvhgvs.parser
+import vvhgvs.variantmapper
+import vvhgvs.exceptions
+import vvhgvs.normalizer
+import vvhgvs.validator
+import vvhgvs.sequencevariant
 
 # import other required modules
 from Bio.Seq import Seq
@@ -95,7 +95,7 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, vfo):
                 # validate the reference
                 try:
                     vfo.vr.validate(hgvs_genomic)
-                except hgvs.exceptions.HGVSError as e:
+                except vvhgvs.exceptions.HGVSError as e:
                     vcf_to_hgvs_genomic['error'] = str(e)
                 else:
                     # Normalize the description to its most 3 prime position and apply the correct HGVS grammer
@@ -130,7 +130,7 @@ def format_hgvs_genomic(hgvs_genomic, vfo):
     # Simple check of the format
     try:
         vfo.vr.validate(hgvs_genomic)
-    except hgvs.exceptions.HGVSError as e:
+    except vvhgvs.exceptions.HGVSError as e:
         format_hgvs_genomic['error'] = str(e)
     else:
         # Normalize the description to its most 3 prime position and apply the correct HGVS grammer
@@ -178,19 +178,19 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
         # directly map from the normalized genomic variant to the transcript variant
         try:
             hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id)
-        except hgvs.exceptions.HGVSError as e:
+        except vvhgvs.exceptions.HGVSError as e:
             hgvs_genomic_to_hgvs_transcript['error'] = str(e)
         else:            
             # Ensure complete normalization
             try:
                 hgvs_tx = hn.normalize(hgvs_tx)
-            except hgvs.exceptions.HGVSError as e:
+            except vvhgvs.exceptions.HGVSError as e:
                 pass # No restorative action required. Suspected intronic variant
             
             hgvs_genomic_to_hgvs_transcript['hgvs_transcript'] = hgvs_tx
             try:
                 hgvs_genomic_to_hgvs_transcript['ref_bases'] = hgvs_tx.posedit.edit.ref
-            except hgvs.exceptions.HGVSError:
+            except vvhgvs.exceptions.HGVSError:
                 if hgvs_tx.type == 'c':
                     hgvs_tx = vfo.vm.c_to_n(hgvs_t)
                 if hgvs_tx.posedit.pos.start.offset == 0 and hgvs_tx.posedit.pos.end.offset == 0:
@@ -224,7 +224,7 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, vfo):
     
     
     # Create vfo.vm
-    evm = hgvs.assemblymapper.AssemblyMapper(vfo.hdp,
+    evm = vvhgvs.assemblymapper.AssemblyMapper(vfo.hdp,
                                              assembly_name=genome_build,
                                              alt_aln_method=alt_aln_method, # Only RefSeq should be here!!!
                                              normalize=True,
@@ -244,11 +244,16 @@ Return all aligned transcripts for a given genomic hgvs object
 
 def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
     tx_list = []
-    
+
     if transcript_model == 'ensembl' or transcript_model == 'all':
         enst_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base - 1,
                                           hgvs_genomic.posedit.pos.end.base)
         
+        # Transcript edge antisense!
+        if enst_list == []:
+            enst_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base,
+                                                  hgvs_genomic.posedit.pos.end.base - 1)
+
         # Remove transcripts with incomplete identifiers
         cp_enst_list = []
         for et in enst_list:
@@ -260,6 +265,12 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
     if transcript_model == 'refseq' or transcript_model == 'all':   
         refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
                                             hgvs_genomic.posedit.pos.end.base)
+
+        # Transcript edge antisense! - If doesn't map, will be weeded out downstream!
+        if refseq_list == []:
+            refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base,
+                                            hgvs_genomic.posedit.pos.end.base - 1)
+
         tx_list = tx_list + refseq_list
         
     return tx_list
