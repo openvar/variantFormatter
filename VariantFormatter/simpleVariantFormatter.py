@@ -16,7 +16,7 @@ import VariantFormatter.variantformatter as vf
 vfo = VariantValidator.Validator()
 
 # Collect metadata
-metadata = vfo.my_config
+metadata = vfo.my_config()
 
 def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False):
     is_a_list = type(batch_input) is list
