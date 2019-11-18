@@ -5,7 +5,7 @@ import warnings
 # Pull in use_scm_version=True enabled version number
 _is_released_version = False
 try:
-    __version__ = pkg_resources.get_distribution("rest_VariantValidator").version
+    __version__ = pkg_resources.get_distribution("VariantFormatter").version
     if re.match(r"^\d+\.\d+\.\d+$", __version__) is not None:
         _is_released_version = True
 except pkg_resources.DistributionNotFound as e:

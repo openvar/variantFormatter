@@ -8,7 +8,6 @@ The Initialization object is used by FormatVariant
 The FormatVariant object contains all HGVS descriptions available for a given genomic variant, g_to_p
 """
 
-import os
 import re
 import collections
 import VariantValidator
