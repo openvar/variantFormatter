@@ -73,14 +73,11 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
 
     # Add metadata
     formatted_variants['metadata'] = metadata
-
-
     return formatted_variants
 
 
-
 # <LICENSE>
-# Copyright (C) 2019  Peter Causey-Freeman, University of Leicester
+# Copyright (C) 2019 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as

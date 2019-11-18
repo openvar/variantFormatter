@@ -5,12 +5,13 @@ from setuptools import setup, find_packages
 
 setup(
     name='VariantFormatter',
-    version=open('VERSION.txt').read(),
     description='Accurate conversion of Pseudo VCF variants into the HGVS format and mapping between reference sequences',
     long_description=open('README.txt').read(),
     url='https://github.com/openvar/variantFormatter',
-    author='Peter J. Causey-Freeman',
-    author_email='admin@variantvalidator.org',
+    use_scm_version=True,
+    zip_safe=True,
+    author="VariantValidator Contributors",
+    author_email = 'admin@variantvalidator.org',
     packages=find_packages(),
     include_package_data=True,
     license="GNU AFFERO GENERAL PUBLIC LICENSE, Version 3 (https://www.gnu.org/licenses/agpl-3.0.en.html)",
@@ -29,40 +30,45 @@ setup(
         # Specify the Python versions
         'Programming Language :: Python',
     ],
- 
-    # What does your project relate to?
-      keywords=[
-          "bioinformatics",
-          "computational biology",
-          "genome variants",
-          "genome variation",
-          "genomic variants",
-          "genomic variation",
-          "genomics",
-          "hgvs",
-          "HGVS",
-          "sequencevariants",
-      ],
 
-	# List run-time dependencies here.  These will be installed by pip when the project is installed.
-    install_requires=[
-        "VariantValidator >= 1.0.0", # This will install BioPython
+    # What does your project relate to?
+    keywords=[
+        "bioinformatics",
+        "computational biology",
+        "genome variants",
+        "genome variation",
+        "genomic variants",
+        "genomic variation",
+        "genomics",
+        "hgvs",
+        "HGVS",
+        "sequencevariants",
     ],
+
+    # List run-time dependencies here.  These will be installed by pip when the project is installed.
+    install_requires=[
+        "VariantValidator @ git+https://github.com/openvar/variantValidator.git@master#egg=VariantValidator",
+    ],
+
+    setup_requires=[
+        "setuptools_scm",
+    ]
 )
 
 # <LICENSE>
-# Copyright (C) 2019  Peter Causey-Freeman, University of Manchester
-# 
+# Copyright (C) 2019 VariantValidator Contributors
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
 # published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Affero General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # </LICENSE>
+
