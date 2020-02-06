@@ -205,18 +205,17 @@ class FormatVariant(object):
                     hgvs_transcript_dict['error'] = None
 
                 am_i_gapped = {'hgvs_transcript': None,
-                                'position_lock': False,
-                                'gapped_alignment_warning': None,
-                                'corrective_action': None,
-                                'gap_position':None,
-                                'transcript_accession': tx_id,
-                                'error': hgvs_transcript_dict['error']  
-                                }               
-                
-                
+                               'position_lock': False,
+                               'gapped_alignment_warning': None,
+                               'corrective_action': None,
+                               'gap_position':None,
+                               'transcript_accession': tx_id,
+                               'error': hgvs_transcript_dict['error']
+                               }
+
                 # add to dictionary
                 am_i_gapped['hgvs_protein_tlc'] = None
-                am_i_gapped['hgvs_protein_slc'] = None                          
+                am_i_gapped['hgvs_protein_slc'] = None
             
             else:
                 if hgvs_transcript_dict['error'] == '':
@@ -227,12 +226,16 @@ class FormatVariant(object):
                     hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.vfo)
                     hgvs_protein_slc = formatter.single_letter_protein(hgvs_protein_tlc)
                 if am_i_gapped['hgvs_transcript'].type == 'n':
-                    hgvs_protein_tlc = 'non-coding'
-                    hgvs_protein_slc = 'non-coding'                 
+                    hgvs_protein_tlc = None
+                    hgvs_protein_slc = None
             
                 # add to dictionary
-                am_i_gapped['hgvs_protein_tlc'] = str(hgvs_protein_tlc)
-                am_i_gapped['hgvs_protein_slc'] = str(hgvs_protein_slc)
+                if hgvs_protein_tlc is not None:
+                    am_i_gapped['hgvs_protein_tlc'] = str(hgvs_protein_tlc)
+                    am_i_gapped['hgvs_protein_slc'] = str(hgvs_protein_slc)
+                else:
+                    am_i_gapped['hgvs_protein_tlc'] = hgvs_protein_tlc
+                    am_i_gapped['hgvs_protein_slc'] = hgvs_protein_slc
                 am_i_gapped['error'] = hgvs_transcript_dict['error']
                         
                 # Remove ref bases

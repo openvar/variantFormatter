@@ -31,7 +31,8 @@ RefSeq only
 hgvs <= 1.1.3
 """
 
-def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, 
+
+def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
                         hn, reverse_normalizer, primary_assembly, hdp, hp, sf, hgvs_version, vfo):
 
     # Not required in these instances
@@ -44,8 +45,9 @@ def compensate_g_to_t(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm,
 
     else:
         gene_symbol = hdp.get_tx_identity_info(hgvs_tx.ac)[6]
-        # Check the blaccklist
+        # Check the blacklist
         gap_compensation = gap_black_list(gene_symbol)
+        # print('Is gapped = ' + str(gap_compensation))
         if gap_compensation is False:
             normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, 
                                                 reverse_normalizer, hdp, vm, vfo)
@@ -112,19 +114,19 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm, vfo)
     else:
         hgvs_genomic = hn.normalize(hgvs_genomic)
 
-    print('Try 1')
+    # print('Try 1')
     try:
         hgvs_tx = vm.g_to_t(hgvs_genomic, hgvs_tx.ac)
     except vvhgvs.exceptions.HGVSError as e:
-        print('Error area 1')
-        print(e)
+        # print('Error area 1')
+        # print(e)
         pass
-    print('Try 2')
+    # print('Try 2')
     try:
         hgvs_tx = hn.normalize(hgvs_tx)
     except vvhgvs.exceptions.HGVSError as e:
-        print('Error area 2')
-        print(e)
+        # print('Error area 2')
+        # print(e)
         pass
         
     return hgvs_tx
@@ -150,6 +152,8 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
         if 'insertion length must be 1' in str(e):
             hgvs_tx_anew = '%s:%s.%sdelins%s' % (hgvs_tx.ac, hgvs_tx.type, str(hgvs_tx.posedit.pos), hgvs_tx.posedit.edit.alt)
             hgvs_tx = hp.parse_hgvs_variant(hgvs_tx_anew)
+    except vvhgvs.exceptions.HGVSUnsupportedOperationError:
+        pass
 
     """
     Gap aware projection from g. to c.

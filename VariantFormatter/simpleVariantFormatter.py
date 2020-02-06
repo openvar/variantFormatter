@@ -17,13 +17,14 @@ vfo = VariantValidator.Validator()
 # Collect metadata
 metadata = vfo.my_config()
 
+
 def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False):
     is_a_list = type(batch_input) is list
     if is_a_list is True:
         batch_list = batch_input
     else:
         batch_list = batch_input.split('|')
-    batch_vars = []
+    # batch_vars = []
     formatted_variants = collections.OrderedDict()
     for variant in batch_list:
         # remove external whitespace
@@ -34,7 +35,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         formatted_variants[variant] = collections.OrderedDict()
         formatted_variants[variant]['errors'] = []
         format_these = []
-        if re.match('chr[\w\d]+\-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+\-', variant)  or re.match('[\w\d]+:', variant):
+        if re.match('chr[\w\d]+\-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+\-', variant)\
+                or re.match('[\w\d]+:', variant):
             pseudo_vcf = variant
             if re.search(':', pseudo_vcf):
                 vcf_list = pseudo_vcf.split(':')
@@ -44,7 +46,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                 delimiter = '-'
             if len(vcf_list) != 4:
                 formatted_variants[variant]['errors'].append(
-                    '%s is an unsupported format: For assistance, submit variant description to https://rest.variantvalidator.org') % pseudo_vcf
+                    '%s is an unsupported format: For assistance, submit variant description to '
+                    'https://rest.variantvalidator.org') % pseudo_vcf
                 continue
             if ',' in str(vcf_list[-1]):
                 alts = vcf_list[-1].split(',')
@@ -58,7 +61,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                     format_these.append(variant)
                 except Exception:
                     formatted_variants[variant]['errors'].append(
-                        '%s is an unsupported format: For assistance, submit variant description to https://rest.variantvalidator.org') % variant
+                        '%s is an unsupported format: For assistance, submit variant description to '
+                        'https://rest.variantvalidator.org') % variant
                     continue
 
         else:
