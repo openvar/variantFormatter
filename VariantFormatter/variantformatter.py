@@ -59,7 +59,6 @@ class GenomicDescriptions(object):
         self.gen_error = gen_error
 
     
-
 # Create variantformatter object
 class FormatVariant(object):
     """
@@ -70,7 +69,8 @@ class FormatVariant(object):
     transcript and protein level descriptions - includes gap checking!    
     """
     # Initialise and add initialisation data to the object
-    def __init__(self, variant_description, genome_build, vfo, transcript_model=None, specify_transcripts=None, checkOnly=False):
+    def __init__(self, variant_description, genome_build, vfo, transcript_model=None, specify_transcripts=None,
+                 checkOnly=False):
         
         self.variant_description = variant_description
         self.vfo = vfo
@@ -221,13 +221,20 @@ class FormatVariant(object):
                 if hgvs_transcript_dict['error'] == '':
                     hgvs_transcript_dict['error'] = None
 
-                # map to Protein
-                if am_i_gapped['hgvs_transcript'].type == 'c':
-                    hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.vfo)
-                    hgvs_protein_slc = formatter.single_letter_protein(hgvs_protein_tlc)
-                if am_i_gapped['hgvs_transcript'].type == 'n':
+                # Adds LOVD requested to transcript level only validation to checkOnly. Will not produce p.
+                if "tx" in str(checkOnly):
                     hgvs_protein_tlc = None
                     hgvs_protein_slc = None
+
+                # Standard checkOnly will produce protein
+                else:
+                    # map to Protein
+                    if am_i_gapped['hgvs_transcript'].type == 'c':
+                        hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.vfo)
+                        hgvs_protein_slc = formatter.single_letter_protein(hgvs_protein_tlc)
+                    if am_i_gapped['hgvs_transcript'].type == 'n':
+                        hgvs_protein_tlc = None
+                        hgvs_protein_slc = None
             
                 # add to dictionary
                 if hgvs_protein_tlc is not None:

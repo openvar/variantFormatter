@@ -11,11 +11,13 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 import re
 import collections
 import VariantValidator
+import VariantFormatter
 import VariantFormatter.variantformatter as vf
 vfo = VariantValidator.Validator()
 
 # Collect metadata
 metadata = vfo.my_config()
+metadata['variantformatter_version'] = VariantFormatter.__version__
 
 
 def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False):
