@@ -21,6 +21,9 @@ metadata['variantformatter_version'] = VariantFormatter.__version__
 
 
 def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False):
+    # Set select_transcripts == 'all' to None
+    if specify_transcripts == 'all':
+        specify_transcripts = None
     is_a_list = type(batch_input) is list
     if is_a_list is True:
         batch_list = batch_input
