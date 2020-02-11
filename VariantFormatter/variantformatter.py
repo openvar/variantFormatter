@@ -72,6 +72,8 @@ class FormatVariant(object):
         
         self.variant_description = variant_description
         self.vfo = vfo
+        # Add warning level
+        self.warning_level = None
         
         if genome_build not in ['GRCh37', 'GRCh38', 'hg19', 'hg38']:
             p_vcf = None
@@ -81,6 +83,7 @@ class FormatVariant(object):
             gen_error = "genome_build must be one of: 'GRCh37'; 'GRCh38'; 'hg19'; 'hg38'"
             gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
             self.genomic_descriptions = gds
+            self.warning_level = 'genomic_variant_warning'
             return
         else:
             self.genome_build = genome_build
@@ -95,6 +98,7 @@ class FormatVariant(object):
             gen_error = "transcript_model must be one of: 'ensembl'; 'refseq'; 'all'"
             gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
             self.genomic_descriptions = gds
+            self.warning_level = 'genomic_variant_warning'
             return
         else:
             self.transcript_model = transcript_model
@@ -113,6 +117,7 @@ class FormatVariant(object):
                 gen_error = str(e)
                 gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
                 self.genomic_descriptions = gds
+                self.warning_level = 'genomic_variant_warning'
                 return
             try:
                 vcf_dictionary = formatter.hgvs_genomic2vcf(hgvs_genomic, self.genome_build, self.vfo)
@@ -133,6 +138,7 @@ class FormatVariant(object):
                     gen_error = genomic_level['error']
                     gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
                     self.genomic_descriptions = gds
+                    self.warning_level = 'genomic_variant_warning'
                     return
                 g_hgvs = genomic_level['hgvs_genomic']
                 un_norm_hgvs = genomic_level['un_normalized_hgvs_genomic']
@@ -154,6 +160,7 @@ class FormatVariant(object):
                     gen_error = genomic_level['error']
                     gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
                     self.genomic_descriptions = gds
+                    self.warning_level = 'genomic_variant_warning'
                     return
                 p_vcf = self.variant_description
                 g_hgvs = genomic_level['hgvs_genomic']
@@ -162,7 +169,8 @@ class FormatVariant(object):
         
         # Not recognised
         else:
-            raise variableError('Variant description ' + self.variant_description + ' is not in a supported format') 
+            self.warning_level = 'submission_warning'
+            raise variableError('Variant description ' + self.variant_description + ' is not in a supported format')
         
         # Create genomic_descriptions object
         gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=None,
@@ -205,6 +213,7 @@ class FormatVariant(object):
                 # Error detection prime location!
                 # print("Oh dear")
                 # print(e)
+                self.warning_level = 'porcessing_error'
                 if hgvs_transcript_dict['error'] == '':
                     hgvs_transcript_dict['error'] = None
 
@@ -278,6 +287,7 @@ class FormatVariant(object):
         bring_order['g_hgvs'] = self.genomic_descriptions.g_hgvs # Is the removed ref version!
         bring_order['selected_build'] = self.genomic_descriptions.selected_build
         bring_order['genomic_variant_error'] = self.genomic_descriptions.gen_error
+        # bring_order['warning_level'] = self.warning_level
         try:
             if self.t_and_p_descriptions == {}:
                 bring_order['hgvs_t_and_p'] = None

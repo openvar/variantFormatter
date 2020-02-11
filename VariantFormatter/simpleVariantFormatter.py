@@ -39,6 +39,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         variant = ''.join(wsl)
         formatted_variants[variant] = collections.OrderedDict()
         formatted_variants[variant]['errors'] = []
+        # Set validation warning flag
+        formatted_variants[variant]['flag'] = None
         format_these = []
         if re.match('chr[\w\d]+\-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+\-', variant)\
                 or re.match('[\w\d]+:', variant):
@@ -53,6 +55,7 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                 formatted_variants[variant]['errors'].append(
                     '%s is an unsupported format: For assistance, submit variant description to '
                     'https://rest.variantvalidator.org') % pseudo_vcf
+                formatted_variants[variant]['flag'] = 'submission_warning'
                 continue
             if ',' in str(vcf_list[-1]):
                 alts = vcf_list[-1].split(',')
@@ -68,6 +71,7 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                     formatted_variants[variant]['errors'].append(
                         '%s is an unsupported format: For assistance, submit variant description to '
                         'https://rest.variantvalidator.org') % variant
+                    formatted_variants[variant]['flag'] = 'submission_warning'
                     continue
 
         else:
@@ -77,6 +81,7 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         for needs_formatting in format_these:
             result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model, specify_transcripts, checkOnly)
             res = result.stucture_data()
+            formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
 
     # Add metadata
