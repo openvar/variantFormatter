@@ -17,10 +17,11 @@ import VariantValidator.modules.hgvs_utils as va_H2V
 """
 Internal function that returns True if gene symbol is blacklisted and False if not
 """
+
+
 def gap_black_list(symbol):
     gap_check = seq_data.gap_black_list(symbol)
     return gap_check
-
 
 
 """
@@ -142,7 +143,8 @@ Requires an un-normalized genomic variant for stashing if available
 Also requres a hgvs_genomic and tx id
 """
                         
-def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn, 
+
+def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn,
                                 reverse_normalizer, primary_assembly, hdp, hp, sf, vfo):
 
     # Ensure hgvs_tx is good to go
@@ -150,7 +152,8 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
         hn.normalize(hgvs_tx)
     except vvhgvs.exceptions.HGVSInvalidVariantError as e:
         if 'insertion length must be 1' in str(e):
-            hgvs_tx_anew = '%s:%s.%sdelins%s' % (hgvs_tx.ac, hgvs_tx.type, str(hgvs_tx.posedit.pos), hgvs_tx.posedit.edit.alt)
+            hgvs_tx_anew = '%s:%s.%sdelins%s' % (hgvs_tx.ac, hgvs_tx.type, str(hgvs_tx.posedit.pos),
+                                                 hgvs_tx.posedit.edit.alt)
             hgvs_tx = hp.parse_hgvs_variant(hgvs_tx_anew)
     except vvhgvs.exceptions.HGVSUnsupportedOperationError:
         pass
