@@ -148,8 +148,11 @@ def g_to_t_compensation_code(hgvs_tx, hgvs_genomic, un_norm_hgvs_genomic, vm, hn
         hn.normalize(hgvs_tx)
     except vvhgvs.exceptions.HGVSInvalidVariantError as e:
         if 'insertion length must be 1' in str(e):
-            hgvs_tx_anew = '%s:%s.%sdelins%s' % (hgvs_tx.ac, hgvs_tx.type, str(hgvs_tx.posedit.pos), hgvs_tx.posedit.edit.alt)
+            hgvs_tx_anew = '%s:%s.%sdelins%s' % (hgvs_tx.ac, hgvs_tx.type, str(hgvs_tx.posedit.pos),
+                                                 hgvs_tx.posedit.edit.alt)
             hgvs_tx = hp.parse_hgvs_variant(hgvs_tx_anew)
+    except vvhgvs.exceptions.HGVSUnsupportedOperationError:
+        pass
 
     """
     Gap aware projection from g. to c.
