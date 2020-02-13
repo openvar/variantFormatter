@@ -12,8 +12,11 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 import re
 import collections
 
-# import VV
+# import VF
 import VariantFormatter.formatter as formatter
+
+# import VV
+import VariantValidator.modules.liftover as lo
  
 # Custom Exceptions
 class vcf2hgvsError(Exception):
@@ -68,12 +71,13 @@ class FormatVariant(object):
     """
     # Initialise and add initialisation data to the object
     def __init__(self, variant_description, genome_build, vfo, transcript_model=None, specify_transcripts=None,
-                 checkOnly=False):
+                 checkOnly=False, liftover=False):
         
         self.variant_description = variant_description
         self.vfo = vfo
         # Add warning level
         self.warning_level = None
+        self.liftover = liftover
         
         if genome_build not in ['GRCh37', 'GRCh38', 'hg19', 'hg38']:
             p_vcf = None
@@ -272,7 +276,29 @@ class FormatVariant(object):
             order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
             order_my_tp['gap_statement'] = am_i_gapped['gap_position']
             order_my_tp['transcript_variant_error'] = am_i_gapped['error']
-            
+
+            # Add liftover information if requested
+            if self.liftover is not False:
+                if self.genomic_descriptions.selected_build == 'hg19' or self.genomic_descriptions.selected_build \
+                        == 'GRCh37':
+                    build_to = 'GRCh38'
+                elif self.genomic_descriptions.selected_build == 'hg38' or self.genomic_descriptions.selected_build \
+                        == 'GRCh38':
+                    build_to = 'GRCh37'
+                current_lift = lo.liftover(self.genomic_descriptions.g_hgvs,
+                                           self.genomic_descriptions.selected_build,
+                                           build_to,
+                                           vfo.splign_normalizer,
+                                           vfo.reverse_splign_normalizer,
+                                           None,
+                                           vfo,
+                                           specify_tx=tx_id,
+                                           liftover_level=self.liftover
+                                           )
+                order_my_tp['assembly_loci'] = current_lift
+
+
+
             # add to output dictionary keyed by tx_ac
             prelim_transcript_descriptions[tx_id] = order_my_tp
             
@@ -290,7 +316,26 @@ class FormatVariant(object):
         # bring_order['warning_level'] = self.warning_level
         try:
             if self.t_and_p_descriptions == {}:
-                bring_order['hgvs_t_and_p'] = None
+                bring_order['hgvs_t_and_p'] = {'intergenic': {'assembly_loci': None}}
+                if self.liftover is not False:
+                    if self.genomic_descriptions.selected_build == 'hg19' or self.genomic_descriptions.selected_build \
+                            == 'GRCh37':
+                        build_to = 'GRCh38'
+                    elif self.genomic_descriptions.selected_build == 'hg38' or self.genomic_descriptions.selected_build \
+                            == 'GRCh38':
+                        build_to = 'GRCh37'
+                    current_lift = lo.liftover(self.genomic_descriptions.g_hgvs,
+                                               self.genomic_descriptions.selected_build,
+                                               build_to,
+                                               self.vfo.splign_normalizer,
+                                               self.vfo.reverse_splign_normalizer,
+                                               None,
+                                               self.vfo,
+                                               specify_tx=False,
+                                               liftover_level=self.liftover
+                                               )
+                    bring_order['hgvs_t_and_p']['intergenic']['primary_assembly_loci'] = current_lift
+
             else:
                 bring_order['hgvs_t_and_p'] = self.t_and_p_descriptions
         except AttributeError:

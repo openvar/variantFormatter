@@ -20,7 +20,7 @@ metadata = vfo.my_config()
 metadata['variantformatter_version'] = VariantFormatter.__version__
 
 
-def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False):
+def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False, liftover=False):
     # Set select_transcripts == 'all' to None
     if specify_transcripts == 'all':
         specify_transcripts = None
@@ -79,7 +79,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
 
         # Processing
         for needs_formatting in format_these:
-            result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model, specify_transcripts, checkOnly)
+            result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model, specify_transcripts,
+                                      checkOnly, liftover)
             res = result.stucture_data()
             formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
