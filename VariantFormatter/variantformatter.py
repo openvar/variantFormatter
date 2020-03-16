@@ -11,6 +11,7 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 # import modules
 import re
 import collections
+import copy
 
 # import VF
 import VariantFormatter.formatter as formatter
@@ -295,9 +296,22 @@ class FormatVariant(object):
                                            specify_tx=tx_id,
                                            liftover_level=self.liftover
                                            )
-                order_my_tp['assembly_loci'] = current_lift
 
+                # Copy the liftover and split into primary and alt
+                cp_current_lift = copy.deepcopy(current_lift)
+                scaff_lift = copy.deepcopy(current_lift)
+                cp_scaff_lift = copy.deepcopy(current_lift)
+                for key, val in current_lift.items():
+                    for chr_type in val.keys():
+                        if not 'NC_' in chr_type:
+                            del cp_current_lift[key][chr_type]
+                for key, val in scaff_lift.items():
+                    for chr_type in val.keys():
+                        if 'NC_' in chr_type:
+                            del cp_scaff_lift[key][chr_type]
 
+                order_my_tp['primary_assembly_loci'] = cp_current_lift
+                order_my_tp['alt_genomic_loci'] = cp_scaff_lift
 
             # add to output dictionary keyed by tx_ac
             prelim_transcript_descriptions[tx_id] = order_my_tp
@@ -316,7 +330,8 @@ class FormatVariant(object):
         # bring_order['warning_level'] = self.warning_level
         try:
             if self.t_and_p_descriptions == {}:
-                bring_order['hgvs_t_and_p'] = {'intergenic': {'assembly_loci': None}}
+                bring_order['hgvs_t_and_p'] = {'intergenic': {'primary_assembly_loci': None}}
+                bring_order['hgvs_t_and_p'] = {'intergenic': {'alt_genomic_loci': None}}
                 if self.liftover is not False:
                     if self.genomic_descriptions.selected_build == 'hg19' or self.genomic_descriptions.selected_build \
                             == 'GRCh37':
@@ -334,7 +349,22 @@ class FormatVariant(object):
                                                specify_tx=False,
                                                liftover_level=self.liftover
                                                )
-                    bring_order['hgvs_t_and_p']['intergenic']['primary_assembly_loci'] = current_lift
+
+                    # Copy the liftover and split into primary and alt
+                    cp_current_lift = copy.deepcopy(current_lift)
+                    scaff_lift = copy.deepcopy(current_lift)
+                    cp_scaff_lift = copy.deepcopy(current_lift)
+                    for key, val in current_lift.items():
+                        for chr_type in val.keys():
+                            if not 'NC_' in chr_type:
+                                del cp_current_lift[key][chr_type]
+                    for key, val in scaff_lift.items():
+                        for chr_type in val.keys():
+                            if 'NC_' in chr_type:
+                                del cp_scaff_lift[key][chr_type]
+
+                    bring_order['hgvs_t_and_p']['intergenic']['primary_assembly_loci'] = cp_current_lift
+                    bring_order['hgvs_t_and_p']['intergenic']['alt_genomic_loci'] = cp_scaff_lift
 
             else:
                 bring_order['hgvs_t_and_p'] = self.t_and_p_descriptions
