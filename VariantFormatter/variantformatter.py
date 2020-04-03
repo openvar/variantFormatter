@@ -129,11 +129,33 @@ class FormatVariant(object):
                 vcf_list = [vcf_dictionary['grc_chr'], vcf_dictionary['pos'], vcf_dictionary['ref'], vcf_dictionary['alt']]
                 p_vcf = ':'.join(vcf_list)
             except Exception as e:
-                raise hgvs2VcfError(str(e))
+                if "Variant span is outside sequence bounds" in str(e):
+                    e = "The specified coordinate is outside the boundaries of reference sequence %s" % self.\
+                        variant_description.split(':')[0]
+                p_vcf = None
+                g_hgvs = None
+                hgvs_ref_bases = None
+                un_norm_hgvs = None
+                gen_error = str(e)
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+                self.genomic_descriptions = gds
+                self.warning_level = 'genomic_variant_warning'
+                return
             try:
                 genomic_level = formatter.vcf2hgvs_genomic(p_vcf, self.genome_build, self.vfo)
             except Exception as e:
-                raise vcf2hgvsError(str(e))
+                if "Variant span is outside sequence bounds" in str(e):
+                    e = "The specified coordinate is outside the boundaries of reference sequence %s" % self.\
+                        variant_description.split(':')[0]
+                p_vcf = None
+                g_hgvs = None
+                hgvs_ref_bases = None
+                un_norm_hgvs = None
+                gen_error = str(e)
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+                self.genomic_descriptions = gds
+                self.warning_level = 'genomic_variant_warning'
+                return
             else:
                 if genomic_level['error'] != '':
                     p_vcf = None

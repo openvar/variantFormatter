@@ -2,7 +2,7 @@
 
 """
 This module creates an initialization object.
-This object connects to the hgvs Python library and soosciated databses
+This object connects to the hgvs Python library and associated databases
 
 The Initialization object is used by FormatVariant
 The FormatVariant object contains all HGVS descriptions available for a given genomic variant, g_to_p
