@@ -12,6 +12,7 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 import re
 import collections
 import copy
+import vvhgvs.exceptions
 
 # import VF
 import VariantFormatter.formatter as formatter
@@ -284,6 +285,10 @@ class FormatVariant(object):
                             hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.vfo)
                             hgvs_protein_slc = formatter.single_letter_protein(hgvs_protein_tlc)
                         except NotImplementedError as e:
+                            hgvs_protein_tlc = None
+                            hgvs_protein_slc = None
+                            hgvs_transcript_dict['error'] = str(e)
+                        except vvhgvs.exceptions.HGVSDataNotAvailableError as e:
                             hgvs_protein_tlc = None
                             hgvs_protein_slc = None
                             hgvs_transcript_dict['error'] = str(e)
