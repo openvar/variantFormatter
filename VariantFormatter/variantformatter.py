@@ -228,6 +228,16 @@ class FormatVariant(object):
         else:
             transcript_list = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model, self.vfo)
 
+        # Remove malform IDs
+        cp_transcript_list = copy.copy(transcript_list)
+        transcript_list = []
+        for tx in cp_transcript_list:
+            # Known UTA ID malforms
+            if re.search('\/', tx[0]):
+                continue
+            else:
+                transcript_list.append(tx)
+
         # Create transcript level descriptions
         for tx_alignment_data in transcript_list:
             tx_id = tx_alignment_data[0]
@@ -270,8 +280,14 @@ class FormatVariant(object):
                 else:
                     # map to Protein
                     if am_i_gapped['hgvs_transcript'].type == 'c':
-                        hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.vfo)
-                        hgvs_protein_slc = formatter.single_letter_protein(hgvs_protein_tlc)
+                        try:
+                            hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.vfo)
+                            hgvs_protein_slc = formatter.single_letter_protein(hgvs_protein_tlc)
+                        except NotImplementedError as e:
+                            hgvs_protein_tlc = None
+                            hgvs_protein_slc = None
+                            hgvs_transcript_dict['error'] = str(e)
+
                     if am_i_gapped['hgvs_transcript'].type == 'n':
                         hgvs_protein_tlc = None
                         hgvs_protein_slc = None
