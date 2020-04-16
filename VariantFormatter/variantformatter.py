@@ -115,6 +115,7 @@ class FormatVariant(object):
         if re.match('N[CTW]_', self.variant_description):
             try:
                 hgvs_genomic = formatter.parse(self.variant_description, self.vfo)
+                vfo.vr.validate(hgvs_genomic)
             except Exception as e:
                 p_vcf = None
                 g_hgvs = None
