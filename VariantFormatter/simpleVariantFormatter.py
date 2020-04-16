@@ -2,7 +2,7 @@
 
 """
 This module creates an initialization object.
-This object connects to the hgvs Python library and soosciated databses
+This object connects to the hgvs Python library and associated databases
 
 The Initialization object is used by FormatVariant
 The FormatVariant object contains all HGVS descriptions available for a given genomic variant, g_to_p
@@ -11,19 +11,25 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 import re
 import collections
 import VariantValidator
+import VariantFormatter
 import VariantFormatter.variantformatter as vf
 vfo = VariantValidator.Validator()
 
 # Collect metadata
 metadata = vfo.my_config()
+metadata['variantformatter_version'] = VariantFormatter.__version__
 
-def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False):
+
+def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False, liftover=False):
+    # Set select_transcripts == 'all' to None
+    if specify_transcripts == 'all':
+        specify_transcripts = None
     is_a_list = type(batch_input) is list
     if is_a_list is True:
         batch_list = batch_input
     else:
         batch_list = batch_input.split('|')
-    batch_vars = []
+    # batch_vars = []
     formatted_variants = collections.OrderedDict()
     for variant in batch_list:
         # remove external whitespace
@@ -33,8 +39,11 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         variant = ''.join(wsl)
         formatted_variants[variant] = collections.OrderedDict()
         formatted_variants[variant]['errors'] = []
+        # Set validation warning flag
+        formatted_variants[variant]['flag'] = None
         format_these = []
-        if re.match('chr[\w\d]+\-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+\-', variant)  or re.match('[\w\d]+:', variant):
+        if re.match('chr[\w\d]+\-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+\-', variant)\
+                or re.match('[\w\d]+:', variant):
             pseudo_vcf = variant
             if re.search(':', pseudo_vcf):
                 vcf_list = pseudo_vcf.split(':')
@@ -44,7 +53,9 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                 delimiter = '-'
             if len(vcf_list) != 4:
                 formatted_variants[variant]['errors'].append(
-                    '%s is an unsupported format: For assistance, submit variant description to https://rest.variantvalidator.org') % pseudo_vcf
+                    '%s is an unsupported format: For assistance, submit variant description to '
+                    'https://rest.variantvalidator.org') % pseudo_vcf
+                formatted_variants[variant]['flag'] = 'submission_warning'
                 continue
             if ',' in str(vcf_list[-1]):
                 alts = vcf_list[-1].split(',')
@@ -58,7 +69,9 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                     format_these.append(variant)
                 except Exception:
                     formatted_variants[variant]['errors'].append(
-                        '%s is an unsupported format: For assistance, submit variant description to https://rest.variantvalidator.org') % variant
+                        '%s is an unsupported format: For assistance, submit variant description to '
+                        'https://rest.variantvalidator.org') % variant
+                    formatted_variants[variant]['flag'] = 'submission_warning'
                     continue
 
         else:
@@ -66,8 +79,10 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
 
         # Processing
         for needs_formatting in format_these:
-            result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model, specify_transcripts, checkOnly)
+            result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model, specify_transcripts,
+                                      checkOnly, liftover)
             res = result.stucture_data()
+            formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
 
     # Add metadata
