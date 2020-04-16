@@ -197,9 +197,16 @@ class FormatVariant(object):
         
         # Not recognised
         else:
+            p_vcf = None
+            g_hgvs = None
+            hgvs_ref_bases = None
+            un_norm_hgvs = None
+            gen_error = 'Variant description ' + self.variant_description + ' is not in a supported format'
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+            self.genomic_descriptions = gds
             self.warning_level = 'submission_warning'
-            raise variableError('Variant description ' + self.variant_description + ' is not in a supported format')
-        
+            return
+
         # Create genomic_descriptions object
         gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=None,
                                   genome_build=genome_build)
@@ -367,8 +374,9 @@ class FormatVariant(object):
         
         # Add the data to the ordered dictionary structure
         bring_order['p_vcf'] = self.genomic_descriptions.p_vcf
-        if 'NC_012920.1' in self.genomic_descriptions.g_hgvs or 'NC_001807.4' in self.genomic_descriptions.g_hgvs:
-            self.genomic_descriptions.g_hgvs = self.genomic_descriptions.g_hgvs.replace(':g.', ':m.')
+        if self.genomic_descriptions.g_hgvs is not None:
+            if 'NC_012920.1' in self.genomic_descriptions.g_hgvs or 'NC_001807.4' in self.genomic_descriptions.g_hgvs:
+                self.genomic_descriptions.g_hgvs = self.genomic_descriptions.g_hgvs.replace(':g.', ':m.')
         bring_order['g_hgvs'] = self.genomic_descriptions.g_hgvs # Is the removed ref version!
         bring_order['selected_build'] = self.genomic_descriptions.selected_build
         bring_order['genomic_variant_error'] = self.genomic_descriptions.gen_error
