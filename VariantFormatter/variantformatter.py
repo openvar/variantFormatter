@@ -259,7 +259,7 @@ class FormatVariant(object):
                 # Error detection prime location!
                 # print("Oh dear")
                 # print(e)
-                self.warning_level = 'porcessing_error'
+                self.warning_level = 'processing_error'
                 if hgvs_transcript_dict['error'] == '':
                     hgvs_transcript_dict['error'] = None
 
