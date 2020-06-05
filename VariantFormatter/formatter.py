@@ -19,8 +19,6 @@ A brief description is given above each function
 
 # Import Python modules
 import re
-import os
-import copy
 
 # Import hgvs modules
 import vvhgvs.parser
@@ -34,11 +32,8 @@ import vvhgvs.sequencevariant
 from Bio.Seq import Seq
 
 # Import VariantFormatter modules
-import VariantValidator
 import VariantValidator.modules.hgvs_utils as hgvs_utils
 import VariantValidator.modules.seq_data as chr_dict
-
-import VariantFormatter
 import VariantFormatter.gapGenes as gapGenes
 
 """
@@ -103,7 +98,9 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, vfo):
                     vfo.splign_normalizer.normalize(hgvs_genomic)
                     hgvs_genomic = vfo.splign_normalizer.normalize(hgvs_genomic)
                     vcf_to_hgvs_genomic['hgvs_genomic'] = hgvs_genomic
-                    vcf_to_hgvs_genomic['ref_bases'] = vfo.sf.fetch_seq(hgvs_genomic.ac, start_i=hgvs_genomic.posedit.pos.start.base - 1, end_i=hgvs_genomic.posedit.pos.end.base)
+                    vcf_to_hgvs_genomic['ref_bases'] = vfo.sf.fetch_seq(hgvs_genomic.ac,
+                                                                        start_i=hgvs_genomic.posedit.pos.start.base - 1,
+                                                                        end_i=hgvs_genomic.posedit.pos.end.base)
     return vcf_to_hgvs_genomic
 
 
@@ -192,7 +189,7 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
                 hgvs_genomic_to_hgvs_transcript['ref_bases'] = hgvs_tx.posedit.edit.ref
             except vvhgvs.exceptions.HGVSError:
                 if hgvs_tx.type == 'c':
-                    hgvs_tx = vfo.vm.c_to_n(hgvs_t)
+                    hgvs_tx = vfo.vm.c_to_n(hgvs_tx)
                 if hgvs_tx.posedit.pos.start.offset == 0 and hgvs_tx.posedit.pos.end.offset == 0:
                     hgvs_genomic_to_hgvs_transcript['ref_bases'] = vfo.sf.fetch_seq(hgvs_tx.ac, start_i=hgvs_tx.posedit.pos.start.base - 1, end_i=hgvs_tx.posedit.pos.end.base)
                 else:
@@ -266,13 +263,27 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
         refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
                                             hgvs_genomic.posedit.pos.end.base)
 
+        # Keeping these print statements because they enable us to check UTA alignment errors
+        # print('\nIn A')
+        # print(refseq_list)
+        # print(hgvs_genomic)
+        # print('end')
+
+
         # Transcript edge antisense! - If doesn't map, will be weeded out downstream!
         if refseq_list == []:
             refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base,
                                             hgvs_genomic.posedit.pos.end.base - 1)
 
         tx_list = tx_list + refseq_list
-        
+
+        # Keeping these print statements because they enable us to check UTA alignment errors
+        # print(['gene', 'tx', 'chr', 'aln', 'ori', 'exon', 'tx_st', 'tx_end', 'chr_st', 'chr_end', 'cigar'])
+        # for tx in tx_list:
+        #     exons = vfo.hdp.get_tx_exons(tx[0], tx[1], tx[3])
+        #     for e in exons:
+        #         print(e[0:11])
+
     return tx_list
 
 """
