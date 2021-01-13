@@ -46,9 +46,9 @@ setup(
     ],
 
     # List run-time dependencies here.  These will be installed by pip when the project is installed.
-    install_requires=[
-        "VariantValidator @ git+https://github.com/openvar/variantValidator.git@master#egg=VariantValidator",
-    ],
+    #install_requires=[
+    #    "VariantValidator @ git+https://github.com/openvar/variantValidator.git@master#egg=VariantValidator",
+    #],
 
     setup_requires=[
         "setuptools_scm",
