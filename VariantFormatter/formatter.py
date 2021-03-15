@@ -339,9 +339,14 @@ def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_buil
     hgvs_version = vfo.hgvsVersion
     
     # Check for gapping
-    checked = gapGenes.compensate_g_to_t(hgvs_transcript, hgvs_genomic, 
-                                        un_norm_hgvs_genomic, vm, hn, rhn, 
-                                        genome_build, hdp, hp, sf, hgvs_version, vfo)
+    checked = gapGenes.compensate_g_to_t(hgvs_transcript,
+                                         hgvs_genomic,
+                                         vm,
+                                         hn,
+                                         rhn,
+                                         genome_build,
+                                         hdp,
+                                         vfo)
 
     return checked
     

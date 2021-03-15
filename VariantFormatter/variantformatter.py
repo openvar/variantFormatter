@@ -257,8 +257,13 @@ class FormatVariant(object):
                 am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs, un_norm_hgvs, self.genome_build, self.vfo)
             except Exception as e:
                 # Error detection prime location!
-                # print("Oh dear")
-                # print(e)
+                # import sys
+                # import traceback
+                # exc_type, exc_value, last_traceback = sys.exc_info()
+                # te = traceback.format_exc()
+                # tbk = [str(exc_type), str(exc_value), str(te)]
+                # er = str('\n'.join(tbk))
+                # print(er)
                 self.warning_level = 'processing_error'
                 if hgvs_transcript_dict['error'] == '':
                     hgvs_transcript_dict['error'] = None
