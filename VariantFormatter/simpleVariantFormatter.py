@@ -17,7 +17,10 @@ vfo = VariantValidator.Validator()
 
 # Collect metadata
 metadata = vfo.my_config()
+print(metadata)
 metadata['variantformatter_version'] = VariantFormatter.__version__
+sr_root, sr_version = metadata['vvseqrepo_db'].split('/')[-2:]
+metadata['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
 
 
 def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False, liftover=False):
@@ -42,7 +45,7 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         # Set validation warning flag
         formatted_variants[variant]['flag'] = None
         format_these = []
-        if re.match('chr[\w\d]+\-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+\-', variant)\
+        if re.match('chr[\w\d]+-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+-', variant)\
                 or re.match('[\w\d]+:', variant):
             pseudo_vcf = variant
             if re.search(':', pseudo_vcf):
