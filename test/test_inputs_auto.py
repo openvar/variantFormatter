@@ -631,12 +631,12 @@ class TestVariantsAuto(object):
 		assert results['NC_000003.11:g.14561629_14561630insG']['g_hgvs'] == 'NC_000003.11:g.14561629dup'
 		assert results['NC_000003.11:g.14561629_14561630insG']['genomic_variant_error'] is None
 		assert 'NM_001080423.2' in results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p'].keys()
-		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.2']['t_hgvs'] == 'NM_001080423.2:c.1307_1311='
+		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.2']['t_hgvs'] == 'NM_001080423.2:c.1308_1311='
 		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.2']['p_hgvs_tlc'] == 'NP_001073892.2:p.(Arg436=)'
 		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.2']['p_hgvs_slc'] == 'NP_001073892.2:p.(R436=)'
 		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.2']['transcript_variant_error'] is None
 		assert 'NM_001080423.3' in results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p'].keys()
-		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.3']['t_hgvs'] == 'NM_001080423.3:c.1016_1020='
+		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.3']['t_hgvs'] == 'NM_001080423.3:c.1017_1020='
 		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.3']['p_hgvs_tlc'] == 'NP_001073892.3:p.(Arg339=)'
 		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.3']['p_hgvs_slc'] == 'NP_001073892.3:p.(R339=)'
 		assert results['NC_000003.11:g.14561629_14561630insG']['hgvs_t_and_p']['NM_001080423.3']['transcript_variant_error'] is None
@@ -885,12 +885,6 @@ class TestVariantsAuto(object):
 		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_001204317.1']['p_hgvs_tlc'] == 'NP_001191246.1:p.?'
 		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_001204317.1']['p_hgvs_slc'] == 'NP_001191246.1:p.?'
 		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_001204317.1']['transcript_variant_error'] is None
-		assert 'NM_000949.6' in results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p'].keys()
-		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_000949.6']['t_hgvs'] == 'NM_000949.6:c.*6528del'
-		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_000949.6']['p_hgvs_tlc'] == 'NP_000940.1:p.?'
-		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_000949.6']['p_hgvs_slc'] == 'NP_000940.1:p.?'
-		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_000949.6']['transcript_variant_error'] is None
-		assert 'NM_001204316.1' in results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p'].keys()
 		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_001204316.1']['t_hgvs'] == 'NM_001204316.1:c.1009+7383_1009+7384='
 		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_001204316.1']['p_hgvs_tlc'] == 'NP_001191245.1:p.?'
 		assert results['NC_000005.9:g.35058667_35058668AG=']['hgvs_t_and_p']['NM_001204316.1']['p_hgvs_slc'] == 'NP_001191245.1:p.?'
@@ -952,12 +946,12 @@ class TestVariantsAuto(object):
 		assert results['3-14561627-AG-AGG']['g_hgvs'] == 'NC_000003.11:g.14561629dup'
 		assert results['3-14561627-AG-AGG']['genomic_variant_error'] is None
 		assert 'NM_001080423.2' in results['3-14561627-AG-AGG']['hgvs_t_and_p'].keys()
-		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.2']['t_hgvs'] == 'NM_001080423.2:c.1307_1311='
+		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.2']['t_hgvs'] == 'NM_001080423.2:c.1308_1311='
 		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.2']['p_hgvs_tlc'] == 'NP_001073892.2:p.(Arg436=)'
 		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.2']['p_hgvs_slc'] == 'NP_001073892.2:p.(R436=)'
 		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.2']['transcript_variant_error'] is None
 		assert 'NM_001080423.3' in results['3-14561627-AG-AGG']['hgvs_t_and_p'].keys()
-		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.3']['t_hgvs'] == 'NM_001080423.3:c.1016_1020='
+		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.3']['t_hgvs'] == 'NM_001080423.3:c.1017_1020='
 		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.3']['p_hgvs_tlc'] == 'NP_001073892.3:p.(Arg339=)'
 		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.3']['p_hgvs_slc'] == 'NP_001073892.3:p.(R339=)'
 		assert results['3-14561627-AG-AGG']['hgvs_t_and_p']['NM_001080423.3']['transcript_variant_error'] is None
@@ -1275,7 +1269,7 @@ class TestVariantsAuto(object):
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204314.1']['p_hgvs_slc'] == 'NP_001191243.1:p.?'
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204314.1']['transcript_variant_error'] is None
 		assert 'NM_001204314.2' in results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p'].keys()
-		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204314.2']['t_hgvs'] == 'NM_001204314.2:c.*6528del'
+		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204314.2']['t_hgvs'] == 'NM_001204314.2:c.*6528_*6529='
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204314.2']['p_hgvs_tlc'] == 'NP_001191243.1:p.?'
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204314.2']['p_hgvs_slc'] == 'NP_001191243.1:p.?'
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204314.2']['transcript_variant_error'] is None
@@ -1290,7 +1284,7 @@ class TestVariantsAuto(object):
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204317.1']['p_hgvs_slc'] == 'NP_001191246.1:p.?'
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_001204317.1']['transcript_variant_error'] is None
 		assert 'NM_000949.6' in results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p'].keys()
-		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_000949.6']['t_hgvs'] == 'NM_000949.6:c.*6528del'
+		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_000949.6']['t_hgvs'] == 'NM_000949.6:c.*6528_*6529='
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_000949.6']['p_hgvs_tlc'] == 'NP_000940.1:p.?'
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_000949.6']['p_hgvs_slc'] == 'NP_000940.1:p.?'
 		assert results['NC_000005.9:g.35058665_35058666CA=']['hgvs_t_and_p']['NM_000949.6']['transcript_variant_error'] is None
@@ -1750,11 +1744,12 @@ class TestVariantsAuto(object):
 		assert results['1-145597475-GAAGT-G']['p_vcf'] == '1-145597475-GAAGT-G'
 		assert results['1-145597475-GAAGT-G']['g_hgvs'] == 'NC_000001.10:g.145597477_145597480del'
 		assert results['1-145597475-GAAGT-G']['genomic_variant_error'] is None
-		assert 'NM_006468.7' in results['1-145597475-GAAGT-G']['hgvs_t_and_p'].keys()
-		assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.7']['t_hgvs'] == "NM_006468.7:c.1070+35_1070+38del"
-		assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.7']['p_hgvs_tlc'] == "NP_006459.3:p.?"
-		assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.7']['p_hgvs_slc'] == "NP_006459.3:p.?"
-		assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.7']['transcript_variant_error'] is None
+		# Deprecated in VVTA
+		# assert 'NM_006468.7' in results['1-145597475-GAAGT-G']['hgvs_t_and_p'].keys()
+		# assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.7']['t_hgvs'] == "NM_006468.7:c.1070+35_1070+38del"
+		# assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.7']['p_hgvs_tlc'] == "NP_006459.3:p.?"
+		# assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.7']['p_hgvs_slc'] == "NP_006459.3:p.?"
+		# assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.7']['transcript_variant_error'] is None
 		assert 'NM_006468.6' in results['1-145597475-GAAGT-G']['hgvs_t_and_p'].keys()
 		assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.6']['t_hgvs'] == "NM_006468.6:c.1070+35_1070+38del"
 		assert results['1-145597475-GAAGT-G']['hgvs_t_and_p']['NM_006468.6']['p_hgvs_tlc'] == "NP_006459.3:p.?"
@@ -2071,11 +2066,12 @@ class TestVariantsAuto(object):
 		assert results['12-11023080-C-A']['p_vcf'] == '12-11023080-C-A'
 		assert results['12-11023080-C-A']['g_hgvs'] == 'NC_000012.11:g.11023080C>A'
 		assert results['12-11023080-C-A']['genomic_variant_error'] is None
-		assert 'NR_037918.2' in results['12-11023080-C-A']['hgvs_t_and_p'].keys()
-		assert results['12-11023080-C-A']['hgvs_t_and_p']['NR_037918.2']['t_hgvs'] == 'NR_037918.2:n.1184+11736G>T'
-		assert results['12-11023080-C-A']['hgvs_t_and_p']['NR_037918.2']['p_hgvs_tlc'] is None
-		assert results['12-11023080-C-A']['hgvs_t_and_p']['NR_037918.2']['p_hgvs_slc'] is None
-		assert results['12-11023080-C-A']['hgvs_t_and_p']['NR_037918.2']['transcript_variant_error'] is None
+		# Deprecated in VVTA
+		# assert 'NR_037918.2' in results['12-11023080-C-A']['hgvs_t_and_p'].keys()
+		# assert results['12-11023080-C-A']['hgvs_t_and_p']['NR_037918.2']['t_hgvs'] == 'NR_037918.2:n.1184+11736G>T'
+		# assert results['12-11023080-C-A']['hgvs_t_and_p']['NR_037918.2']['p_hgvs_tlc'] is None
+		# assert results['12-11023080-C-A']['hgvs_t_and_p']['NR_037918.2']['p_hgvs_slc'] is None
+		# assert results['12-11023080-C-A']['hgvs_t_and_p']['NR_037918.2']['transcript_variant_error'] is None
 
 
 	def test_variant91(self):
@@ -3605,17 +3601,18 @@ class TestVariantsAuto(object):
 		assert results['19-15291774-G-A']['hgvs_t_and_p']['NM_000435.2']['transcript_variant_error'] is None
 
 
-	def test_variant137(self):
-		variant = '19-15311794-A-G'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
-		results = results.stucture_data()
-		print(results)
-
-		assert '19-15311794-A-G' in results.keys()
-		assert results['19-15311794-A-G']['p_vcf'] == '19-15311794-A-G'
-		assert results['19-15311794-A-G']['g_hgvs'] == 'NC_000019.9:g.15311794A>G'
-		assert results['19-15311794-A-G']['genomic_variant_error'] is None
-		assert results['19-15311794-A-G']['hgvs_t_and_p'] == {'intergenic': {'alt_genomic_loci': None}}
+	# Test removed. No longer intergenic in VVTA
+	# def test_variant137(self):
+	# 	variant = '19-15311794-A-G'
+	# 	results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
+	# 	results = results.stucture_data()
+	# 	print(results)
+	#
+	# 	assert '19-15311794-A-G' in results.keys()
+	# 	assert results['19-15311794-A-G']['p_vcf'] == '19-15311794-A-G'
+	# 	assert results['19-15311794-A-G']['g_hgvs'] == 'NC_000019.9:g.15311794A>G'
+	# 	assert results['19-15311794-A-G']['genomic_variant_error'] is None
+	# 	assert results['19-15311794-A-G']['hgvs_t_and_p'] == {'intergenic': {'alt_genomic_loci': None}}
 
 
 	def test_variant138(self):
@@ -4678,8 +4675,8 @@ class TestVariantsAuto(object):
 		assert results['4-153332910-C-CAGG']['genomic_variant_error'] is None
 		assert 'NM_001349798.1' in results['4-153332910-C-CAGG']['hgvs_t_and_p'].keys()
 		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_001349798.1']['t_hgvs'] == 'NM_001349798.1:c.45_46insCCT'
-		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_001349798.1']['p_hgvs_tlc'] == 'NP_361014.1:p.(Thr15_Gly16insPro)'
-		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_001349798.1']['p_hgvs_slc'] == 'NP_361014.1:p.(T15_G16insP)'
+		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_001349798.1']['p_hgvs_tlc'] == 'NP_001336727.1:p.(Thr15_Gly16insPro)'
+		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_001349798.1']['p_hgvs_slc'] == 'NP_001336727.1:p.(T15_G16insP)'
 		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_001349798.1']['transcript_variant_error'] is None
 		assert 'NM_033632.3' in results['4-153332910-C-CAGG']['hgvs_t_and_p'].keys()
 		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_033632.3']['t_hgvs'] == 'NM_033632.3:c.45_46insCCT'
@@ -4697,18 +4694,18 @@ class TestVariantsAuto(object):
 		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_001257069.1']['p_hgvs_slc'] == 'NP_001243998.1:p.(T15_G16insP)'
 		assert results['4-153332910-C-CAGG']['hgvs_t_and_p']['NM_001257069.1']['transcript_variant_error'] is None
 
-
-	def test_variant158(self):
-		variant = '5-1295183-G-A'
-		results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
-		results = results.stucture_data()
-		print(results)
-
-		assert '5-1295183-G-A' in results.keys()
-		assert results['5-1295183-G-A']['p_vcf'] == '5-1295183-G-A'
-		assert results['5-1295183-G-A']['g_hgvs'] == 'NC_000005.9:g.1295183G>A'
-		assert results['5-1295183-G-A']['genomic_variant_error'] is None
-		assert results['5-1295183-G-A']['hgvs_t_and_p'] == {'intergenic': {'alt_genomic_loci': None}}
+	# Test removed. No longer intergenic in VVTA
+	# def test_variant158(self):
+	# 	variant = '5-1295183-G-A'
+	# 	results = vf.FormatVariant(variant, 'GRCh37', vfo,  'refseq', None)
+	# 	results = results.stucture_data()
+	# 	print(results)
+	#
+	# 	assert '5-1295183-G-A' in results.keys()
+	# 	assert results['5-1295183-G-A']['p_vcf'] == '5-1295183-G-A'
+	# 	assert results['5-1295183-G-A']['g_hgvs'] == 'NC_000005.9:g.1295183G>A'
+	# 	assert results['5-1295183-G-A']['genomic_variant_error'] is None
+	# 	assert results['5-1295183-G-A']['hgvs_t_and_p'] == {'intergenic': {'alt_genomic_loci': None}}
 
 
 	def test_variant159(self):
@@ -4842,11 +4839,12 @@ class TestVariantsAuto(object):
 		assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_001308122.1']['p_hgvs_tlc'] == 'NP_001295051.1:p.?'
 		assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_001308122.1']['p_hgvs_slc'] == 'NP_001295051.1:p.?'
 		assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_001308122.1']['transcript_variant_error'] is None
-		assert 'NM_003060.3' in results['5-131705587-CG-C']['hgvs_t_and_p'].keys()
-		assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_003060.3']['t_hgvs'] == 'NM_003060.3:c.-75del'
-		assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_003060.3']['p_hgvs_tlc'] == 'NP_003051.1:p.?'
-		assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_003060.3']['p_hgvs_slc'] == 'NP_003051.1:p.?'
-		assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_003060.3']['transcript_variant_error'] is None
+		# Transcript currently deprecated in VVTA
+		# assert 'NM_003060.3' in results['5-131705587-CG-C']['hgvs_t_and_p'].keys()
+		# assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_003060.3']['t_hgvs'] == 'NM_003060.3:c.-75del'
+		# assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_003060.3']['p_hgvs_tlc'] == 'NP_003051.1:p.?'
+		# assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_003060.3']['p_hgvs_slc'] == 'NP_003051.1:p.?'
+		# assert results['5-131705587-CG-C']['hgvs_t_and_p']['NM_003060.3']['transcript_variant_error'] is None
 
 
 	def test_variant163(self):
@@ -5231,11 +5229,12 @@ class TestVariantsAuto(object):
 		assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NM_004333.4']['p_hgvs_tlc'] == 'NP_004324.2:p.(Val600Arg)'
 		assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NM_004333.4']['p_hgvs_slc'] == 'NP_004324.2:p.(V600R)'
 		assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NM_004333.4']['transcript_variant_error'] is None
-		assert 'NR_148928.1' in results['7-140453136-AC-CT']['hgvs_t_and_p'].keys()
-		assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NR_148928.1']['t_hgvs'] == 'NR_148928.1:n.2896_2897delinsAG'
-		assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_tlc'] is None
-		assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_slc'] is None
-		assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NR_148928.1']['transcript_variant_error'] is None
+		# Test removed. Currently Deprecated in VVTA
+		# assert 'NR_148928.1' in results['7-140453136-AC-CT']['hgvs_t_and_p'].keys()
+		# assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NR_148928.1']['t_hgvs'] == 'NR_148928.1:n.2896_2897delinsAG'
+		# assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_tlc'] is None
+		# assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_slc'] is None
+		# assert results['7-140453136-AC-CT']['hgvs_t_and_p']['NR_148928.1']['transcript_variant_error'] is None
 
 
 	def test_variant175(self):
@@ -5263,11 +5262,12 @@ class TestVariantsAuto(object):
 		assert results['7-140453136-A-T']['hgvs_t_and_p']['NM_004333.4']['p_hgvs_tlc'] == 'NP_004324.2:p.(Val600Glu)'
 		assert results['7-140453136-A-T']['hgvs_t_and_p']['NM_004333.4']['p_hgvs_slc'] == 'NP_004324.2:p.(V600E)'
 		assert results['7-140453136-A-T']['hgvs_t_and_p']['NM_004333.4']['transcript_variant_error'] is None
-		assert 'NR_148928.1' in results['7-140453136-A-T']['hgvs_t_and_p'].keys()
-		assert results['7-140453136-A-T']['hgvs_t_and_p']['NR_148928.1']['t_hgvs'] == 'NR_148928.1:n.2897T>A'
-		assert results['7-140453136-A-T']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_tlc'] is None
-		assert results['7-140453136-A-T']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_slc'] is None
-		assert results['7-140453136-A-T']['hgvs_t_and_p']['NR_148928.1']['transcript_variant_error'] is None
+		# Test removed. Currently Deprecated in VVTA
+		# assert 'NR_148928.1' in results['7-140453136-A-T']['hgvs_t_and_p'].keys()
+		# assert results['7-140453136-A-T']['hgvs_t_and_p']['NR_148928.1']['t_hgvs'] == 'NR_148928.1:n.2897T>A'
+		# assert results['7-140453136-A-T']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_tlc'] is None
+		# assert results['7-140453136-A-T']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_slc'] is None
+		# assert results['7-140453136-A-T']['hgvs_t_and_p']['NR_148928.1']['transcript_variant_error'] is None
 
 
 	def test_variant176(self):
@@ -5295,11 +5295,12 @@ class TestVariantsAuto(object):
 		assert results['7-140453137-C-T']['hgvs_t_and_p']['NM_004333.4']['p_hgvs_tlc'] == 'NP_004324.2:p.(Val600Met)'
 		assert results['7-140453137-C-T']['hgvs_t_and_p']['NM_004333.4']['p_hgvs_slc'] == 'NP_004324.2:p.(V600M)'
 		assert results['7-140453137-C-T']['hgvs_t_and_p']['NM_004333.4']['transcript_variant_error'] is None
-		assert 'NR_148928.1' in results['7-140453137-C-T']['hgvs_t_and_p'].keys()
-		assert results['7-140453137-C-T']['hgvs_t_and_p']['NR_148928.1']['t_hgvs'] == 'NR_148928.1:n.2896G>A'
-		assert results['7-140453137-C-T']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_tlc'] is None
-		assert results['7-140453137-C-T']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_slc'] is None
-		assert results['7-140453137-C-T']['hgvs_t_and_p']['NR_148928.1']['transcript_variant_error'] is None
+		# Test removed. Currently Deprecated in VVTA
+		# assert 'NR_148928.1' in results['7-140453137-C-T']['hgvs_t_and_p'].keys()
+		# assert results['7-140453137-C-T']['hgvs_t_and_p']['NR_148928.1']['t_hgvs'] == 'NR_148928.1:n.2896G>A'
+		# assert results['7-140453137-C-T']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_tlc'] is None
+		# assert results['7-140453137-C-T']['hgvs_t_and_p']['NR_148928.1']['p_hgvs_slc'] is None
+		# assert results['7-140453137-C-T']['hgvs_t_and_p']['NR_148928.1']['transcript_variant_error'] is None
 
 
 	def test_variant177(self):
@@ -5570,11 +5571,12 @@ class TestVariantsAuto(object):
 		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.4']['p_hgvs_tlc'] == 'NP_036441.2:p.(Leu856=)'
 		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.4']['p_hgvs_slc'] == 'NP_036441.2:p.(L856=)'
 		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.4']['transcript_variant_error'] is None
-		assert 'NM_012309.3' in results['HG865_PATCH-33547-G-A']['hgvs_t_and_p'].keys()
-		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.3']['t_hgvs'] is None
-		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_tlc'] is None
-		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_slc'] is None
-		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.3']['transcript_variant_error'] == 'start or end or both are beyond the bounds of transcript record'
+		# Test removed. Currently Deprecated in VVTA
+		# assert 'NM_012309.3' in results['HG865_PATCH-33547-G-A']['hgvs_t_and_p'].keys()
+		# assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.3']['t_hgvs'] is None
+		# assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_tlc'] is None
+		# assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_slc'] is None
+		# assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NM_012309.3']['transcript_variant_error'] == 'start or end or both are beyond the bounds of transcript record'
 		assert 'NR_110766.1' in results['HG865_PATCH-33547-G-A']['hgvs_t_and_p'].keys()
 		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NR_110766.1']['t_hgvs'] == 'NR_110766.1:n.833+969C>T'
 		assert results['HG865_PATCH-33547-G-A']['hgvs_t_and_p']['NR_110766.1']['p_hgvs_tlc'] is None
@@ -5602,11 +5604,12 @@ class TestVariantsAuto(object):
 		assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.4']['p_hgvs_tlc'] == 'NP_036441.2:p.(Tyr320Ter)'
 		assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.4']['p_hgvs_slc'] == 'NP_036441.2:p.(Y320*)'
 		assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.4']['transcript_variant_error'] is None
-		assert 'NM_012309.3' in results['HG865_PATCH-569441-G-T']['hgvs_t_and_p'].keys()
-		assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.3']['t_hgvs'] is None
-		assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_tlc'] is None
-		assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_slc'] is None
-		assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.3']['transcript_variant_error'] == 'start or end or both are beyond the bounds of transcript record'
+		# Test removed. Currently Deprecated in VVTA
+		# assert 'NM_012309.3' in results['HG865_PATCH-569441-G-T']['hgvs_t_and_p'].keys()
+		# assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.3']['t_hgvs'] is None
+		# assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_tlc'] is None
+		# assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_slc'] is None
+		# assert results['HG865_PATCH-569441-G-T']['hgvs_t_and_p']['NM_012309.3']['transcript_variant_error'] == 'start or end or both are beyond the bounds of transcript record'
 
 
 	def test_variant188(self):
@@ -5624,11 +5627,12 @@ class TestVariantsAuto(object):
 		assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.4']['p_hgvs_tlc'] == 'NP_036441.2:p.?'
 		assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.4']['p_hgvs_slc'] == 'NP_036441.2:p.?'
 		assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.4']['transcript_variant_error'] is None
-		assert 'NM_012309.3' in results['HG865_PATCH-574546-C-T']['hgvs_t_and_p'].keys()
-		assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.3']['t_hgvs'] is None
-		assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_tlc'] is None
-		assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_slc'] is None
-		assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.3']['transcript_variant_error'] == 'start or end or both are beyond the bounds of transcript record'
+		# Test removed. Currently Deprecated in VVTA
+		# assert 'NM_012309.3' in results['HG865_PATCH-574546-C-T']['hgvs_t_and_p'].keys()
+		# assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.3']['t_hgvs'] is None
+		# assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_tlc'] is None
+		# assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.3']['p_hgvs_slc'] is None
+		# assert results['HG865_PATCH-574546-C-T']['hgvs_t_and_p']['NM_012309.3']['transcript_variant_error'] == 'start or end or both are beyond the bounds of transcript record'
 
 
 	def test_variant189(self):
@@ -5641,11 +5645,11 @@ class TestVariantsAuto(object):
 		assert results['HSCHR1_1_CTG31-133178-TAG-T']['p_vcf'] == 'HSCHR1_1_CTG31-133178-TAG-T'
 		assert results['HSCHR1_1_CTG31-133178-TAG-T']['g_hgvs'] == 'NW_003315905.1:g.133179_133180del'
 		assert results['HSCHR1_1_CTG31-133178-TAG-T']['genomic_variant_error'] is None
-		assert 'NM_020699.2' in results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p'].keys()
-		assert results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p']['NM_020699.2']['t_hgvs'] == 'NM_020699.2:c.803+1_804-1del'
-		assert results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p']['NM_020699.2']['p_hgvs_tlc'] == 'NP_065750.1:p.?'
-		assert results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p']['NM_020699.2']['p_hgvs_slc'] == 'NP_065750.1:p.?'
-		assert results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p']['NM_020699.2']['transcript_variant_error'] is None
+		assert 'NM_020699.4' in results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p'].keys()
+		assert results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p']['NM_020699.4']['t_hgvs'] == 'NM_020699.4:c.774_775del'
+		assert results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p']['NM_020699.4']['p_hgvs_tlc'] == 'NP_065750.1:p.(Met259ValfsTer22)'
+		assert results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p']['NM_020699.4']['p_hgvs_slc'] == 'NP_065750.1:p.(M259Vfs*22)'
+		assert results['HSCHR1_1_CTG31-133178-TAG-T']['hgvs_t_and_p']['NM_020699.4']['transcript_variant_error'] is None
 
 
 	def test_variant190(self):
@@ -6917,6 +6921,7 @@ class TestVariantsAuto(object):
 		assert results['NC_000023.11:g.31121131T>G']['hgvs_t_and_p']['NM_004012.3']['transcript_variant_error'] is None
 
 
+	# Test removed due to major changes to the transcript versions an QC requirments between UTA and VVTA.
 	def test_variant227(self):
 		variant = 'NC_000023.11:g.31119228G>T'
 		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
@@ -6927,99 +6932,101 @@ class TestVariantsAuto(object):
 		assert results['NC_000023.11:g.31119228G>T']['p_vcf'] == 'X:31119228:G:T'
 		assert results['NC_000023.11:g.31119228G>T']['g_hgvs'] == 'NC_000023.11:g.31119228G>T'
 		assert results['NC_000023.11:g.31119228G>T']['genomic_variant_error'] is None
-		assert 'NM_004011.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004011.3']['t_hgvs'] == 'NM_004011.3:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004011.3']['p_hgvs_tlc'] == 'NP_004002.2:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004011.3']['p_hgvs_slc'] == 'NP_004002.2:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004011.3']['transcript_variant_error'] is None
-		assert 'NM_004021.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004021.2']['t_hgvs'] == 'NM_004021.2:c.*2605C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004021.2']['p_hgvs_tlc'] == 'NP_004012.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004021.2']['p_hgvs_slc'] == 'NP_004012.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004021.2']['transcript_variant_error'] is None
-		assert 'NM_000109.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_000109.3']['t_hgvs'] == 'NM_000109.3:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_000109.3']['p_hgvs_tlc'] == 'NP_000100.2:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_000109.3']['p_hgvs_slc'] == 'NP_000100.2:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_000109.3']['transcript_variant_error'] is None
-		assert 'NM_004009.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004009.3']['t_hgvs'] == 'NM_004009.3:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004009.3']['p_hgvs_tlc'] == 'NP_004000.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004009.3']['p_hgvs_slc'] == 'NP_004000.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004009.3']['transcript_variant_error'] is None
-		assert 'NM_004014.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004014.2']['t_hgvs'] == 'NM_004014.2:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004014.2']['p_hgvs_tlc'] == 'NP_004005.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004014.2']['p_hgvs_slc'] == 'NP_004005.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004014.2']['transcript_variant_error'] is None
-		assert 'NM_004015.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004015.2']['t_hgvs'] == 'NM_004015.2:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004015.2']['p_hgvs_tlc'] == 'NP_004006.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004015.2']['p_hgvs_slc'] == 'NP_004006.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004015.2']['transcript_variant_error'] is None
-		assert 'NM_004010.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004010.3']['t_hgvs'] == 'NM_004010.3:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004010.3']['p_hgvs_tlc'] == 'NP_004001.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004010.3']['p_hgvs_slc'] == 'NP_004001.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004010.3']['transcript_variant_error'] is None
-		assert 'NM_004013.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004013.2']['t_hgvs'] == 'NM_004013.2:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004013.2']['p_hgvs_tlc'] == 'NP_004004.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004013.2']['p_hgvs_slc'] == 'NP_004004.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004013.2']['transcript_variant_error'] is None
-		assert 'NM_004022.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004022.2']['t_hgvs'] == 'NM_004022.2:c.*2605C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004022.2']['p_hgvs_tlc'] == 'NP_004013.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004022.2']['p_hgvs_slc'] == 'NP_004013.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004022.2']['transcript_variant_error'] is None
-		assert 'NM_004023.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004023.2']['t_hgvs'] == 'NM_004023.2:c.*2605C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004023.2']['p_hgvs_tlc'] == 'NP_004014.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004023.2']['p_hgvs_slc'] == 'NP_004014.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004023.2']['transcript_variant_error'] is None
-		assert 'NM_004018.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004018.2']['t_hgvs'] == 'NM_004018.2:c.*2605C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004018.2']['p_hgvs_tlc'] == 'NP_004009.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004018.2']['p_hgvs_slc'] == 'NP_004009.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004018.2']['transcript_variant_error'] is None
-		assert 'NM_004017.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004017.2']['t_hgvs'] == 'NM_004017.2:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004017.2']['p_hgvs_tlc'] == 'NP_004008.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004017.2']['p_hgvs_slc'] == 'NP_004008.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004017.2']['transcript_variant_error'] is None
-		assert 'NM_004016.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004016.2']['t_hgvs'] == 'NM_004016.2:c.*2605C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004016.2']['p_hgvs_tlc'] == 'NP_004007.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004016.2']['p_hgvs_slc'] == 'NP_004007.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004016.2']['transcript_variant_error'] is None
-		assert 'NM_004020.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004020.3']['t_hgvs'] == 'NM_004020.3:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004020.3']['p_hgvs_tlc'] == 'NP_004011.2:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004020.3']['p_hgvs_slc'] == 'NP_004011.2:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004020.3']['transcript_variant_error'] is None
-		assert 'NM_004006.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004006.2']['t_hgvs'] == 'NM_004006.2:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004006.2']['p_hgvs_tlc'] == 'NP_003997.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004006.2']['p_hgvs_slc'] == 'NP_003997.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004006.2']['transcript_variant_error'] is None
-		assert 'NM_004012.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004012.3']['t_hgvs'] == 'NM_004012.3:c.*2691C>A'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004012.3']['p_hgvs_tlc'] == 'NP_004003.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004012.3']['p_hgvs_slc'] == 'NP_004003.1:p.?'
-		assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004012.3']['transcript_variant_error'] is None
+		#
+		# assert 'NM_004011.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004011.3']['t_hgvs'] == 'NM_004011.3:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004011.3']['p_hgvs_tlc'] == 'NP_004002.2:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004011.3']['p_hgvs_slc'] == 'NP_004002.2:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004011.3']['transcript_variant_error'] is None
+		# assert 'NM_004021.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004021.2']['t_hgvs'] == 'NM_004021.2:c.*2605C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004021.2']['p_hgvs_tlc'] == 'NP_004012.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004021.2']['p_hgvs_slc'] == 'NP_004012.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004021.2']['transcript_variant_error'] is None
+		# assert 'NM_000109.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_000109.3']['t_hgvs'] == 'NM_000109.3:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_000109.3']['p_hgvs_tlc'] == 'NP_000100.2:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_000109.3']['p_hgvs_slc'] == 'NP_000100.2:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_000109.3']['transcript_variant_error'] is None
+		# assert 'NM_004009.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004009.3']['t_hgvs'] == 'NM_004009.3:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004009.3']['p_hgvs_tlc'] == 'NP_004000.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004009.3']['p_hgvs_slc'] == 'NP_004000.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004009.3']['transcript_variant_error'] is None
+		# assert 'NM_004014.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004014.2']['t_hgvs'] == 'NM_004014.2:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004014.2']['p_hgvs_tlc'] == 'NP_004005.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004014.2']['p_hgvs_slc'] == 'NP_004005.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004014.2']['transcript_variant_error'] is None
+		# assert 'NM_004015.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004015.2']['t_hgvs'] == 'NM_004015.2:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004015.2']['p_hgvs_tlc'] == 'NP_004006.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004015.2']['p_hgvs_slc'] == 'NP_004006.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004015.2']['transcript_variant_error'] is None
+		# assert 'NM_004010.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004010.3']['t_hgvs'] == 'NM_004010.3:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004010.3']['p_hgvs_tlc'] == 'NP_004001.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004010.3']['p_hgvs_slc'] == 'NP_004001.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004010.3']['transcript_variant_error'] is None
+		# assert 'NM_004013.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004013.2']['t_hgvs'] == 'NM_004013.2:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004013.2']['p_hgvs_tlc'] == 'NP_004004.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004013.2']['p_hgvs_slc'] == 'NP_004004.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004013.2']['transcript_variant_error'] is None
+		# assert 'NM_004022.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004022.2']['t_hgvs'] == 'NM_004022.2:c.*2605C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004022.2']['p_hgvs_tlc'] == 'NP_004013.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004022.2']['p_hgvs_slc'] == 'NP_004013.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004022.2']['transcript_variant_error'] is None
+		# assert 'NM_004023.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004023.2']['t_hgvs'] == 'NM_004023.2:c.*2605C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004023.2']['p_hgvs_tlc'] == 'NP_004014.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004023.2']['p_hgvs_slc'] == 'NP_004014.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004023.2']['transcript_variant_error'] is None
+		# assert 'NM_004018.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004018.2']['t_hgvs'] == 'NM_004018.2:c.*2605C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004018.2']['p_hgvs_tlc'] == 'NP_004009.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004018.2']['p_hgvs_slc'] == 'NP_004009.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004018.2']['transcript_variant_error'] is None
+		# assert 'NM_004017.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004017.2']['t_hgvs'] == 'NM_004017.2:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004017.2']['p_hgvs_tlc'] == 'NP_004008.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004017.2']['p_hgvs_slc'] == 'NP_004008.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004017.2']['transcript_variant_error'] is None
+		# assert 'NM_004016.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004016.2']['t_hgvs'] == 'NM_004016.2:c.*2605C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004016.2']['p_hgvs_tlc'] == 'NP_004007.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004016.2']['p_hgvs_slc'] == 'NP_004007.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004016.2']['transcript_variant_error'] is None
+		# assert 'NM_004020.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004020.3']['t_hgvs'] == 'NM_004020.3:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004020.3']['p_hgvs_tlc'] == 'NP_004011.2:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004020.3']['p_hgvs_slc'] == 'NP_004011.2:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004020.3']['transcript_variant_error'] is None
+		# assert 'NM_004006.2' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004006.2']['t_hgvs'] == 'NM_004006.2:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004006.2']['p_hgvs_tlc'] == 'NP_003997.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004006.2']['p_hgvs_slc'] == 'NP_003997.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004006.2']['transcript_variant_error'] is None
+		# assert 'NM_004012.3' in results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p'].keys()
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004012.3']['t_hgvs'] == 'NM_004012.3:c.*2691C>A'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004012.3']['p_hgvs_tlc'] == 'NP_004003.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004012.3']['p_hgvs_slc'] == 'NP_004003.1:p.?'
+		# assert results['NC_000023.11:g.31119228G>T']['hgvs_t_and_p']['NM_004012.3']['transcript_variant_error'] is None
 
 
-	def test_variant228(self):
-		variant = 'NC_000023.11:g.31119227T>G'
-		results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
-		results = results.stucture_data()
-		print(results)
-
-		assert 'NC_000023.11:g.31119227T>G' in results.keys()
-		assert results['NC_000023.11:g.31119227T>G']['p_vcf'] == 'X:31119227:T:G'
-		assert results['NC_000023.11:g.31119227T>G']['g_hgvs'] == 'NC_000023.11:g.31119227T>G'
-		assert results['NC_000023.11:g.31119227T>G']['genomic_variant_error'] is None
-		assert results['NC_000023.11:g.31119227T>G']['hgvs_t_and_p'] == {'intergenic': {'alt_genomic_loci': None}}
+	# TEST REMOVED. No longer intergenic since vv2.0 and VVTA integration
+	# def test_variant228(self):
+	# 	variant = 'NC_000023.11:g.31119227T>G'
+	# 	results = vf.FormatVariant(variant, 'GRCh38', vfo,  'refseq', None)
+	# 	results = results.stucture_data()
+	# 	print(results)
+	#
+	# 	assert 'NC_000023.11:g.31119227T>G' in results.keys()
+	# 	assert results['NC_000023.11:g.31119227T>G']['p_vcf'] == 'X:31119227:T:G'
+	# 	assert results['NC_000023.11:g.31119227T>G']['g_hgvs'] == 'NC_000023.11:g.31119227T>G'
+	# 	assert results['NC_000023.11:g.31119227T>G']['genomic_variant_error'] is None
+	# 	assert results['NC_000023.11:g.31119227T>G']['hgvs_t_and_p'] == {'intergenic': {'alt_genomic_loci': None}}
 
 
 	def test_variant229(self):
