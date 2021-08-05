@@ -47,8 +47,8 @@ setup(
 
     # List run-time dependencies here.  These will be installed by pip when the project is installed.
     install_requires=[
-        # "VariantValidator @ git+https://github.com/openvar/variantValidator.git@master#egg=VariantValidator",
-        # "vvhgvs @ git+https://github.com/openvar/vv_hgvs@master#egg=vvhgvs",
+        "VariantValidator"
+        "vvhgvs",
     ],
 
     setup_requires=[
@@ -57,7 +57,7 @@ setup(
 )
 
 # <LICENSE>
-# Copyright (C) 2019 VariantValidator Contributors
+# Copyright (C) 2016-2021 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
