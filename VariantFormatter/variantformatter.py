@@ -21,10 +21,16 @@ import VariantFormatter.formatter as formatter
 import VariantValidator.modules.liftover as lo
  
 # Custom Exceptions
+
+
 class vcf2hgvsError(Exception):
     pass
+
+
 class hgvs2VcfError(Exception):
     pass
+
+
 class variableError(Exception):
     pass
 
@@ -295,7 +301,15 @@ class FormatVariant(object):
                     # map to Protein
                     if am_i_gapped['hgvs_transcript'].type == 'c':
                         try:
-                            hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'], self.genome_build, self.vfo)
+                            hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'],
+                                                                                      self.genome_build,
+                                                                                      self.vfo)
+                            # Handle edits that have been stringified
+                            try:
+                                hgvs_protein_tlc.posedit.edit.ref
+                            except AttributeError:
+                                hgvs_protein_tlc = formatter.parse(str(hgvs_protein_tlc), self.vfo)
+
                             hgvs_protein_slc = formatter.single_letter_protein(hgvs_protein_tlc)
                         except NotImplementedError as e:
                             hgvs_protein_tlc = None
@@ -442,7 +456,7 @@ class FormatVariant(object):
                 
 
 # <LICENSE>
-# Copyright (C) 2019 VariantValidator Contributors
+# Copyright (C) 2016-2021 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
