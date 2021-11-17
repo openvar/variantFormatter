@@ -218,21 +218,21 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, vfo):
         alt_aln_method = 'splign'
         hn = vfo.splign_normalizer
         rhn = vfo.reverse_splign_normalizer 
-    
-    
+
     # Create vfo.vm
     evm = vvhgvs.assemblymapper.AssemblyMapper(vfo.hdp,
-                                             assembly_name=genome_build,
-                                             alt_aln_method=alt_aln_method, # Only RefSeq should be here!!!
-                                             normalize=True,
-                                             replace_reference=True
-                                             )    
+                                               assembly_name=genome_build,
+                                               alt_aln_method=alt_aln_method,  # Only RefSeq should be here!!!
+                                               normalize=True,
+                                               replace_reference=True
+                                               )
     
     # Create dictionary to store the information    
     re_to_p = False
     hgvs_transcript_to_hgvs_protein = vfo.myc_to_p(hgvs_transcript, evm, re_to_p, rhn)
     hgvs_transcript_to_hgvs_protein = hgvs_transcript_to_hgvs_protein['hgvs_protein']
     return hgvs_transcript_to_hgvs_protein
+
 
 """
 Return all aligned transcripts for a given genomic hgvs object
@@ -286,6 +286,7 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
 
     return tx_list
 
+
 """
 Return the relevant protein sequence for a given transcript reference sequence
 """
@@ -300,14 +301,15 @@ def fetch_encoded_protein(tx_ac, vfo):
 format protein description into single letter aa code
 """
 
+
 def single_letter_protein(hgvs_protein):
-    hgvs_protein_slc = hgvs_protein.format({'p_3_letter': False})
-    return hgvs_protein_slc
-    
+    return hgvs_protein.format({'p_3_letter': False})
+
     
 """
 format nucleotide descriptions to not display reference base
 """
+
 
 def remove_reference(hgvs_nucleotide):
     hgvs_nucleotide_refless = hgvs_nucleotide.format({'max_ref_length': 0})
