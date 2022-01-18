@@ -16,10 +16,9 @@ import vvhgvs.exceptions
 
 # import VF
 import VariantFormatter.formatter as formatter
-
 # import VV
 import VariantValidator.modules.liftover as lo
- 
+
 # Custom Exceptions
 
 
@@ -123,15 +122,49 @@ class FormatVariant(object):
                 hgvs_genomic = formatter.parse(self.variant_description, self.vfo)
                 vfo.vr.validate(hgvs_genomic)
             except Exception as e:
-                p_vcf = None
-                g_hgvs = None
-                hgvs_ref_bases = None
-                un_norm_hgvs = None
-                gen_error = str(e)
-                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
-                self.genomic_descriptions = gds
+                validation = vfo.validate(self.variant_description, self.genome_build, 'all',
+                                          liftover_level=None).format_as_dict(test=True)
+
+                # Can the variant be auto-corrected
+
+                # if "warning" not in validation["flag"]:
+                reset_variant = None
+                edit_warnings = None
+                # Code to auto-recover dud description where possible
+                for val_key, val_val in validation.items():
+
+                    try:
+                        if "primary_assembly_loci" in val_val.keys():
+                            reset_variant = val_val["primary_assembly_loci"][genome_build.lower()
+                                                                             ]["hgvs_genomic_description"]
+                            validation_warned = val_val["validation_warnings"]
+                            edit_warnings = []
+                            for wrn in validation_warned:
+                                if "automapped to" in wrn:
+                                    edit_warnings.append(wrn)
+
+                            break
+                        else:
+                            continue
+                    except AttributeError:
+                        continue
+                    except KeyError:
+                        validation_warned = val_val["validation_warnings"]
+                        edit_warnings = ", ".join(validation_warned)
+                        p_vcf = None
+                        g_hgvs = None
+                        hgvs_ref_bases = None
+                        un_norm_hgvs = None
+                        gen_error = edit_warnings
+                        gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+                        self.genomic_descriptions = gds
+                        self.warning_level = 'genomic_variant_warning'
+                        return
+
+                hgvs_genomic = formatter.parse(reset_variant, self.vfo)
+                recovery_error = edit_warnings[0]
                 self.warning_level = 'genomic_variant_warning'
-                return
+
             try:
                 vcf_dictionary = formatter.hgvs_genomic2vcf(hgvs_genomic, self.genome_build, self.vfo)
                 vcf_list = [vcf_dictionary['grc_chr'], vcf_dictionary['pos'], vcf_dictionary['ref'], vcf_dictionary['alt']]
@@ -215,8 +248,12 @@ class FormatVariant(object):
             return
 
         # Create genomic_descriptions object
-        gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=None,
-                                  genome_build=genome_build)
+        try:
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=recovery_error,
+                                      genome_build=genome_build)
+        except UnboundLocalError:
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=None,
+                                      genome_build=genome_build)
         self.genomic_descriptions = gds
 
         # Return on checkonly
@@ -456,7 +493,7 @@ class FormatVariant(object):
                 
 
 # <LICENSE>
-# Copyright (C) 2016-2021 VariantValidator Contributors
+# Copyright (C) 2016-2022 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as

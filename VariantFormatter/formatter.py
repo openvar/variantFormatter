@@ -28,9 +28,6 @@ import vvhgvs.normalizer
 import vvhgvs.validator
 import vvhgvs.sequencevariant
 
-# import other required modules
-from Bio.Seq import Seq
-
 # Import VariantFormatter modules
 import VariantValidator.modules.hgvs_utils as hgvs_utils
 import VariantValidator.modules.seq_data as chr_dict
@@ -261,7 +258,7 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
 
     if transcript_model == 'refseq' or transcript_model == 'all':   
         refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
-                                            hgvs_genomic.posedit.pos.end.base)
+                                                hgvs_genomic.posedit.pos.end.base)
 
         # Keeping these print statements because they enable us to check UTA alignment errors
         # print('\nIn A')
@@ -269,11 +266,10 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
         # print(hgvs_genomic)
         # print('end')
 
-
         # Transcript edge antisense! - If doesn't map, will be weeded out downstream!
         if refseq_list == []:
             refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base,
-                                            hgvs_genomic.posedit.pos.end.base - 1)
+                                                    hgvs_genomic.posedit.pos.end.base - 1)
 
         tx_list = tx_list + refseq_list
 
@@ -336,10 +332,7 @@ def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_buil
     # Set other variables
     hdp = vfo.hdp
     vm = vfo.vm
-    hp = vfo.hp
-    sf = vfo.sf
-    hgvs_version = vfo.hgvsVersion
-    
+
     # Check for gapping
     checked = gapGenes.compensate_g_to_t(hgvs_transcript,
                                          hgvs_genomic,
@@ -354,7 +347,7 @@ def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_buil
     
 
 # <LICENSE>
-# Copyright (C) 2016-2021 VariantValidator Contributors
+# Copyright (C) 2016-2022 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
