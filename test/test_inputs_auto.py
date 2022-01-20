@@ -455,7 +455,7 @@ class TestVariantsAuto(object):
         assert 'NC_000012.11:g.122064772_122064777del' in results.keys()
         assert results['NC_000012.11:g.122064772_122064777del']['p_vcf'] == '12:122064771:GCCCCGC:G'
         assert results['NC_000012.11:g.122064772_122064777del']['g_hgvs'] == 'NC_000012.11:g.122064773_122064778del'
-        assert results['NC_000012.11:g.122064772_122064777del']['genomic_variant_error'] is None
+        assert results['NC_000012.11:g.122064772_122064777del']['genomic_variant_error'] == "NC_000012.11:g.122064772_122064777del updated to NC_000012.11:g.122064773_122064778del"
         assert 'NM_032790.3' in results['NC_000012.11:g.122064772_122064777del']['hgvs_t_and_p'].keys()
         assert results['NC_000012.11:g.122064772_122064777del']['hgvs_t_and_p']['NM_032790.3']['t_hgvs'] == "NM_032790.3:c.126C>A"
         assert results['NC_000012.11:g.122064772_122064777del']['hgvs_t_and_p']['NM_032790.3']['p_hgvs_tlc'] == "NP_116179.2:p.(Ala42=)"
@@ -472,7 +472,7 @@ class TestVariantsAuto(object):
         assert 'NC_000012.11:g.122064772_122064777dup' in results.keys()
         assert results['NC_000012.11:g.122064772_122064777dup']['p_vcf'] == '12:122064771:G:GCCCCGC'
         assert results['NC_000012.11:g.122064772_122064777dup']['g_hgvs'] == 'NC_000012.11:g.122064773_122064778dup'
-        assert results['NC_000012.11:g.122064772_122064777dup']['genomic_variant_error'] is None
+        assert results['NC_000012.11:g.122064772_122064777dup']['genomic_variant_error'] == "NC_000012.11:g.122064772_122064777dup updated to NC_000012.11:g.122064773_122064778dup"
         assert 'NM_032790.3' in results['NC_000012.11:g.122064772_122064777dup']['hgvs_t_and_p'].keys()
         assert results['NC_000012.11:g.122064772_122064777dup']['hgvs_t_and_p']['NM_032790.3']['t_hgvs'] == "NM_032790.3:c.131_132insCCCGCCACCGCC"
         assert results['NC_000012.11:g.122064772_122064777dup']['hgvs_t_and_p']['NM_032790.3']['p_hgvs_tlc'] == "NP_116179.2:p.(Pro44_Pro47dup)"
@@ -506,7 +506,7 @@ class TestVariantsAuto(object):
         assert 'NC_000012.11:g.122064772_122064782del' in results.keys()
         assert results['NC_000012.11:g.122064772_122064782del']['p_vcf'] == '12:122064770:GGCCCCGCCACC:G'
         assert results['NC_000012.11:g.122064772_122064782del']['g_hgvs'] == 'NC_000012.11:g.122064774_122064784del'
-        assert results['NC_000012.11:g.122064772_122064782del']['genomic_variant_error'] is None
+        assert results['NC_000012.11:g.122064772_122064782del']['genomic_variant_error'] == "NC_000012.11:g.122064772_122064782del updated to NC_000012.11:g.122064774_122064784del"
         assert 'NM_032790.3' in results['NC_000012.11:g.122064772_122064782del']['hgvs_t_and_p'].keys()
         assert results['NC_000012.11:g.122064772_122064782del']['hgvs_t_and_p']['NM_032790.3']['t_hgvs'] == "NM_032790.3:c.126_127insA"
         assert results['NC_000012.11:g.122064772_122064782del']['hgvs_t_and_p']['NM_032790.3']['p_hgvs_tlc'] == "NP_116179.2:p.(Pro43ThrfsTer45)"
@@ -761,7 +761,7 @@ class TestVariantsAuto(object):
         assert 'NC_000002.11:g.73675227_73675228insCTC' in results.keys()
         assert results['NC_000002.11:g.73675227_73675228insCTC']['p_vcf'] == '2:73675227:T:TCTC'
         assert results['NC_000002.11:g.73675227_73675228insCTC']['g_hgvs'] == 'NC_000002.11:g.73675228_73675230dup'
-        assert results['NC_000002.11:g.73675227_73675228insCTC']['genomic_variant_error'] is None
+        assert results['NC_000002.11:g.73675227_73675228insCTC']['genomic_variant_error'] == "NC_000002.11:g.73675227_73675228insCTC updated to NC_000002.11:g.73675228_73675230dup"
         assert 'NM_015120.4' in results['NC_000002.11:g.73675227_73675228insCTC']['hgvs_t_and_p'].keys()
         assert results['NC_000002.11:g.73675227_73675228insCTC']['hgvs_t_and_p']['NM_015120.4']['t_hgvs'] == 'NM_015120.4:c.1573_1579='
         assert results['NC_000002.11:g.73675227_73675228insCTC']['hgvs_t_and_p']['NM_015120.4']['p_hgvs_tlc'] == 'NP_055935.4:p.(Ser525=)'
@@ -1314,7 +1314,7 @@ class TestVariantsAuto(object):
         assert 'NC_000002.11:g.73675227_73675229delTCTinsTCTCTC' in results.keys()
         assert results['NC_000002.11:g.73675227_73675229delTCTinsTCTCTC']['p_vcf'] == '2:73675229:T:TCTC'
         assert results['NC_000002.11:g.73675227_73675229delTCTinsTCTCTC']['g_hgvs'] == 'NC_000002.11:g.73675231_73675232insCCT'
-        assert results['NC_000002.11:g.73675227_73675229delTCTinsTCTCTC']['genomic_variant_error'] is None
+        assert results['NC_000002.11:g.73675227_73675229delTCTinsTCTCTC']['genomic_variant_error'] == "NC_000002.11:g.73675227_73675229delTCTinsTCTCTC updated to NC_000002.11:g.73675231_73675232insCCT"
         assert 'NM_015120.4' in results['NC_000002.11:g.73675227_73675229delTCTinsTCTCTC']['hgvs_t_and_p'].keys()
         assert results['NC_000002.11:g.73675227_73675229delTCTinsTCTCTC']['hgvs_t_and_p']['NM_015120.4']['t_hgvs'] == 'NM_015120.4:c.1580_1581insCCT'
         assert results['NC_000002.11:g.73675227_73675229delTCTinsTCTCTC']['hgvs_t_and_p']['NM_015120.4']['p_hgvs_tlc'] == 'NP_055935.4:p.(Leu527dup)'

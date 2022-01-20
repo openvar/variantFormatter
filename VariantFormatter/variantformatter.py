@@ -84,6 +84,7 @@ class FormatVariant(object):
         self.vfo = vfo
         # Add warning level
         self.warning_level = None
+        gen_error = None
         self.liftover = liftover
         
         if genome_build not in ['GRCh37', 'GRCh38', 'hg19', 'hg38']:
@@ -126,7 +127,6 @@ class FormatVariant(object):
                                           liftover_level=None).format_as_dict(test=True)
 
                 # Can the variant be auto-corrected
-
                 # if "warning" not in validation["flag"]:
                 reset_variant = None
                 edit_warnings = None
@@ -165,9 +165,11 @@ class FormatVariant(object):
                 recovery_error = edit_warnings[0]
                 self.warning_level = 'genomic_variant_warning'
 
+            # Continuation - No exception
             try:
                 vcf_dictionary = formatter.hgvs_genomic2vcf(hgvs_genomic, self.genome_build, self.vfo)
-                vcf_list = [vcf_dictionary['grc_chr'], vcf_dictionary['pos'], vcf_dictionary['ref'], vcf_dictionary['alt']]
+                vcf_list = [vcf_dictionary['grc_chr'], vcf_dictionary['pos'], vcf_dictionary['ref'],
+                            vcf_dictionary['alt']]
                 p_vcf = ':'.join(vcf_list)
             except Exception as e:
                 if "Variant span is outside sequence bounds" in str(e):
@@ -211,6 +213,13 @@ class FormatVariant(object):
                 g_hgvs = genomic_level['hgvs_genomic']
                 un_norm_hgvs = genomic_level['un_normalized_hgvs_genomic']
                 hgvs_ref_bases = genomic_level['ref_bases']
+
+                # Check for auto-update of variant description
+                if str(g_hgvs.posedit.pos) not in str(self.variant_description):
+                    self.warning_level = 'genomic_variant_warning'
+                    gen_error = self.variant_description + " updated to " + formatter.remove_reference(g_hgvs)
+                else:
+                    gen_error = None
             
         # vcf2hgvs route
         elif re.match('chr[\w\d]+\-', self.variant_description) or re.match('chr[\w\d]+:', self.variant_description) or re.match('[\w\d]+\-', self.variant_description)  or re.match('[\w\d]+:', self.variant_description):
@@ -252,7 +261,7 @@ class FormatVariant(object):
             gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=recovery_error,
                                       genome_build=genome_build)
         except UnboundLocalError:
-            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=None,
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=gen_error,
                                       genome_build=genome_build)
         self.genomic_descriptions = gds
 
