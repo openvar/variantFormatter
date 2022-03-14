@@ -162,7 +162,10 @@ class FormatVariant(object):
                         return
 
                 hgvs_genomic = formatter.parse(reset_variant, self.vfo)
-                recovery_error = edit_warnings[0]
+                try:
+                    recovery_error = edit_warnings[0]
+                except IndexError:
+                    recovery_error = None
                 self.warning_level = 'genomic_variant_warning'
 
             # Continuation - No exception
@@ -217,7 +220,7 @@ class FormatVariant(object):
                 # Check for auto-update of variant description
                 if str(g_hgvs.posedit.pos) not in str(self.variant_description):
                     self.warning_level = 'genomic_variant_warning'
-                    gen_error = self.variant_description + " updated to " + formatter.remove_reference(g_hgvs)
+                    gen_error = self.variant_description + " updated to " + str(formatter.remove_reference(g_hgvs))
                 else:
                     gen_error = None
             
@@ -258,8 +261,12 @@ class FormatVariant(object):
 
         # Create genomic_descriptions object
         try:
-            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=recovery_error,
-                                      genome_build=genome_build)
+            if recovery_error is not None:
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=recovery_error,
+                                          genome_build=genome_build)
+            else:
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=gen_error,
+                                          genome_build=genome_build)
         except UnboundLocalError:
             gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=gen_error,
                                       genome_build=genome_build)
