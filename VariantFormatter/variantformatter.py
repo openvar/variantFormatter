@@ -426,11 +426,13 @@ class FormatVariant(object):
                 cp_scaff_lift = copy.deepcopy(current_lift)
                 for key, val in current_lift.items():
                     for chr_type in val.keys():
-                        if not 'NC_' in chr_type:
+                        if 'NC_' not in chr_type:
+                            del cp_current_lift[key][chr_type]
+                        if '24.' in chr_type:
                             del cp_current_lift[key][chr_type]
                 for key, val in scaff_lift.items():
                     for chr_type in val.keys():
-                        if 'NC_' in chr_type:
+                        if 'NC_' in chr_type and "24." not in chr_type:
                             del cp_scaff_lift[key][chr_type]
 
                 order_my_tp['primary_assembly_loci'] = cp_current_lift
