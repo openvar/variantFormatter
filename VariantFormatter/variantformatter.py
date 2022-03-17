@@ -423,7 +423,7 @@ class FormatVariant(object):
                 # Copy the liftover and split into primary and alt
                 cp_current_lift = copy.deepcopy(current_lift)
                 scaff_lift = copy.deepcopy(current_lift)
-                cp_scaff_lift = copy.deepcopy(current_lift)
+                alt_list = []
                 for key, val in current_lift.items():
                     for chr_type in val.keys():
                         if 'NC_' not in chr_type:
@@ -433,10 +433,19 @@ class FormatVariant(object):
                 for key, val in scaff_lift.items():
                     for chr_type in val.keys():
                         if 'NC_' in chr_type and "24." not in chr_type:
-                            del cp_scaff_lift[key][chr_type]
+                            continue
+                        else:
+                            for compile_list_key, compile_list_val in val.items():
+                                if "NC" in compile_list_key:
+                                    if "24." in compile_list_key:
+                                        alt_list.append({key: compile_list_val})
+                                    else:
+                                        continue
+                                else:
+                                    alt_list.append({key: compile_list_val})
 
                 order_my_tp['primary_assembly_loci'] = cp_current_lift
-                order_my_tp['alt_genomic_loci'] = cp_scaff_lift
+                order_my_tp['alt_genomic_loci'] = alt_list
 
             # add to output dictionary keyed by tx_ac
             prelim_transcript_descriptions[tx_id] = order_my_tp
