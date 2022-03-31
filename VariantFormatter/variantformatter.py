@@ -45,8 +45,16 @@ class GenomicDescriptions(object):
     def __init__(self, p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build):
         if p_vcf == "None":
             p_vcf = None
-        if g_hgvs == "None":
-            g_hgvs = None
+        try:
+            if g_hgvs == "None":
+                g_hgvs = None
+            elif ('NC_012920.1' in g_hgvs.ac or 'NC_001807.4' in g_hgvs.ac) and "g" in g_hgvs.type:
+                gen_error = "The given reference sequence (%s) does not match the DNA type (g). For %s, " \
+                            "please use (m). " \
+                            "For g. variants, please use a linear genomic reference sequence" % (g_hgvs.ac, g_hgvs.ac)
+        except AttributeError:
+            if g_hgvs == "None":
+                g_hgvs = None
         if un_norm_hgvs == "None":
             un_norm_hgvs = None
         if hgvs_ref_bases == "None":
@@ -459,8 +467,13 @@ class FormatVariant(object):
         # Add the data to the ordered dictionary structure
         bring_order['p_vcf'] = self.genomic_descriptions.p_vcf
         if self.genomic_descriptions.g_hgvs is not None:
+            # Handle mitochondrial genomic variants
             if 'NC_012920.1' in self.genomic_descriptions.g_hgvs or 'NC_001807.4' in self.genomic_descriptions.g_hgvs:
                 self.genomic_descriptions.g_hgvs = self.genomic_descriptions.g_hgvs.replace(':g.', ':m.')
+                try:
+                    self.genomic_descriptions.gen_error = self.genomic_descriptions.gen_error.replace(":g.", ":m.")
+                except AttributeError:
+                    pass
         bring_order['g_hgvs'] = self.genomic_descriptions.g_hgvs # Is the removed ref version!
         bring_order['selected_build'] = self.genomic_descriptions.selected_build
         bring_order['genomic_variant_error'] = self.genomic_descriptions.gen_error
