@@ -46,11 +46,6 @@ setup(
     ],
 
     # List run-time dependencies here.  These will be installed by pip when the project is installed.
-    install_requires=[
-        "VariantValidator",
-        "vvhgvs",
-    ],
-
     setup_requires=[
         "setuptools_scm",
     ]
