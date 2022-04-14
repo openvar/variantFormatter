@@ -42,13 +42,13 @@ class GenomicDescriptions(object):
     description reference nucleotide sequence corresponding to the specified range 
     """
     # Initialise and add initialisation data to the object
-    def __init__(self, p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build):
+    def __init__(self, p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build, variant_description):
         if p_vcf == "None":
             p_vcf = None
         try:
             if g_hgvs == "None":
                 g_hgvs = None
-            elif ('NC_012920.1' in g_hgvs.ac or 'NC_001807.4' in g_hgvs.ac) and "g" in g_hgvs.type:
+            elif ('NC_012920.1' in g_hgvs.ac or 'NC_001807.4' in g_hgvs.ac) and ":g." in variant_description:
                 gen_error = "The given reference sequence (%s) does not match the DNA type (g). For %s, " \
                             "please use (m). " \
                             "For g. variants, please use a linear genomic reference sequence" % (g_hgvs.ac, g_hgvs.ac)
@@ -61,6 +61,10 @@ class GenomicDescriptions(object):
             hgvs_ref_bases = None
         if gen_error == "None":
             gen_error = None
+
+        # Warn incorrect m. accession for hg19
+        if ("NC_012920.1" in str(g_hgvs) or "NC_001807.4" in gen_error) and "hg19" in genome_build:
+            gen_error = "NC_012920.1 is not associated with genome build hg19, instead use genome build GRCh37"
 
         # Create object
         self.p_vcf = p_vcf
@@ -87,7 +91,7 @@ class FormatVariant(object):
     # Initialise and add initialisation data to the object
     def __init__(self, variant_description, genome_build, vfo, transcript_model=None, specify_transcripts=None,
                  checkOnly=False, liftover=False):
-        
+
         self.variant_description = variant_description
         self.vfo = vfo
         # Add warning level
@@ -101,7 +105,8 @@ class FormatVariant(object):
             hgvs_ref_bases = None
             un_norm_hgvs = None
             gen_error = "genome_build must be one of: 'GRCh37'; 'GRCh38'; 'hg19'; 'hg38'"
-            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
+                                      variant_description)
             self.genomic_descriptions = gds
             self.warning_level = 'genomic_variant_warning'
             return
@@ -116,7 +121,8 @@ class FormatVariant(object):
             hgvs_ref_bases = None
             un_norm_hgvs = None
             gen_error = "transcript_model must be one of: 'ensembl'; 'refseq'; 'all'"
-            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
+                                      variant_description)
             self.genomic_descriptions = gds
             self.warning_level = 'genomic_variant_warning'
             return
@@ -164,7 +170,8 @@ class FormatVariant(object):
                         hgvs_ref_bases = None
                         un_norm_hgvs = None
                         gen_error = edit_warnings
-                        gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+                        gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
+                                                  variant_description)
                         self.genomic_descriptions = gds
                         self.warning_level = 'genomic_variant_warning'
                         return
@@ -191,7 +198,8 @@ class FormatVariant(object):
                 hgvs_ref_bases = None
                 un_norm_hgvs = None
                 gen_error = str(e)
-                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
+                                          variant_description)
                 self.genomic_descriptions = gds
                 self.warning_level = 'genomic_variant_warning'
                 return
@@ -206,7 +214,8 @@ class FormatVariant(object):
                 hgvs_ref_bases = None
                 un_norm_hgvs = None
                 gen_error = str(e)
-                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
+                                          variant_description)
                 self.genomic_descriptions = gds
                 self.warning_level = 'genomic_variant_warning'
                 return
@@ -217,7 +226,8 @@ class FormatVariant(object):
                     hgvs_ref_bases = None
                     un_norm_hgvs = None
                     gen_error = genomic_level['error']
-                    gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+                    gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
+                                              variant_description)
                     self.genomic_descriptions = gds
                     self.warning_level = 'genomic_variant_warning'
                     return
@@ -233,7 +243,9 @@ class FormatVariant(object):
                     gen_error = None
             
         # vcf2hgvs route
-        elif re.match('chr[\w\d]+\-', self.variant_description) or re.match('chr[\w\d]+:', self.variant_description) or re.match('[\w\d]+\-', self.variant_description)  or re.match('[\w\d]+:', self.variant_description):
+        elif re.match('chr[\w\d]+\-', self.variant_description) or re.match(
+                'chr[\w\d]+:', self.variant_description) or re.match('[\w\d]+\-', self.variant_description) \
+                or re.match('[\w\d]+:', self.variant_description):
             try:
                 genomic_level = formatter.vcf2hgvs_genomic(self.variant_description, self.genome_build, self.vfo)
             except Exception as e:
@@ -246,7 +258,8 @@ class FormatVariant(object):
                     hgvs_ref_bases = None
                     un_norm_hgvs = None
                     gen_error = genomic_level['error']
-                    gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+                    gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
+                                              variant_description)
                     self.genomic_descriptions = gds
                     self.warning_level = 'genomic_variant_warning'
                     return
@@ -262,7 +275,8 @@ class FormatVariant(object):
             hgvs_ref_bases = None
             un_norm_hgvs = None
             gen_error = 'Variant description ' + self.variant_description + ' is not in a supported format'
-            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build)
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
+                                      variant_description)
             self.genomic_descriptions = gds
             self.warning_level = 'submission_warning'
             return
@@ -270,14 +284,14 @@ class FormatVariant(object):
         # Create genomic_descriptions object
         try:
             if recovery_error is not None:
-                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=recovery_error,
-                                          genome_build=genome_build)
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, recovery_error,
+                                          genome_build, variant_description)
             else:
-                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=gen_error,
-                                          genome_build=genome_build)
+                gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error,
+                                          genome_build, variant_description)
         except UnboundLocalError:
-            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error=gen_error,
-                                      genome_build=genome_build)
+            gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error,
+                                      genome_build, variant_description)
         self.genomic_descriptions = gds
 
         # Return on checkonly
