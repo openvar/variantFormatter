@@ -63,8 +63,11 @@ class GenomicDescriptions(object):
             gen_error = None
 
         # Warn incorrect m. accession for hg19
-        if ("NC_012920.1" in str(g_hgvs) or "NC_001807.4" in gen_error) and "hg19" in genome_build:
-            gen_error = "NC_012920.1 is not associated with genome build hg19, instead use genome build GRCh37"
+        try:
+            if ("NC_012920.1" in str(g_hgvs) or "NC_001807.4" in gen_error) and "hg19" in genome_build:
+                gen_error = "NC_012920.1 is not associated with genome build hg19, instead use genome build GRCh37"
+        except TypeError:
+            pass
 
         # Create object
         self.p_vcf = p_vcf
