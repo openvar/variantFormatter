@@ -66,6 +66,8 @@ class GenomicDescriptions(object):
         try:
             if ("NC_012920.1" in str(g_hgvs)) and "hg19" in genome_build:
                 gen_error = "NC_012920.1 is not associated with genome build hg19, instead use genome build GRCh37"
+            elif ("NC_001807.4" in str(g_hgvs)) and "GRCh37" in genome_build:
+                gen_error = "NC_001807.4 is not associated with genome build GRCh37, instead use genome build hg19"
         except TypeError:
             pass
 
