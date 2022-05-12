@@ -55,9 +55,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                 vcf_list = pseudo_vcf.split('-')
                 delimiter = '-'
             if len(vcf_list) != 4:
-                formatted_variants[variant]['errors'].append(
-                    '%s is an unsupported format: For assistance, submit variant description to '
-                    'https://rest.variantvalidator.org') % pseudo_vcf
+                error = '%s is an unsupported format: For assistance, submit variant description to https://rest.variantvalidator.org' % str(pseudo_vcf)
+                formatted_variants[variant]['errors'].append(error)
                 formatted_variants[variant]['flag'] = 'submission_warning'
                 continue
             if ',' in str(vcf_list[-1]):
@@ -71,9 +70,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                 try:
                     format_these.append(variant)
                 except Exception:
-                    formatted_variants[variant]['errors'].append(
-                        '%s is an unsupported format: For assistance, submit variant description to '
-                        'https://rest.variantvalidator.org') % variant
+                    error = '%s is an unsupported format: For assistance, submit variant description to https://rest.variantvalidator.org' % variant
+                    formatted_variants[variant]['errors'].append(error)
                     formatted_variants[variant]['flag'] = 'submission_warning'
                     continue
 
