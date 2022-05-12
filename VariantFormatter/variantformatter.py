@@ -64,8 +64,10 @@ class GenomicDescriptions(object):
 
         # Warn incorrect m. accession for hg19
         try:
-            if ("NC_012920.1" in str(g_hgvs) or "NC_001807.4" in gen_error) and "hg19" in genome_build:
+            if ("NC_012920.1" in str(g_hgvs)) and "hg19" in genome_build:
                 gen_error = "NC_012920.1 is not associated with genome build hg19, instead use genome build GRCh37"
+            elif ("NC_001807.4" in str(g_hgvs)) and "GRCh37" in genome_build:
+                gen_error = "NC_001807.4 is not associated with genome build GRCh37, instead use genome build hg19"
         except TypeError:
             pass
 
@@ -189,8 +191,13 @@ class FormatVariant(object):
             # Continuation - No exception
             try:
                 vcf_dictionary = formatter.hgvs_genomic2vcf(hgvs_genomic, self.genome_build, self.vfo)
-                vcf_list = [vcf_dictionary['grc_chr'], vcf_dictionary['pos'], vcf_dictionary['ref'],
+                if vcf_dictionary['grc_chr'] == "NC_001807.4" and genome_build == "hg19":
+                    chr_num = vcf_dictionary['ucsc_chr']
+                else:
+                    chr_num = vcf_dictionary['grc_chr']
+                vcf_list = [chr_num, vcf_dictionary['pos'], vcf_dictionary['ref'],
                             vcf_dictionary['alt']]
+
                 p_vcf = ':'.join(vcf_list)
             except Exception as e:
                 if "Variant span is outside sequence bounds" in str(e):
@@ -206,6 +213,7 @@ class FormatVariant(object):
                 self.genomic_descriptions = gds
                 self.warning_level = 'genomic_variant_warning'
                 return
+
             try:
                 genomic_level = formatter.vcf2hgvs_genomic(p_vcf, self.genome_build, self.vfo)
             except Exception as e:
@@ -434,6 +442,7 @@ class FormatVariant(object):
                 elif self.genomic_descriptions.selected_build == 'hg38' or self.genomic_descriptions.selected_build \
                         == 'GRCh38':
                     build_to = 'GRCh37'
+
                 current_lift = lo.liftover(self.genomic_descriptions.g_hgvs,
                                            self.genomic_descriptions.selected_build,
                                            build_to,

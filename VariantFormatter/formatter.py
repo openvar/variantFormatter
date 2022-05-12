@@ -74,6 +74,7 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, vfo):
             pos = vcf_list[1]
             ref = vcf_list[2]
             alt = vcf_list[3]
+
             # assemble the HGVS genomic description
             ac = chr_dict.to_accession(chrom, genome_build)
             if ac is None:
