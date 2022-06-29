@@ -339,6 +339,9 @@ class FormatVariant(object):
             else:
                 transcript_list.append(tx)
 
+        # Create a variable to trap direct g_g liftover
+        g_to_g_lift = {}
+
         # Create transcript level descriptions
         for tx_alignment_data in transcript_list:
             tx_id = tx_alignment_data[0]
@@ -360,19 +363,12 @@ class FormatVariant(object):
                 if hgvs_transcript_dict['error'] == '':
                     hgvs_transcript_dict['error'] = None
 
-                am_i_gapped = {'hgvs_transcript': None,
-                               'position_lock': False,
-                               'gapped_alignment_warning': None,
-                               'corrective_action': None,
-                               'gap_position':None,
-                               'transcript_accession': tx_id,
-                               'error': hgvs_transcript_dict['error']
-                               }
+                am_i_gapped = {'hgvs_transcript': None, 'position_lock': False, 'gapped_alignment_warning': None,
+                               'corrective_action': None, 'gap_position': None, 'transcript_accession': tx_id,
+                               'error': hgvs_transcript_dict['error'], 'hgvs_protein_tlc': None,
+                               'hgvs_protein_slc': None}
 
-                # add to dictionary
-                am_i_gapped['hgvs_protein_tlc'] = None
-                am_i_gapped['hgvs_protein_slc'] = None
-            
+            # add to dictionary
             else:
                 if hgvs_transcript_dict['error'] == '':
                     hgvs_transcript_dict['error'] = None
@@ -443,16 +439,25 @@ class FormatVariant(object):
                         == 'GRCh38':
                     build_to = 'GRCh37'
 
-                current_lift = lo.liftover(self.genomic_descriptions.g_hgvs,
-                                           self.genomic_descriptions.selected_build,
-                                           build_to,
-                                           vfo.splign_normalizer,
-                                           vfo.reverse_splign_normalizer,
-                                           None,
-                                           vfo,
-                                           specify_tx=tx_id,
-                                           liftover_level=self.liftover
-                                           )
+                # Look for previous g_to_g lift
+                if (order_my_tp['transcript_variant_error'] is not None and g_to_g_lift == {}) or (
+                        order_my_tp['transcript_variant_error'] is None):
+
+                    current_lift = lo.liftover(self.genomic_descriptions.g_hgvs,
+                                               self.genomic_descriptions.selected_build,
+                                               build_to,
+                                               vfo.splign_normalizer,
+                                               vfo.reverse_splign_normalizer,
+                                               None,
+                                               vfo,
+                                               specify_tx=tx_id,
+                                               liftover_level=self.liftover
+                                               )
+                    if g_to_g_lift == {}:
+                        g_to_g_lift = current_lift
+
+                elif order_my_tp['transcript_variant_error'] is not None and g_to_g_lift != {}:
+                    current_lift = g_to_g_lift
 
                 # Copy the liftover and split into primary and alt
                 cp_current_lift = copy.deepcopy(current_lift)
