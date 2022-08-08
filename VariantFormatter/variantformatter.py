@@ -18,10 +18,11 @@ import vvhgvs.exceptions
 import VariantFormatter.formatter as formatter
 # import VV
 import VariantValidator.modules.liftover as lo
+import VariantValidator.modules.gapped_mapping
+from VariantValidator.modules.variant import Variant
+
 
 # Custom Exceptions
-
-
 class vcf2hgvsError(Exception):
     pass
 
@@ -34,7 +35,7 @@ class variableError(Exception):
     pass
 
 
-# Create variantformatter object
+# Create Genomic Descriptions object
 class GenomicDescriptions(object):
     """
     Object contains genomic level sequence variant descriptions in the pseudo vcf (p_vcf)
@@ -349,16 +350,9 @@ class FormatVariant(object):
             
             # Gap checking            
             try:
-                am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs, un_norm_hgvs, self.genome_build, self.vfo)
-            except Exception as e:
-                # Error detection prime location!
-                # import sys
-                # import traceback
-                # exc_type, exc_value, last_traceback = sys.exc_info()
-                # te = traceback.format_exc()
-                # tbk = [str(exc_type), str(exc_value), str(te)]
-                # er = str('\n'.join(tbk))
-                # print(er)
+                am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs,
+                                                    self.genome_build, self.vfo)
+            except Exception:
                 self.warning_level = 'processing_error'
                 if hgvs_transcript_dict['error'] == '':
                     hgvs_transcript_dict['error'] = None
@@ -443,6 +437,11 @@ class FormatVariant(object):
                 if (order_my_tp['transcript_variant_error'] is not None and g_to_g_lift == {}) or (
                         order_my_tp['transcript_variant_error'] is None):
 
+                    if order_my_tp['t_hgvs'] is not None:
+                        specified_tx_variant = formatter.parse(order_my_tp['t_hgvs'], self.vfo)
+                    else:
+                        specified_tx_variant = None
+
                     current_lift = lo.liftover(self.genomic_descriptions.g_hgvs,
                                                self.genomic_descriptions.selected_build,
                                                build_to,
@@ -451,8 +450,12 @@ class FormatVariant(object):
                                                None,
                                                vfo,
                                                specify_tx=tx_id,
-                                               liftover_level=self.liftover
+                                               liftover_level=self.liftover,
+                                               gap_map=formatter.gap_checker,
+                                               vfo=self.vfo,
+                                               specified_tx_variant=specified_tx_variant
                                                )
+
                     if g_to_g_lift == {}:
                         g_to_g_lift = current_lift
 
