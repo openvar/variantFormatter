@@ -261,25 +261,12 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
         refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
                                                 hgvs_genomic.posedit.pos.end.base)
 
-        # Keeping these print statements because they enable us to check UTA alignment errors
-        # print('\nIn A')
-        # print(refseq_list)
-        # print(hgvs_genomic)
-        # print('end')
-
         # Transcript edge antisense! - If doesn't map, will be weeded out downstream!
         if refseq_list == []:
             refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base,
                                                     hgvs_genomic.posedit.pos.end.base - 1)
 
         tx_list = tx_list + refseq_list
-
-        # Keeping these print statements because they enable us to check UTA alignment errors
-        # print(['gene', 'tx', 'chr', 'aln', 'ori', 'exon', 'tx_st', 'tx_end', 'chr_st', 'chr_end', 'cigar'])
-        # for tx in tx_list:
-        #     exons = vfo.hdp.get_tx_exons(tx[0], tx[1], tx[3])
-        #     for e in exons:
-        #         print(e[0:11])
 
     return tx_list
 
@@ -318,15 +305,13 @@ check RefSeq hgvs_tx descriptions for gaps
 """
 
 
-def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_build, vfo):
+def gap_checker(hgvs_transcript, hgvs_genomic, genome_build, vfo):
     
     tx_id = hgvs_transcript.ac
     if re.match('ENST', tx_id):
-        alt_aln_method = 'genebuild'
         hn = vfo.genebuild_normalizer
         rhn = vfo.reverse_genebuild_normalizer
     elif re.match('NM', tx_id) or re.match('NR', tx_id):
-        alt_aln_method = 'splign'
         hn = vfo.splign_normalizer
         rhn = vfo.reverse_splign_normalizer
     
