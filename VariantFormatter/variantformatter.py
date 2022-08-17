@@ -511,7 +511,6 @@ class FormatVariant(object):
         bring_order['g_hgvs'] = self.genomic_descriptions.g_hgvs # Is the removed ref version!
         bring_order['selected_build'] = self.genomic_descriptions.selected_build
         bring_order['genomic_variant_error'] = self.genomic_descriptions.gen_error
-        # bring_order['warning_level'] = self.warning_level
         try:
             if self.t_and_p_descriptions == {}:
                 bring_order['hgvs_t_and_p'] = {'intergenic': {'primary_assembly_loci': None}}
