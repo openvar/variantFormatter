@@ -50,7 +50,6 @@ def compensate_g_to_t(hgvs_tx,
                                         vm, vfo)
         hgvs_tx_returns = [normalized_tx, False, None, None, None]
 
-
     else:
         gene_symbol = hdp.get_tx_identity_info(hgvs_tx.ac)[6]
 
@@ -101,6 +100,7 @@ def compensate_g_to_t(hgvs_tx,
             re_hash_hgvs_genomic, suppress_c_normalization, hgvs_coding = gap_mapper.g_to_t_compensation(ori,
                                                                                                          nw_rel_var[0],
                                                                                                          "")
+
 
             # Populate output list
             gap_compensated_tx_2 = [nw_rel_var[0]]
@@ -162,6 +162,7 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, vm, vfo):
     # Obtain the orientation of the transcript wrt selected genomic accession
     exon_alignments = vfo.tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
     orientation = int(exon_alignments[0]['alt_strand'])
+
     # Normalize the genomic variant 5 prime if antisense or 3 prime if sense
     if orientation == -1:
         hgvs_genomic = rhn.normalize(hgvs_genomic)
