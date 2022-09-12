@@ -13,13 +13,8 @@ import re
 import collections
 import copy
 import vvhgvs.exceptions
-
-# import VF
 import VariantFormatter.formatter as formatter
-# import VV
 import VariantValidator.modules.liftover as lo
-import VariantValidator.modules.gapped_mapping
-from VariantValidator.modules.variant import Variant
 
 
 # Custom Exceptions
@@ -348,7 +343,7 @@ class FormatVariant(object):
             tx_id = tx_alignment_data[0]
             hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.vfo)
             
-            # Gap checking            
+            # Gap checking
             try:
                 am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs,
                                                     self.genome_build, self.vfo)
@@ -455,6 +450,14 @@ class FormatVariant(object):
                                                vfo=self.vfo,
                                                specified_tx_variant=specified_tx_variant
                                                )
+
+                    if "am_i_gapped" in current_lift.keys():
+                        if order_my_tp['gapped_alignment_warning'] is "":
+                            order_my_tp['gapped_alignment_warning'] = current_lift['am_i_gapped'][
+                                'gapped_alignment_warning']
+                        if order_my_tp['gap_statement'] is "":
+                            order_my_tp['gap_statement'] = current_lift['am_i_gapped']['gap_position']
+                        current_lift.pop("am_i_gapped")
 
                     if g_to_g_lift == {}:
                         g_to_g_lift = current_lift
