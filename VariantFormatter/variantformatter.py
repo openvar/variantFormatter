@@ -319,7 +319,7 @@ class FormatVariant(object):
         if self.specify_transcripts is not None:
             trans_list = str(self.specify_transcripts).split('|')
             for tx in trans_list:
-                transcript_list.append([tx,''])
+                transcript_list.append([tx, ''])
 
         # No transcripts specified
         else:

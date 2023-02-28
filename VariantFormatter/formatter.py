@@ -268,6 +268,8 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
 
         tx_list = tx_list + refseq_list
 
+    # Filter out non-latest
+    tx_list = vfo.transcript_filter(tx_list)
     return tx_list
 
 
