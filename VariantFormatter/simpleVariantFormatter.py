@@ -22,9 +22,15 @@ metadata['variantformatter_version'] = VariantFormatter.__version__
 sr_root, sr_version = metadata['vvseqrepo_db'].split('/')[-2:]
 metadata['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
 
+
 # If called in a threaded environment you MUST set validator to a thread local
 # VariantValidator instance, due to non thread-safe SQLite3 access via SeqRepo
-def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False, liftover=False,validator=vfo):
+def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None,
+           checkOnly=False, liftover=False, validator=vfo, testing=False):
+    # Testing?
+    if testing is True:
+        validator.testing = True
+
     # Set select_transcripts == 'all' to None
     if specify_transcripts == 'all':
         specify_transcripts = None
