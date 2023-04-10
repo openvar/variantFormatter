@@ -172,7 +172,10 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
             hgvs_genomic = hn.normalize(hgvs_genomic)
         # directly map from the normalized genomic variant to the transcript variant
         try:
-            hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id)
+            if "ENST" in tx_id:
+                hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="genebuild")
+            else:
+                hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="splign")
         except vvhgvs.exceptions.HGVSError as e:
             hgvs_genomic_to_hgvs_transcript['error'] = str(e)
         else:            
@@ -242,7 +245,7 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
 
     if transcript_model == 'ensembl' or transcript_model == 'all':
         enst_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base - 1,
-                                          hgvs_genomic.posedit.pos.end.base)
+                                              hgvs_genomic.posedit.pos.end.base)
         
         # Transcript edge antisense!
         if enst_list == []:
