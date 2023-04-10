@@ -7,7 +7,7 @@ This object connects to the hgvs Python library and soosciated databses
 The Initialization object is used by FormatVariant
 The FormatVariant object contains all HGVS descriptions available for a given genomic variant, g_to_p
 """
-
+import json
 # import modules
 import re
 import collections
@@ -316,7 +316,8 @@ class FormatVariant(object):
             self.genome_build = 'GRCh38'
 
         # Transcripts specified
-        if self.specify_transcripts is not None:
+        if self.specify_transcripts is not None and "select" not in self.specify_transcripts \
+                and "mane" not in self.specify_transcripts:
             trans_list = str(self.specify_transcripts).split('|')
             for tx in trans_list:
                 transcript_list.append([tx, ''])
@@ -340,9 +341,51 @@ class FormatVariant(object):
 
         # Create transcript level descriptions
         for tx_alignment_data in transcript_list:
+
+
             tx_id = tx_alignment_data[0]
+
+            # Get transcript annotations
+            annotation = vfo.db.get_transcript_annotation(tx_id)
+            annotation_dict = json.loads(annotation)
+            select_dict = {}
+            for k, v in annotation_dict.items():
+                if v == "true" or v is True:
+                    select_dict[k] = True
+
+            # Filter for select transcripts
+            if self.specify_transcripts == "select":
+                if select_dict == {}:
+                    continue
+                else:
+                    c_select_dict = copy.copy(select_dict)
+                    for k in select_dict.keys():
+                        if "select" not in k:
+                            c_select_dict.pop(k)
+                    select_dict = copy.copy(c_select_dict)
+
+            if self.specify_transcripts == "mane_select":
+                if select_dict == {}:
+                    continue
+                else:
+                    c_select_dict = copy.copy(select_dict)
+                    for k in select_dict.keys():
+                        if k != "mane_select":
+                            c_select_dict.pop(k)
+                    select_dict = copy.copy(c_select_dict)
+
+            if self.specify_transcripts == "mane":
+                if select_dict == {}:
+                    continue
+                else:
+                    c_select_dict = copy.copy(select_dict)
+                    for k in select_dict.keys():
+                        if "mane" not in k:
+                            c_select_dict.pop(k)
+                    select_dict = copy.copy(c_select_dict)
+
             hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.vfo)
-            
+
             # Gap checking
             try:
                 am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs,
@@ -407,6 +450,8 @@ class FormatVariant(object):
                 # Remove ref bases
                 removed_ref_tx = formatter.remove_reference(am_i_gapped['hgvs_transcript'])
                 am_i_gapped['hgvs_transcript'] = str(removed_ref_tx)
+                # Seelct status
+                am_i_gapped['select_status'] = select_dict
 
             # Order the tx_p output
             if am_i_gapped['error'] == '':
@@ -416,6 +461,7 @@ class FormatVariant(object):
             order_my_tp['p_hgvs_tlc'] = am_i_gapped['hgvs_protein_tlc']
             order_my_tp['p_hgvs_slc'] = am_i_gapped['hgvs_protein_slc']
             order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
+            order_my_tp['select_status'] = am_i_gapped['select_status']
             order_my_tp['gap_statement'] = am_i_gapped['gap_position']
             order_my_tp['transcript_variant_error'] = am_i_gapped['error']
 
