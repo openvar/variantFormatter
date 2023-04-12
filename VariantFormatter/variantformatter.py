@@ -324,7 +324,7 @@ class FormatVariant(object):
 
         # No transcripts specified
         else:
-            transcript_list = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model, self.vfo)
+            transcript_list = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model, self.vfo, genome_build)
 
         # Remove malform IDs
         cp_transcript_list = copy.copy(transcript_list)

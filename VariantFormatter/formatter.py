@@ -240,8 +240,14 @@ Return all aligned transcripts for a given genomic hgvs object
 """
 
 
-def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
+def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo, genome_build):
     tx_list = []
+
+    # Set genome build to correct format
+    if "38" in genome_build:
+        genome_build = "GRCh38"
+    else:
+        genome_build = "GRCh37"
 
     if transcript_model == 'ensembl' or transcript_model == 'all':
         enst_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base - 1,
@@ -252,13 +258,29 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
             enst_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base,
                                                   hgvs_genomic.posedit.pos.end.base - 1)
 
+        evm = vvhgvs.assemblymapper.AssemblyMapper(vfo.hdp,
+                                                   assembly_name=genome_build,
+                                                   alt_aln_method="genebuild",
+                                                   normalize=True,
+                                                   replace_reference=True
+                                                   )
+        enst_list_3 = []
+        enst_list_2 = evm.relevant_transcripts(hgvs_genomic)
+        for tx in enst_list_2:
+            enst_list_3.append([tx])
+
         # Remove transcripts with incomplete identifiers
         cp_enst_list = []
         for et in enst_list:
             if re.search('\d+\.\d+', et[0]):
                 cp_enst_list.append(et)
+
+        cp_enst_list_3 = []
+        for et in enst_list_3:
+            if re.search('\d+\.\d+', et[0]):
+                cp_enst_list_3.append(et)
     
-        tx_list = tx_list + cp_enst_list
+        tx_list = tx_list + cp_enst_list + cp_enst_list_3
 
     if transcript_model == 'refseq' or transcript_model == 'all':   
         refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
@@ -269,7 +291,18 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
             refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base,
                                                     hgvs_genomic.posedit.pos.end.base - 1)
 
-        tx_list = tx_list + refseq_list
+        evm = vvhgvs.assemblymapper.AssemblyMapper(vfo.hdp,
+                                                   assembly_name=genome_build,
+                                                   alt_aln_method="splign",
+                                                   normalize=True,
+                                                   replace_reference=True
+                                                   )
+        refseq_list_3 = []
+        refseq_list_2 = evm.relevant_transcripts(hgvs_genomic)
+        for tx in refseq_list_2:
+            refseq_list_3.append([tx])
+
+        tx_list = tx_list + refseq_list + refseq_list_3
 
     # Filter out non-latest
     tx_list = vfo.transcript_filter(tx_list)
