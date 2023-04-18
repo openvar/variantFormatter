@@ -27,11 +27,13 @@ metadata['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
 # VariantValidator instance, due to non thread-safe SQLite3 access via SeqRepo
 def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None,
            checkOnly=False, liftover=False, validator=vfo, testing=False):
+
     # Testing?
     if testing is True:
         validator.testing = True
 
     # Set select_transcripts == 'all' to None
+    vfo.select_transcripts = specify_transcripts
     if specify_transcripts == 'all':
         specify_transcripts = None
     is_a_list = type(batch_input) is list
