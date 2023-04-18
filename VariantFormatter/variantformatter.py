@@ -16,7 +16,6 @@ import vvhgvs.exceptions
 import VariantFormatter.formatter as formatter
 import VariantValidator.modules.liftover as lo
 
-
 # Custom Exceptions
 class vcf2hgvsError(Exception):
     pass
@@ -129,9 +128,8 @@ class FormatVariant(object):
             return
         else:
             self.transcript_model = transcript_model
-        
         self.specify_transcripts = specify_transcripts
-                
+
         # hgvs2vcf route
         if re.match('N[CTW]_', self.variant_description):
             try:
@@ -317,7 +315,7 @@ class FormatVariant(object):
 
         # Transcripts specified
         if self.specify_transcripts is not None and "select" not in self.specify_transcripts \
-                and "mane" not in self.specify_transcripts:
+                and "mane" not in self.specify_transcripts and 'raw' not in self.specify_transcripts:
             trans_list = str(self.specify_transcripts).split('|')
             for tx in trans_list:
                 transcript_list.append([tx, ''])
@@ -341,8 +339,6 @@ class FormatVariant(object):
 
         # Create transcript level descriptions
         for tx_alignment_data in transcript_list:
-
-
             tx_id = tx_alignment_data[0]
 
             # Get transcript annotations
