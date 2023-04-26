@@ -344,7 +344,11 @@ class FormatVariant(object):
             # Get transcript annotations
             annotation = vfo.db.get_transcript_annotation(tx_id)
             annotation_dict = json.loads(annotation)
+            gene_symbol = vfo.db.get_gene_symbol_from_transcript_id(tx_id)
             select_dict = {}
+            gene_dict = {"symbol": gene_symbol,
+                         "hgnc_id": annotation_dict["db_xref"]["hgnc"]}
+
             for k, v in annotation_dict.items():
                 if v == "true" or v is True:
                     select_dict[k] = True
@@ -458,6 +462,7 @@ class FormatVariant(object):
             order_my_tp['p_hgvs_slc'] = am_i_gapped['hgvs_protein_slc']
             order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
             order_my_tp['select_status'] = am_i_gapped['select_status']
+            order_my_tp['gene_info'] = gene_dict
             order_my_tp['gap_statement'] = am_i_gapped['gap_position']
             order_my_tp['transcript_variant_error'] = am_i_gapped['error']
 
