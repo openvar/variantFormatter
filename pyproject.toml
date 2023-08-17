@@ -19,7 +19,7 @@ keywords = ["bioinformatics",
 
 requires-python = ">=3.9"
 
-dependencies = ["biocommons.seqrepo>=0.5.1"]
+dependencies = []
 
 classifiers = [
   # How mature is this project? Common values are
@@ -54,6 +54,9 @@ classifiers = [
 py-modules = ["VariantFormatter"]
 
 [tool.setuptools_scm]
+
+[tool.poetry.packages]
+include = ["VariantFormatter", "VariantFormatter.*"]
 
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel"]
