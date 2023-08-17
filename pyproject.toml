@@ -55,9 +55,6 @@ py-modules = ["VariantFormatter"]
 
 [tool.setuptools_scm]
 
-[tool.poetry.packages]
-include = ["VariantFormatter", "VariantFormatter.*"]
-
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel"]
 build-backend = "setuptools.build_meta"
