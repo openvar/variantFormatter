@@ -1,0 +1,60 @@
+[project]
+name = "VariantFormatter"
+dynamic = ["version"]
+description = "Accurate conversion of Pseudo VCF variants into the HGVS format and mapping between reference sequences"
+license = {file = "LICENSE.txt"}
+authors = [{name = "VariantValidator Contributors", email = "admin@variantvalidator.org"}]
+readme = "README.md"
+keywords = ["bioinformatics",
+        "computational biology",
+        "genome variants",
+        "genome variation",
+        "genomic variants",
+        "genomic variation",
+        "genomics",
+        "hgvs",
+        "HGVS",
+        "sequencevariants"
+]
+
+requires-python = ">=3.9"
+
+dependencies = ["VariantValidator@git+https://github.com/openvar/variantValidator@master#egg=VariantValidator"]
+
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 5 - Production/Stable",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Build Tools",
+
+  # Pick your license as you wish
+  "License :: OSI Approved :: AGPL-3.0",
+
+  # Specify the Python versions you support here. In particular, ensure
+  # that you indicate you support Python 3. These classifiers are *not*
+  # checked by "pip install". See instead "python_requires" below.
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
+
+[project.urls]
+"Homepage" = "https://variantvalidator.org/"
+"Source" = "https://github.com/openvar/variantFormatter"
+"Bug Reports" = "https://github.com/openvar/variantValidator/issues"
+"Say Thanks!" = "https://www.buymeacoffee.com/VariantValidatr"
+
+[tool.setuptools]
+py-modules = ["VariantFormatter"]
+
+[tool.setuptools_scm]
+
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
