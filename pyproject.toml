@@ -19,7 +19,7 @@ keywords = ["bioinformatics",
 
 requires-python = ">=3.9"
 
-dependencies = []
+dependencies = ["biocommons.seqrepo>=0.5.1"]
 
 classifiers = [
   # How mature is this project? Common values are
