@@ -19,7 +19,7 @@ keywords = ["bioinformatics",
 
 requires-python = ">=3.9"
 
-dependencies = ["VariantValidator@git+https://github.com/openvar/variantValidator@master#egg=VariantValidator"]
+dependencies = []
 
 classifiers = [
   # How mature is this project? Common values are
