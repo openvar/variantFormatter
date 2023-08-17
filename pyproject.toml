@@ -50,10 +50,14 @@ classifiers = [
 "Bug Reports" = "https://github.com/openvar/variantValidator/issues"
 "Say Thanks!" = "https://www.buymeacoffee.com/VariantValidatr"
 
-[tool.setuptools]
-py-modules = ["VariantFormatter"]
-
 [tool.setuptools_scm]
+
+[tool.setuptools.packages.find]
+where = ["."]  # Look for packages in the 'root' directory
+include = ["VariantFormatter*"]  # Match package names starting with "VariantFormatter"
+
+[tool.poetry.packages]
+include = ["VariantFormatter", "VariantFormatter.*"]  # Include main package and sub-packages
 
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel"]
