@@ -7,8 +7,8 @@ This object connects to the hgvs Python library and soosciated databses
 The Initialization object is used by FormatVariant
 The FormatVariant object contains all HGVS descriptions available for a given genomic variant, g_to_p
 """
-import json
 # import modules
+import json
 import re
 import collections
 import copy
