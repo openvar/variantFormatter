@@ -16,6 +16,7 @@ import vvhgvs.exceptions
 import VariantFormatter.formatter as formatter
 import VariantValidator.modules.liftover as lo
 
+
 # Custom Exceptions
 class vcf2hgvsError(Exception):
     pass
@@ -34,8 +35,9 @@ class GenomicDescriptions(object):
     """
     Object contains genomic level sequence variant descriptions in the pseudo vcf (p_vcf)
     genomic hgvs (g_hgvs) and un-normalized g_hgvs. The reference bases are the HGVS
-    description reference nucleotide sequence corresponding to the specified range 
+    description reference nucleotide sequence corresponding to the specified range
     """
+
     # Initialise and add initialisation data to the object
     def __init__(self, p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build, variant_description):
         if p_vcf == "None":
@@ -78,7 +80,7 @@ class GenomicDescriptions(object):
         self.gen_error = gen_error
         self.selected_build = genome_build
 
-    
+
 # Create variantformatter object
 class FormatVariant(object):
     """
@@ -86,8 +88,9 @@ class FormatVariant(object):
     Configuration metadata i.e. input variant_description, genome_build, transcript_model
     and specified transcripts;
     GenomicDescriptions object;
-    transcript and protein level descriptions - includes gap checking!    
+    transcript and protein level descriptions - includes gap checking!
     """
+
     # Initialise and add initialisation data to the object
     def __init__(self, variant_description, genome_build, vfo, transcript_model=None, specify_transcripts=None,
                  checkOnly=False, liftover=False):
@@ -98,7 +101,7 @@ class FormatVariant(object):
         self.warning_level = None
         gen_error = None
         self.liftover = liftover
-        
+
         if genome_build not in ['GRCh37', 'GRCh38', 'hg19', 'hg38']:
             p_vcf = None
             g_hgvs = None
@@ -114,7 +117,7 @@ class FormatVariant(object):
             self.genome_build = genome_build
 
         if transcript_model is None:
-            transcript_model = 'all' 
+            transcript_model = 'all'
         if transcript_model not in ['ensembl', 'refseq', 'all']:
             p_vcf = None
             g_hgvs = None
@@ -149,7 +152,7 @@ class FormatVariant(object):
                     try:
                         if "primary_assembly_loci" in val_val.keys():
                             reset_variant = val_val["primary_assembly_loci"][genome_build.lower()
-                                                                             ]["hgvs_genomic_description"]
+                            ]["hgvs_genomic_description"]
                             validation_warned = val_val["validation_warnings"]
                             edit_warnings = []
                             for wrn in validation_warned:
@@ -195,7 +198,7 @@ class FormatVariant(object):
                 p_vcf = ':'.join(vcf_list)
             except Exception as e:
                 if "Variant span is outside sequence bounds" in str(e):
-                    e = "The specified coordinate is outside the boundaries of reference sequence %s" % self.\
+                    e = "The specified coordinate is outside the boundaries of reference sequence %s" % self. \
                         variant_description.split(':')[0]
                 p_vcf = None
                 g_hgvs = None
@@ -212,7 +215,7 @@ class FormatVariant(object):
                 genomic_level = formatter.vcf2hgvs_genomic(p_vcf, self.genome_build, self.vfo)
             except Exception as e:
                 if "Variant span is outside sequence bounds" in str(e):
-                    e = "The specified coordinate is outside the boundaries of reference sequence %s" % self.\
+                    e = "The specified coordinate is outside the boundaries of reference sequence %s" % self. \
                         variant_description.split(':')[0]
                 p_vcf = None
                 g_hgvs = None
@@ -246,7 +249,7 @@ class FormatVariant(object):
                     gen_error = self.variant_description + " updated to " + str(formatter.remove_reference(g_hgvs))
                 else:
                     gen_error = None
-            
+
         # vcf2hgvs route
         elif re.match('chr[\w\d]+\-', self.variant_description) or re.match(
                 'chr[\w\d]+:', self.variant_description) or re.match('[\w\d]+\-', self.variant_description) \
@@ -272,7 +275,7 @@ class FormatVariant(object):
                 g_hgvs = genomic_level['hgvs_genomic']
                 un_norm_hgvs = genomic_level['un_normalized_hgvs_genomic']
                 hgvs_ref_bases = genomic_level['ref_bases']
-        
+
         # Not recognised
         else:
             p_vcf = None
@@ -342,12 +345,15 @@ class FormatVariant(object):
             tx_id = tx_alignment_data[0]
 
             # Get transcript annotations
-            annotation = vfo.db.get_transcript_annotation(tx_id)
-            annotation_dict = json.loads(annotation)
-            gene_symbol = vfo.db.get_gene_symbol_from_transcript_id(tx_id)
-            select_dict = {}
-            gene_dict = {"symbol": gene_symbol,
-                         "hgnc_id": annotation_dict["db_xref"]["hgnc"]}
+            try:
+                annotation = vfo.db.get_transcript_annotation(tx_id)
+                annotation_dict = json.loads(annotation)
+                gene_symbol = vfo.db.get_gene_symbol_from_transcript_id(tx_id)
+                select_dict = {}
+                gene_dict = {"symbol": gene_symbol,
+                             "hgnc_id": annotation_dict["db_xref"]["hgnc"]}
+            except json.decoder.JSONDecodeError:
+                continue
 
             for k, v in annotation_dict.items():
                 if v == "true" or v is True:
@@ -437,7 +443,7 @@ class FormatVariant(object):
                     if am_i_gapped['hgvs_transcript'].type == 'n':
                         hgvs_protein_tlc = None
                         hgvs_protein_slc = None
-            
+
                 # add to dictionary
                 if hgvs_protein_tlc is not None:
                     am_i_gapped['hgvs_protein_tlc'] = str(hgvs_protein_tlc)
@@ -446,7 +452,7 @@ class FormatVariant(object):
                     am_i_gapped['hgvs_protein_tlc'] = hgvs_protein_tlc
                     am_i_gapped['hgvs_protein_slc'] = hgvs_protein_slc
                 am_i_gapped['error'] = hgvs_transcript_dict['error']
-                        
+
                 # Remove ref bases
                 removed_ref_tx = formatter.remove_reference(am_i_gapped['hgvs_transcript'])
                 am_i_gapped['hgvs_transcript'] = str(removed_ref_tx)
@@ -541,13 +547,13 @@ class FormatVariant(object):
 
             # add to output dictionary keyed by tx_ac
             prelim_transcript_descriptions[tx_id] = order_my_tp
-            
+
         self.t_and_p_descriptions = prelim_transcript_descriptions
-    
+
     # Create ordered output
-    def stucture_data(self):        
+    def stucture_data(self):
         bring_order = collections.OrderedDict()
-        
+
         # Add the data to the ordered dictionary structure
         bring_order['p_vcf'] = self.genomic_descriptions.p_vcf
         if self.genomic_descriptions.g_hgvs is not None:
@@ -558,7 +564,7 @@ class FormatVariant(object):
                     self.genomic_descriptions.gen_error = self.genomic_descriptions.gen_error.replace(":g.", ":m.")
                 except AttributeError:
                     pass
-        bring_order['g_hgvs'] = self.genomic_descriptions.g_hgvs # Is the removed ref version!
+        bring_order['g_hgvs'] = self.genomic_descriptions.g_hgvs  # Is the removed ref version!
         bring_order['selected_build'] = self.genomic_descriptions.selected_build
         bring_order['genomic_variant_error'] = self.genomic_descriptions.gen_error
         try:
@@ -605,7 +611,7 @@ class FormatVariant(object):
             bring_order['hgvs_t_and_p'] = None
         brought_order = {str(self.variant_description): bring_order}
         return brought_order
-        
+
     def collect_metadata(self):
         meta = collections.OrderedDict()
         meta['api_version'] = self.vfo.version
@@ -613,7 +619,6 @@ class FormatVariant(object):
         meta['uta_schema'] = self.vfo.utaVersion
         meta['seqrepo_db'] = self.vfo.seqrepoVersion
         return meta
-                
 
 # <LICENSE>
 # Copyright (C) 2016-2023 VariantValidator Contributors

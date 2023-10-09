@@ -57,6 +57,7 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         if re.match('chr[\w\d]+-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+-', variant)\
                 or re.match('[\w\d]+:', variant):
             pseudo_vcf = variant
+
             if re.search(':', pseudo_vcf):
                 vcf_list = pseudo_vcf.split(':')
                 delimiter = ':'
@@ -89,10 +90,12 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         else:
             format_these.append(variant)
 
-        # Processing
         for needs_formatting in format_these:
-            result = vf.FormatVariant(needs_formatting, genome_build, validator,  transcript_model, specify_transcripts,
+            try:
+                result = vf.FormatVariant(needs_formatting, genome_build, validator,  transcript_model, specify_transcripts,
                                       checkOnly, liftover)
+            except Exception as e:
+                import traceback
             res = result.stucture_data()
             formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
