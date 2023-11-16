@@ -505,10 +505,10 @@ class FormatVariant(object):
                                                )
 
                     if "am_i_gapped" in current_lift.keys():
-                        if order_my_tp['gapped_alignment_warning'] is "":
+                        if order_my_tp['gapped_alignment_warning'] == "":
                             order_my_tp['gapped_alignment_warning'] = current_lift['am_i_gapped'][
                                 'gapped_alignment_warning']
-                        if order_my_tp['gap_statement'] is "":
+                        if order_my_tp['gap_statement'] == "":
                             order_my_tp['gap_statement'] = current_lift['am_i_gapped']['gap_position']
                         current_lift.pop("am_i_gapped")
 
