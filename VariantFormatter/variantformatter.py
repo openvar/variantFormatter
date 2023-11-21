@@ -271,7 +271,15 @@ class FormatVariant(object):
                     self.genomic_descriptions = gds
                     self.warning_level = 'genomic_variant_warning'
                     return
-                p_vcf = self.variant_description
+                vcf_dictionary = formatter.hgvs_genomic2vcf(genomic_level['hgvs_genomic'], self.genome_build, self.vfo)
+                if vcf_dictionary['grc_chr'] == "NC_001807.4" and genome_build == "hg19":
+                    chr_num = vcf_dictionary['ucsc_chr']
+                else:
+                    chr_num = vcf_dictionary['grc_chr']
+                vcf_list = [chr_num, vcf_dictionary['pos'], vcf_dictionary['ref'],
+                            vcf_dictionary['alt']]
+
+                p_vcf = '-'.join(vcf_list)
                 g_hgvs = genomic_level['hgvs_genomic']
                 un_norm_hgvs = genomic_level['un_normalized_hgvs_genomic']
                 hgvs_ref_bases = genomic_level['ref_bases']
@@ -456,7 +464,7 @@ class FormatVariant(object):
                 # Remove ref bases
                 removed_ref_tx = formatter.remove_reference(am_i_gapped['hgvs_transcript'])
                 am_i_gapped['hgvs_transcript'] = str(removed_ref_tx)
-                # Seelct status
+                # Select status
                 am_i_gapped['select_status'] = select_dict
 
             # Order the tx_p output
