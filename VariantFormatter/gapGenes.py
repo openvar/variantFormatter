@@ -101,7 +101,6 @@ def compensate_g_to_t(hgvs_tx,
                                                                                                          nw_rel_var[0],
                                                                                                          "")
 
-
             # Populate output list
             gap_compensated_tx_2 = [nw_rel_var[0]]
             if "does not represent a true variant" in data["gapped_alignment_warning"] \
