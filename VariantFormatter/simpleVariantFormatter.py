@@ -9,6 +9,7 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 """
 
 import re
+import json
 import collections
 import VariantValidator
 import VariantFormatter
@@ -40,7 +41,11 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
     if is_a_list is True:
         batch_list = batch_input
     else:
-        batch_list = batch_input.split('|')
+        try:
+            batch_list = json.loads(batch_input)
+        except json.decoder.JSONDecodeError:
+            batch_list = [batch_input]
+
     # batch_vars = []
     formatted_variants = collections.OrderedDict()
     for variant in batch_list:

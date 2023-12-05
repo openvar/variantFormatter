@@ -327,7 +327,11 @@ class FormatVariant(object):
         # Transcripts specified
         if self.specify_transcripts is not None and "select" not in self.specify_transcripts \
                 and "mane" not in self.specify_transcripts and 'raw' not in self.specify_transcripts:
-            trans_list = str(self.specify_transcripts).split('|')
+            try:
+                trans_list = json.loads(str(self.specify_transcripts))
+            except json.decoder.JSONDecodeError:
+                trans_list = [str(self.specify_transcripts)]
+
             for tx in trans_list:
                 transcript_list.append([tx, ''])
 
