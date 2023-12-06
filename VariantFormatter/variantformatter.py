@@ -290,7 +290,9 @@ class FormatVariant(object):
             g_hgvs = None
             hgvs_ref_bases = None
             un_norm_hgvs = None
-            gen_error = 'Variant description ' + self.variant_description + ' is not in a supported format'
+            gen_error = 'Variant description ' + self.variant_description + ' is not in a supported format. ' \
+                                                                            'This tool accepts vcf-like and HGVS ' \
+                                                                            'genomic (g.) descriptions only'
             gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
                                       variant_description)
             self.genomic_descriptions = gds
@@ -327,7 +329,11 @@ class FormatVariant(object):
         # Transcripts specified
         if self.specify_transcripts is not None and "select" not in self.specify_transcripts \
                 and "mane" not in self.specify_transcripts and 'raw' not in self.specify_transcripts:
-            trans_list = str(self.specify_transcripts).split('|')
+            try:
+                trans_list = json.loads(str(self.specify_transcripts))
+            except json.decoder.JSONDecodeError:
+                trans_list = [str(self.specify_transcripts)]
+
             for tx in trans_list:
                 transcript_list.append([tx, ''])
 
