@@ -59,8 +59,13 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         # Set validation warning flag
         formatted_variants[variant]['flag'] = None
         format_these = []
-        if re.match('chr[\w\d]+-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+-', variant)\
-                or re.match('[\w\d]+:', variant):
+        # specially exclude LRGs as they do not have a "." separated
+        # version number, we don't handle them (yet?) but they are not VCF
+        if not variant.startswith('LRG') and (
+                re.match('chr[\w\d]+-', variant) or
+                re.match('chr[\w\d]+:', variant) or
+                re.match('[\w\d]+-', variant) or
+                re.match('[\w\d]+:', variant)):
             pseudo_vcf = variant
 
             if re.search(':', pseudo_vcf):
