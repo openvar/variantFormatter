@@ -28,9 +28,6 @@ import vvhgvs.normalizer
 import vvhgvs.validator
 import vvhgvs.sequencevariant
 
-# import other required modules
-from Bio.Seq import Seq
-
 # Import VariantFormatter modules
 import VariantValidator.modules.hgvs_utils as hgvs_utils
 import VariantValidator.modules.seq_data as chr_dict
@@ -77,6 +74,7 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, vfo):
             pos = vcf_list[1]
             ref = vcf_list[2]
             alt = vcf_list[3]
+
             # assemble the HGVS genomic description
             ac = chr_dict.to_accession(chrom, genome_build)
             if ac is None:
@@ -174,7 +172,10 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
             hgvs_genomic = hn.normalize(hgvs_genomic)
         # directly map from the normalized genomic variant to the transcript variant
         try:
-            hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id)
+            if "ENST" in tx_id:
+                hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="genebuild")
+            else:
+                hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="splign")
         except vvhgvs.exceptions.HGVSError as e:
             hgvs_genomic_to_hgvs_transcript['error'] = str(e)
         else:            
@@ -218,15 +219,14 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, vfo):
         alt_aln_method = 'splign'
         hn = vfo.splign_normalizer
         rhn = vfo.reverse_splign_normalizer 
-    
-    
+
     # Create vfo.vm
     evm = vvhgvs.assemblymapper.AssemblyMapper(vfo.hdp,
-                                             assembly_name=genome_build,
-                                             alt_aln_method=alt_aln_method, # Only RefSeq should be here!!!
-                                             normalize=True,
-                                             replace_reference=True
-                                             )    
+                                               assembly_name=genome_build,
+                                               alt_aln_method=alt_aln_method,  # Only RefSeq should be here!!!
+                                               normalize=True,
+                                               replace_reference=True
+                                               )
     
     # Create dictionary to store the information    
     re_to_p = False
@@ -234,57 +234,81 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, vfo):
     hgvs_transcript_to_hgvs_protein = hgvs_transcript_to_hgvs_protein['hgvs_protein']
     return hgvs_transcript_to_hgvs_protein
 
+
 """
 Return all aligned transcripts for a given genomic hgvs object
 """
 
 
-def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo):
+def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo, genome_build):
     tx_list = []
+
+    # Set genome build to correct format
+    if "38" in genome_build:
+        genome_build = "GRCh38"
+    else:
+        genome_build = "GRCh37"
 
     if transcript_model == 'ensembl' or transcript_model == 'all':
         enst_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base - 1,
-                                          hgvs_genomic.posedit.pos.end.base)
+                                              hgvs_genomic.posedit.pos.end.base)
         
         # Transcript edge antisense!
         if enst_list == []:
             enst_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'genebuild', hgvs_genomic.posedit.pos.start.base,
                                                   hgvs_genomic.posedit.pos.end.base - 1)
 
+        evm = vvhgvs.assemblymapper.AssemblyMapper(vfo.hdp,
+                                                   assembly_name=genome_build,
+                                                   alt_aln_method="genebuild",
+                                                   normalize=True,
+                                                   replace_reference=True
+                                                   )
+        enst_list_3 = []
+        enst_list_2 = evm.relevant_transcripts(hgvs_genomic)
+        for tx in enst_list_2:
+            enst_list_3.append([tx])
+
         # Remove transcripts with incomplete identifiers
         cp_enst_list = []
         for et in enst_list:
             if re.search('\d+\.\d+', et[0]):
                 cp_enst_list.append(et)
+
+        cp_enst_list_3 = []
+        for et in enst_list_3:
+            if re.search('\d+\.\d+', et[0]):
+                cp_enst_list_3.append(et)
     
-        tx_list = tx_list + cp_enst_list
+        tx_list = tx_list + cp_enst_list + cp_enst_list_3
 
     if transcript_model == 'refseq' or transcript_model == 'all':   
         refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base - 1,
-                                            hgvs_genomic.posedit.pos.end.base)
-
-        # Keeping these print statements because they enable us to check UTA alignment errors
-        # print('\nIn A')
-        # print(refseq_list)
-        # print(hgvs_genomic)
-        # print('end')
-
+                                                hgvs_genomic.posedit.pos.end.base)
 
         # Transcript edge antisense! - If doesn't map, will be weeded out downstream!
         if refseq_list == []:
             refseq_list = vfo.hdp.get_tx_for_region(hgvs_genomic.ac, 'splign', hgvs_genomic.posedit.pos.start.base,
-                                            hgvs_genomic.posedit.pos.end.base - 1)
+                                                    hgvs_genomic.posedit.pos.end.base - 1)
 
-        tx_list = tx_list + refseq_list
+        evm = vvhgvs.assemblymapper.AssemblyMapper(vfo.hdp,
+                                                   assembly_name=genome_build,
+                                                   alt_aln_method="splign",
+                                                   normalize=True,
+                                                   replace_reference=True
+                                                   )
+        refseq_list_3 = []
+        refseq_list_2 = evm.relevant_transcripts(hgvs_genomic)
+        for tx in refseq_list_2:
+            refseq_list_3.append([tx])
 
-        # Keeping these print statements because they enable us to check UTA alignment errors
-        # print(['gene', 'tx', 'chr', 'aln', 'ori', 'exon', 'tx_st', 'tx_end', 'chr_st', 'chr_end', 'cigar'])
-        # for tx in tx_list:
-        #     exons = vfo.hdp.get_tx_exons(tx[0], tx[1], tx[3])
-        #     for e in exons:
-        #         print(e[0:11])
+        tx_list = tx_list + refseq_list + refseq_list_3
 
+    # Filter out non-latest
+    if vfo.select_transcripts != 'raw':
+        tx_list = vfo.transcript_filter(tx_list)
     return tx_list
+
 
 """
 Return the relevant protein sequence for a given transcript reference sequence
@@ -300,14 +324,15 @@ def fetch_encoded_protein(tx_ac, vfo):
 format protein description into single letter aa code
 """
 
+
 def single_letter_protein(hgvs_protein):
-    hgvs_protein_slc = hgvs_protein.format({'p_3_letter': False})
-    return hgvs_protein_slc
-    
+    return hgvs_protein.format({'p_3_letter': False})
+
     
 """
 format nucleotide descriptions to not display reference base
 """
+
 
 def remove_reference(hgvs_nucleotide):
     hgvs_nucleotide_refless = hgvs_nucleotide.format({'max_ref_length': 0})
@@ -319,25 +344,19 @@ check RefSeq hgvs_tx descriptions for gaps
 """
 
 
-def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_build, vfo):
-    
+def gap_checker(hgvs_transcript, hgvs_genomic, genome_build, vfo):
     tx_id = hgvs_transcript.ac
     if re.match('ENST', tx_id):
-        alt_aln_method = 'genebuild'
         hn = vfo.genebuild_normalizer
         rhn = vfo.reverse_genebuild_normalizer
     elif re.match('NM', tx_id) or re.match('NR', tx_id):
-        alt_aln_method = 'splign'
         hn = vfo.splign_normalizer
         rhn = vfo.reverse_splign_normalizer
     
     # Set other variables
     hdp = vfo.hdp
     vm = vfo.vm
-    hp = vfo.hp
-    sf = vfo.sf
-    hgvs_version = vfo.hgvsVersion
-    
+
     # Check for gapping
     checked = gapGenes.compensate_g_to_t(hgvs_transcript,
                                          hgvs_genomic,
@@ -352,7 +371,7 @@ def gap_checker(hgvs_transcript, hgvs_genomic, un_norm_hgvs_genomic, genome_buil
     
 
 # <LICENSE>
-# Copyright (C) 2019 VariantValidator Contributors
+# Copyright (C) 2016-2023 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as

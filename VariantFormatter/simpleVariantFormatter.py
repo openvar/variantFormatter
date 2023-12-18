@@ -9,6 +9,7 @@ The FormatVariant object contains all HGVS descriptions available for a given ge
 """
 
 import re
+import json
 import collections
 import VariantValidator
 import VariantFormatter
@@ -17,18 +18,34 @@ vfo = VariantValidator.Validator()
 
 # Collect metadata
 metadata = vfo.my_config()
+print(metadata)
 metadata['variantformatter_version'] = VariantFormatter.__version__
+sr_root, sr_version = metadata['vvseqrepo_db'].split('/')[-2:]
+metadata['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
 
 
-def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None, checkOnly=False, liftover=False):
+# If called in a threaded environment you MUST set validator to a thread local
+# VariantValidator instance, due to non thread-safe SQLite3 access via SeqRepo
+def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None,
+           checkOnly=False, liftover=False, validator=vfo, testing=False):
+
+    # Testing?
+    if testing is True:
+        validator.testing = True
+
     # Set select_transcripts == 'all' to None
+    vfo.select_transcripts = specify_transcripts
     if specify_transcripts == 'all':
         specify_transcripts = None
     is_a_list = type(batch_input) is list
     if is_a_list is True:
         batch_list = batch_input
     else:
-        batch_list = batch_input.split('|')
+        try:
+            batch_list = json.loads(batch_input)
+        except json.decoder.JSONDecodeError:
+            batch_list = [batch_input]
+
     # batch_vars = []
     formatted_variants = collections.OrderedDict()
     for variant in batch_list:
@@ -42,9 +59,15 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         # Set validation warning flag
         formatted_variants[variant]['flag'] = None
         format_these = []
-        if re.match('chr[\w\d]+\-', variant) or re.match('chr[\w\d]+:', variant) or re.match('[\w\d]+\-', variant)\
-                or re.match('[\w\d]+:', variant):
+        # specially exclude LRGs as they do not have a "." separated
+        # version number, we don't handle them (yet?) but they are not VCF
+        if not variant.startswith('LRG') and (
+                re.match('chr[\w\d]+-', variant) or
+                re.match('chr[\w\d]+:', variant) or
+                re.match('[\w\d]+-', variant) or
+                re.match('[\w\d]+:', variant)):
             pseudo_vcf = variant
+
             if re.search(':', pseudo_vcf):
                 vcf_list = pseudo_vcf.split(':')
                 delimiter = ':'
@@ -52,9 +75,9 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                 vcf_list = pseudo_vcf.split('-')
                 delimiter = '-'
             if len(vcf_list) != 4:
-                formatted_variants[variant]['errors'].append(
-                    '%s is an unsupported format: For assistance, submit variant description to '
-                    'https://rest.variantvalidator.org') % pseudo_vcf
+                error = ('%s is an unsupported format: For assistance, submit variant description '
+                         'to https://rest.variantvalidator.org' % str(pseudo_vcf))
+                formatted_variants[variant]['errors'].append(error)
                 formatted_variants[variant]['flag'] = 'submission_warning'
                 continue
             if ',' in str(vcf_list[-1]):
@@ -68,19 +91,21 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                 try:
                     format_these.append(variant)
                 except Exception:
-                    formatted_variants[variant]['errors'].append(
-                        '%s is an unsupported format: For assistance, submit variant description to '
-                        'https://rest.variantvalidator.org') % variant
+                    error = ('%s is an unsupported format: For assistance, submit variant description '
+                             'to https://rest.variantvalidator.org' % variant)
+                    formatted_variants[variant]['errors'].append(error)
                     formatted_variants[variant]['flag'] = 'submission_warning'
                     continue
 
         else:
             format_these.append(variant)
 
-        # Processing
         for needs_formatting in format_these:
-            result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model, specify_transcripts,
+            try:
+                result = vf.FormatVariant(needs_formatting, genome_build, validator,  transcript_model, specify_transcripts,
                                       checkOnly, liftover)
+            except Exception as e:
+                import traceback
             res = result.stucture_data()
             formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
@@ -91,7 +116,7 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
 
 
 # <LICENSE>
-# Copyright (C) 2019 VariantValidator Contributors
+# Copyright (C) 2016-2023 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as

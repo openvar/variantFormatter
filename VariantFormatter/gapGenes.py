@@ -1,20 +1,14 @@
 # -*- coding: utf-8 -*-
 
 # Import python modules
-# from distutils.version import StrictVersion
 import re
-# import copy
 import vvhgvs.exceptions
 import vvhgvs.assemblymapper
 import vvhgvs.variantmapper
-
-# VV
 import VariantValidator
 import VariantValidator.modules.seq_data as seq_data
-# import VariantValidator.modules.hgvs_utils as va_H2V
 import VariantValidator.modules.gapped_mapping
 from VariantValidator.modules.variant import Variant
-# vval = VariantValidator.Validator()
 
 
 """
@@ -45,29 +39,31 @@ def compensate_g_to_t(hgvs_tx,
                       hdp,
                       vfo):
 
+    # Set Variable
+    re_hash_hgvs_genomic = hgvs_genomic
+
     # Not required in these instances
-    if re.match('ENST', hgvs_tx.ac): # or (StrictVersion(str(hgvs_version)) > StrictVersion('1.1.3') is True):
+    if re.match('ENST', hgvs_tx.ac):  # or (StrictVersion(str(hgvs_version)) > StrictVersion('1.1.3') is True):
         
         # Push to absolute position
         normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer,
-                                             hdp, vm, vfo)
+                                        vm, vfo)
         hgvs_tx_returns = [normalized_tx, False, None, None, None]
 
     else:
         gene_symbol = hdp.get_tx_identity_info(hgvs_tx.ac)[6]
+
         # Check the blacklist
         gap_compensation = gap_black_list(gene_symbol)
-        # print('Is gapped = ' + str(gap_compensation))
         if gap_compensation is False:
             normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, 
-                                                reverse_normalizer, hdp, vm, vfo)
+                                            reverse_normalizer, vm, vfo)
             hgvs_tx_returns = [normalized_tx, False, None, None, None]
         else:
 
             """
             Code now modified to use native VV gap mapper
             """
-
             # VV functions require evm instances
             no_norm_evm = vvhgvs.assemblymapper.AssemblyMapper(hdp,
                                                                assembly_name=primary_assembly,
@@ -96,12 +92,17 @@ def compensate_g_to_t(hgvs_tx,
             variant.vm = vm
             variant.primary_assembly = primary_assembly
             variant.post_format_conversion = hgvs_genomic
+
+            # Map the gap
             gap_mapper = VariantValidator.modules.gapped_mapping.GapMapper(variant, vfo)
             data, nw_rel_var = gap_mapper.gapped_g_to_c([str(hgvs_tx)], select_transcripts_dict={})
+            ori = vfo.tx_exons(tx_ac=hgvs_tx.ac, alt_ac=hgvs_genomic.ac, alt_aln_method=vfo.alt_aln_method)
+            re_hash_hgvs_genomic, suppress_c_normalization, hgvs_coding = gap_mapper.g_to_t_compensation(ori,
+                                                                                                         nw_rel_var[0],
+                                                                                                         "")
 
             # Populate output list
-            gap_compensated_tx_2 = []
-            gap_compensated_tx_2.append(nw_rel_var[0])
+            gap_compensated_tx_2 = [nw_rel_var[0]]
             if "does not represent a true variant" in data["gapped_alignment_warning"] \
                     or "may be an artefact of" in data["gapped_alignment_warning"]:
                 gap_compensated_tx_2.append(True)
@@ -125,17 +126,17 @@ def compensate_g_to_t(hgvs_tx,
 
             if gap_compensated_tx_2[1] is False:
                 refresh_hgvs_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
-                                                reverse_normalizer, hdp, vm, vfo)
+                                                  reverse_normalizer, vm, vfo)
                 gap_compensated_tx_2[0] = refresh_hgvs_tx
             hgvs_tx_returns = gap_compensated_tx_2
 
     # Create response dictionary for gap mapping output
     hgvs_tx_dict = {'hgvs_transcript': hgvs_tx_returns[0],
-                    # 'position_lock': hgvs_tx_returns[1],
                     'gapped_alignment_warning': hgvs_tx_returns[3],
                     'corrective_action': hgvs_tx_returns[2],
                     'gap_position': hgvs_tx_returns[-1],
-                    'transcript_accession': hgvs_tx_returns[0].ac
+                    'transcript_accession': hgvs_tx_returns[0].ac,
+                    'hgvs_genomic': re_hash_hgvs_genomic
                     }
 
     return hgvs_tx_dict
@@ -143,12 +144,11 @@ def compensate_g_to_t(hgvs_tx,
 
 """
 Fully normalizes the hgvs_tx variant from the hgvs_genomic variant
-
 Is only activated if the g_to_t_compensation_code IS NOT USED!
 """
 
 
-def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm, vfo):
+def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, vm, vfo):
     
     # set required variables
     tx_id = hgvs_tx.ac
@@ -161,32 +161,27 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, hdp, vm, vfo)
     # Obtain the orientation of the transcript wrt selected genomic accession
     exon_alignments = vfo.tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
     orientation = int(exon_alignments[0]['alt_strand'])
+
     # Normalize the genomic variant 5 prime if antisense or 3 prime if sense
     if orientation == -1:
         hgvs_genomic = rhn.normalize(hgvs_genomic)
     else:
         hgvs_genomic = hn.normalize(hgvs_genomic)
 
-    # print('Try 1')
     try:
         hgvs_tx = vm.g_to_t(hgvs_genomic, hgvs_tx.ac)
-    except vvhgvs.exceptions.HGVSError as e:
-        # print('Error area 1')
-        # print(e)
+    except vvhgvs.exceptions.HGVSError:
         pass
-    # print('Try 2')
     try:
         hgvs_tx = hn.normalize(hgvs_tx)
-    except vvhgvs.exceptions.HGVSError as e:
-        # print('Error area 2')
-        # print(e)
+    except vvhgvs.exceptions.HGVSError:
         pass
         
     return hgvs_tx
 
     
 # <LICENSE>
-# Copyright (C) 2019 VariantValidator Contributors
+# Copyright (C) 2016-2023 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
