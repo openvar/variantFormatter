@@ -368,6 +368,8 @@ class FormatVariant(object):
                              "hgnc_id": annotation_dict["db_xref"]["hgnc"]}
             except json.decoder.JSONDecodeError:
                 continue
+            except KeyError:
+                continue
 
             for k, v in annotation_dict.items():
                 if v == "true" or v is True:
