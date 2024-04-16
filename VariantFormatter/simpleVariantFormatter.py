@@ -101,11 +101,14 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
             format_these.append(variant)
 
         for needs_formatting in format_these:
+
             try:
                 result = vf.FormatVariant(needs_formatting, genome_build, validator,  transcript_model, specify_transcripts,
                                       checkOnly, liftover)
             except Exception as e:
                 import traceback
+                traceback.print_exc()
+
             res = result.stucture_data()
             formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
