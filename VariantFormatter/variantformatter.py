@@ -407,6 +407,9 @@ class FormatVariant(object):
                     select_dict = copy.copy(c_select_dict)
 
             hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.vfo)
+            
+            print(g_hgvs)
+            print(hgvs_transcript_dict)
 
             # Gap checking
             try:
