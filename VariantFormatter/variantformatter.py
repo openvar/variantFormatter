@@ -448,7 +448,7 @@ class FormatVariant(object):
                 am_i_gapped = {'hgvs_transcript': None, 'position_lock': False, 'gapped_alignment_warning': None,
                                'corrective_action': None, 'gap_position': None, 'transcript_accession': tx_id,
                                'error': hgvs_transcript_dict['error'], 'hgvs_protein_tlc': None,
-                               'hgvs_protein_slc': None}
+                               'hgvs_protein_slc': None, 'select_status': None}
 
             # add to dictionary
             else:
