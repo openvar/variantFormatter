@@ -38,7 +38,8 @@ def compensate_g_to_t(hgvs_tx,
                       primary_assembly,
                       hdp,
                       vfo,
-                      transcript_model="refseq"):
+                      transcript_model="refseq",
+                      mixed_transcrript_model=True):
 
     # Set Variable
     re_hash_hgvs_genomic = hgvs_genomic
@@ -48,10 +49,19 @@ def compensate_g_to_t(hgvs_tx,
 
     # Check the blacklist
     gap_compensation = gap_black_list(gene_symbol)
-    if transcript_model == "ensembl":
-        alt_aln_method = 'genebuild'
+
+    # Set alt_aln_method
+    if mixed_transcrript_model is not True:
+        if transcript_model == "ensembl":
+            alt_aln_method = 'genebuild'
+        else:
+            alt_aln_method = 'splign'
     else:
-        alt_aln_method = 'splign'
+        if "ENST" in hgvs_tx.ac:
+            alt_aln_method = 'genebuild'
+        else:
+            alt_aln_method = 'splign'
+
     if gap_compensation is False:
         normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
                                         reverse_normalizer, vm, vfo)
