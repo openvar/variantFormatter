@@ -439,7 +439,7 @@ class FormatVariant(object):
             # Gap checking
             try:
                 am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs,
-                                                    self.genome_build, self.vfo)
+                                                    self.genome_build, self.vfo, transcript_model=self.transcript_model)
             except Exception:
                 self.warning_level = 'processing_error'
                 if hgvs_transcript_dict['error'] == '':
