@@ -29,7 +29,6 @@ metadata['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
 def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None,
            checkOnly=False, liftover=False, validator=vfo, testing=False):
 
-    print("About to format variants")
     # Testing?
     if testing is True:
         validator.testing = True
