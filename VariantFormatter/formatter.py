@@ -344,7 +344,7 @@ check RefSeq hgvs_tx descriptions for gaps
 """
 
 
-def gap_checker(hgvs_transcript, hgvs_genomic, genome_build, vfo):
+def gap_checker(hgvs_transcript, hgvs_genomic, genome_build, vfo, transcript_model="refseq"):
     tx_id = hgvs_transcript.ac
     if re.match('ENST', tx_id):
         hn = vfo.genebuild_normalizer
@@ -365,7 +365,8 @@ def gap_checker(hgvs_transcript, hgvs_genomic, genome_build, vfo):
                                          rhn,
                                          genome_build,
                                          hdp,
-                                         vfo)
+                                         vfo,
+                                         transcript_model=transcript_model)
 
     return checked
     
