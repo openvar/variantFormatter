@@ -103,12 +103,8 @@ def compensate_g_to_t(hgvs_tx,
         variant.post_format_conversion = hgvs_genomic
 
         # Map the gap
-        try:
-            gap_mapper = VariantValidator.modules.gapped_mapping.GapMapper(variant, vfo)
-            data, nw_rel_var = gap_mapper.gapped_g_to_c([str(hgvs_tx)], select_transcripts_dict={})
-        except Exception:
-            import traceback
-            traceback.print_exc()
+        gap_mapper = VariantValidator.modules.gapped_mapping.GapMapper(variant, vfo)
+        data, nw_rel_var = gap_mapper.gapped_g_to_c([str(hgvs_tx)], select_transcripts_dict={})
         ori = vfo.tx_exons(tx_ac=hgvs_tx.ac, alt_ac=hgvs_genomic.ac, alt_aln_method=vfo.alt_aln_method)
         re_hash_hgvs_genomic, suppress_c_normalization, hgvs_coding = gap_mapper.g_to_t_compensation(ori,
                                                                                                      nw_rel_var[0],
