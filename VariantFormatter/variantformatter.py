@@ -115,6 +115,7 @@ class FormatVariant(object):
             return
         else:
             self.genome_build = genome_build
+            vfo.genome_build = genome_build
 
         if transcript_model is None:
             transcript_model = 'all'
@@ -510,9 +511,10 @@ class FormatVariant(object):
             order_my_tp['t_hgvs'] = am_i_gapped['hgvs_transcript']
             order_my_tp['p_hgvs_tlc'] = am_i_gapped['hgvs_protein_tlc']
             order_my_tp['p_hgvs_slc'] = am_i_gapped['hgvs_protein_slc']
-            order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
             order_my_tp['select_status'] = am_i_gapped['select_status']
             order_my_tp['gene_info'] = gene_dict
+            order_my_tp['transcript_version_warning'] = hgvs_transcript_dict["latest_version"]
+            order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
             order_my_tp['gap_statement'] = am_i_gapped['gap_position']
             order_my_tp['transcript_variant_error'] = am_i_gapped['error']
 
