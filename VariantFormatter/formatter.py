@@ -176,7 +176,8 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
             pass
 
     if tx_id not in hgvs_genomic_to_hgvs_transcript["latest_version"]:
-        hgvs_genomic_to_hgvs_transcript["latest_version"] = (f"A more recent version of the selected reference "
+        hgvs_genomic_to_hgvs_transcript["latest_version"] = (f"TranscriptVersionWarning: "
+                                                             f"A more recent version of the selected reference "
                                                              f"sequence {tx_id} is available for genome build "
                                                              f"{vfo.genome_build} "
                                                              f"({hgvs_genomic_to_hgvs_transcript['latest_version']})")
