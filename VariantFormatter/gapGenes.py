@@ -37,98 +37,107 @@ def compensate_g_to_t(hgvs_tx,
                       reverse_normalizer,
                       primary_assembly,
                       hdp,
-                      vfo):
+                      vfo,
+                      transcript_model="refseq",
+                      mixed_transcrript_model=True):
 
     # Set Variable
     re_hash_hgvs_genomic = hgvs_genomic
 
     # Not required in these instances
-    if re.match('ENST', hgvs_tx.ac):  # or (StrictVersion(str(hgvs_version)) > StrictVersion('1.1.3') is True):
-        
-        # Push to absolute position
-        normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer,
-                                        vm, vfo)
-        hgvs_tx_returns = [normalized_tx, False, None, None, None]
+    gene_symbol = hdp.get_tx_identity_info(hgvs_tx.ac)[6]
 
-    else:
-        gene_symbol = hdp.get_tx_identity_info(hgvs_tx.ac)[6]
+    # Check the blacklist
+    gap_compensation = gap_black_list(gene_symbol)
 
-        # Check the blacklist
-        gap_compensation = gap_black_list(gene_symbol)
-        if gap_compensation is False:
-            normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn, 
-                                            reverse_normalizer, vm, vfo)
-            hgvs_tx_returns = [normalized_tx, False, None, None, None]
+    # Set alt_aln_method
+    if mixed_transcrript_model is not True:
+        if transcript_model == "ensembl":
+            alt_aln_method = 'genebuild'
         else:
+            alt_aln_method = 'splign'
+    else:
+        if "ENST" in hgvs_tx.ac:
+            alt_aln_method = 'genebuild'
+        else:
+            alt_aln_method = 'splign'
 
-            """
-            Code now modified to use native VV gap mapper
-            """
-            # VV functions require evm instances
-            no_norm_evm = vvhgvs.assemblymapper.AssemblyMapper(hdp,
-                                                               assembly_name=primary_assembly,
-                                                               alt_aln_method="splign",  # Only RefSeq should be here!!!
-                                                               normalize=False,
-                                                               replace_reference=True
-                                                               )
-            evm = vvhgvs.assemblymapper.AssemblyMapper(hdp,
-                                                       assembly_name=primary_assembly,
-                                                       alt_aln_method="splign",  # Only RefSeq should be here!!!
-                                                       normalize=True,
-                                                       replace_reference=True
-                                                       )
+    if gap_compensation is False:
+        normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
+                                        reverse_normalizer, vm, vfo)
+        hgvs_tx_returns = [normalized_tx, False, None, None, None]
+    else:
 
-            # Set validator attributes
-            vfo.select_transcripts = 'all'
-            vfo.alt_aln_method = 'splign'
+        """
+        Code now modified to use native VV gap mapper
+        """
+        # VV functions require evm instances
+        no_norm_evm = vvhgvs.assemblymapper.AssemblyMapper(hdp,
+                                                           assembly_name=primary_assembly,
+                                                           alt_aln_method=alt_aln_method,
+                                                           normalize=False,
+                                                           replace_reference=True
+                                                           )
+        evm = vvhgvs.assemblymapper.AssemblyMapper(hdp,
+                                                   assembly_name=primary_assembly,
+                                                   alt_aln_method=alt_aln_method,
+                                                   normalize=True,
+                                                   replace_reference=True
+                                                   )
 
-            # Set variant specific attributes
-            variant = Variant(str(hgvs_genomic))
-            variant.hgvs_genomic = hgvs_genomic
-            variant.reverse_normalizer = reverse_normalizer
-            variant.hn = hn
-            variant.evm = evm
-            variant.no_norm_evm = no_norm_evm
-            variant.vm = vm
-            variant.primary_assembly = primary_assembly
-            variant.post_format_conversion = hgvs_genomic
+        # Set validator attributes
+        vfo.select_transcripts = 'all'
+        vfo.alt_aln_method = alt_aln_method
 
-            # Map the gap
-            gap_mapper = VariantValidator.modules.gapped_mapping.GapMapper(variant, vfo)
-            data, nw_rel_var = gap_mapper.gapped_g_to_c([str(hgvs_tx)], select_transcripts_dict={})
-            ori = vfo.tx_exons(tx_ac=hgvs_tx.ac, alt_ac=hgvs_genomic.ac, alt_aln_method=vfo.alt_aln_method)
-            re_hash_hgvs_genomic, suppress_c_normalization, hgvs_coding = gap_mapper.g_to_t_compensation(ori,
-                                                                                                         nw_rel_var[0],
-                                                                                                         "")
+        # Set variant specific attributes
+        variant = Variant(str(hgvs_genomic))
+        variant.hgvs_genomic = hgvs_genomic
+        variant.reverse_normalizer = reverse_normalizer
+        variant.hn = hn
+        vfo.reverse_hn = reverse_normalizer
+        vfo.hn = hn
+        variant.evm = evm
+        variant.no_norm_evm = no_norm_evm
+        variant.vm = vm
+        variant.primary_assembly = primary_assembly
+        variant.post_format_conversion = hgvs_genomic
 
-            # Populate output list
-            gap_compensated_tx_2 = [nw_rel_var[0]]
-            if "does not represent a true variant" in data["gapped_alignment_warning"] \
-                    or "may be an artefact of" in data["gapped_alignment_warning"]:
-                gap_compensated_tx_2.append(True)
-            else:
-                gap_compensated_tx_2.append(False)
-            try:
-                if data["disparity_deletion_in"][0] == 'transcript':
-                    corrective_action_taken = 'Automap has deleted ' + str(
-                        data["disparity_deletion_in"][1][0]) + ' bp from chromosomal reference sequence ' + str(
-                        hgvs_genomic.ac) + ' to ensure perfect alignment with transcript reference_sequence'
-                if data["disparity_deletion_in"][0] == 'chromosome':
-                    corrective_action_taken = 'Automap has added ' + str(
-                        data["disparity_deletion_in"][1][0]) + ' bp to chromosomal reference sequence ' + str(
-                        hgvs_genomic.ac) + ' to ensure perfect alignment with transcript reference_sequence '
-                gap_compensated_tx_2.append(corrective_action_taken)
-            except Exception:
-                gap_compensated_tx_2.append(None)
-            gap_compensated_tx_2.append(data["gapped_alignment_warning"].replace("the transcripts listed below",
-                                                                                 nw_rel_var[0].ac))
-            gap_compensated_tx_2.append(data["auto_info"].replace("\n", ""))
+        # Map the gap
+        gap_mapper = VariantValidator.modules.gapped_mapping.GapMapper(variant, vfo)
+        data, nw_rel_var = gap_mapper.gapped_g_to_c([str(hgvs_tx)], select_transcripts_dict={})
+        ori = vfo.tx_exons(tx_ac=hgvs_tx.ac, alt_ac=hgvs_genomic.ac, alt_aln_method=vfo.alt_aln_method)
+        re_hash_hgvs_genomic, suppress_c_normalization, hgvs_coding = gap_mapper.g_to_t_compensation(ori,
+                                                                                                     nw_rel_var[0],
+                                                                                                     "")
 
-            if gap_compensated_tx_2[1] is False:
-                refresh_hgvs_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
-                                                  reverse_normalizer, vm, vfo)
-                gap_compensated_tx_2[0] = refresh_hgvs_tx
-            hgvs_tx_returns = gap_compensated_tx_2
+        # Populate output list
+        gap_compensated_tx_2 = [nw_rel_var[0]]
+        if "does not represent a true variant" in data["gapped_alignment_warning"] \
+                or "may be an artefact of" in data["gapped_alignment_warning"]:
+            gap_compensated_tx_2.append(True)
+        else:
+            gap_compensated_tx_2.append(False)
+        try:
+            if data["disparity_deletion_in"][0] == 'transcript':
+                corrective_action_taken = 'Automap has deleted ' + str(
+                    data["disparity_deletion_in"][1][0]) + ' bp from chromosomal reference sequence ' + str(
+                    hgvs_genomic.ac) + ' to ensure perfect alignment with transcript reference_sequence'
+            if data["disparity_deletion_in"][0] == 'chromosome':
+                corrective_action_taken = 'Automap has added ' + str(
+                    data["disparity_deletion_in"][1][0]) + ' bp to chromosomal reference sequence ' + str(
+                    hgvs_genomic.ac) + ' to ensure perfect alignment with transcript reference_sequence '
+            gap_compensated_tx_2.append(corrective_action_taken)
+        except Exception:
+            gap_compensated_tx_2.append(None)
+        gap_compensated_tx_2.append(data["gapped_alignment_warning"].replace("the transcripts listed below",
+                                                                             nw_rel_var[0].ac))
+        gap_compensated_tx_2.append(data["auto_info"].replace("\n", ""))
+
+        if gap_compensated_tx_2[1] is False:
+            refresh_hgvs_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
+                                              reverse_normalizer, vm, vfo)
+            gap_compensated_tx_2[0] = refresh_hgvs_tx
+        hgvs_tx_returns = gap_compensated_tx_2
 
     # Create response dictionary for gap mapping output
     hgvs_tx_dict = {'hgvs_transcript': hgvs_tx_returns[0],

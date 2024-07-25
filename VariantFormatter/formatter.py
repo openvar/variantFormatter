@@ -146,7 +146,7 @@ level hgvs python object is returned.
 def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
 
     # Create dictionary to store the information
-    hgvs_genomic_to_hgvs_transcript = {'error': '', 'hgvs_transcript': '', 'ref_bases': ''}
+    hgvs_genomic_to_hgvs_transcript = {'error': '', 'hgvs_transcript': '', 'ref_bases': '', 'latest_version': tx_id}
     if re.match('ENST', tx_id):
         alt_aln_method = 'genebuild'
         hn = vfo.genebuild_normalizer
@@ -155,6 +155,35 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
         alt_aln_method = 'splign'
         hn = vfo.splign_normalizer
         rhn = vfo.reverse_splign_normalizer
+
+    # Check for up-to-date transcript version
+    tx_id_info = vfo.hdp.get_tx_identity_info(tx_id)
+    uta_gene_symbol = tx_id_info[6]
+    tx_for_gene = vfo.hdp.get_tx_for_gene(uta_gene_symbol)
+    ac_root, ac_version = tx_id.split('.')
+    version_tracking = '0'
+    for accession in tx_for_gene:
+        if hgvs_genomic.ac != accession[4]:
+            continue
+        try:
+            if re.match(ac_root, accession[3]):
+                query_version = accession[3].split('.')[1]
+                if int(query_version) > int(ac_version) and int(query_version) > int(
+                        version_tracking):
+                    version_tracking = query_version
+                    hgvs_genomic_to_hgvs_transcript["latest_version"] = accession[3]
+        except ValueError:
+            pass
+
+    if tx_id not in hgvs_genomic_to_hgvs_transcript["latest_version"]:
+        hgvs_genomic_to_hgvs_transcript["latest_version"] = (f"TranscriptVersionWarning: "
+                                                             f"A more recent version of the selected reference "
+                                                             f"sequence {tx_id} is available for genome build "
+                                                             f"{vfo.genome_build} "
+                                                             f"({hgvs_genomic_to_hgvs_transcript['latest_version']})")
+    else:
+        hgvs_genomic_to_hgvs_transcript["latest_version"] = None
+
     # Obtain the orientation of the transcript wrt selected genomic accession
     try:
         exon_alignments = vfo.hdp.get_tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
@@ -344,7 +373,7 @@ check RefSeq hgvs_tx descriptions for gaps
 """
 
 
-def gap_checker(hgvs_transcript, hgvs_genomic, genome_build, vfo):
+def gap_checker(hgvs_transcript, hgvs_genomic, genome_build, vfo, transcript_model="refseq"):
     tx_id = hgvs_transcript.ac
     if re.match('ENST', tx_id):
         hn = vfo.genebuild_normalizer
@@ -365,7 +394,8 @@ def gap_checker(hgvs_transcript, hgvs_genomic, genome_build, vfo):
                                          rhn,
                                          genome_build,
                                          hdp,
-                                         vfo)
+                                         vfo,
+                                         transcript_model=transcript_model)
 
     return checked
     

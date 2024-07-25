@@ -115,6 +115,7 @@ class FormatVariant(object):
             return
         else:
             self.genome_build = genome_build
+            vfo.genome_build = genome_build
 
         if transcript_model is None:
             transcript_model = 'all'
@@ -290,7 +291,9 @@ class FormatVariant(object):
             g_hgvs = None
             hgvs_ref_bases = None
             un_norm_hgvs = None
-            gen_error = 'Variant description ' + self.variant_description + ' is not in a supported format'
+            gen_error = 'Variant description ' + self.variant_description + ' is not in a supported format. ' \
+                                                                            'This tool accepts vcf-like and HGVS ' \
+                                                                            'genomic (g.) descriptions only'
             gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
                                       variant_description)
             self.genomic_descriptions = gds
@@ -327,7 +330,11 @@ class FormatVariant(object):
         # Transcripts specified
         if self.specify_transcripts is not None and "select" not in self.specify_transcripts \
                 and "mane" not in self.specify_transcripts and 'raw' not in self.specify_transcripts:
-            trans_list = str(self.specify_transcripts).split('|')
+            try:
+                trans_list = json.loads(str(self.specify_transcripts))
+            except json.decoder.JSONDecodeError:
+                trans_list = [str(self.specify_transcripts)]
+
             for tx in trans_list:
                 transcript_list.append([tx, ''])
 
@@ -361,6 +368,8 @@ class FormatVariant(object):
                 gene_dict = {"symbol": gene_symbol,
                              "hgnc_id": annotation_dict["db_xref"]["hgnc"]}
             except json.decoder.JSONDecodeError:
+                continue
+            except KeyError:
                 continue
 
             for k, v in annotation_dict.items():
@@ -403,7 +412,7 @@ class FormatVariant(object):
             # Gap checking
             try:
                 am_i_gapped = formatter.gap_checker(hgvs_transcript_dict['hgvs_transcript'], g_hgvs,
-                                                    self.genome_build, self.vfo)
+                                                    self.genome_build, self.vfo, transcript_model=self.transcript_model)
             except Exception:
                 self.warning_level = 'processing_error'
                 if hgvs_transcript_dict['error'] == '':
@@ -412,7 +421,7 @@ class FormatVariant(object):
                 am_i_gapped = {'hgvs_transcript': None, 'position_lock': False, 'gapped_alignment_warning': None,
                                'corrective_action': None, 'gap_position': None, 'transcript_accession': tx_id,
                                'error': hgvs_transcript_dict['error'], 'hgvs_protein_tlc': None,
-                               'hgvs_protein_slc': None}
+                               'hgvs_protein_slc': None, 'select_status': None}
 
             # add to dictionary
             else:
@@ -474,9 +483,10 @@ class FormatVariant(object):
             order_my_tp['t_hgvs'] = am_i_gapped['hgvs_transcript']
             order_my_tp['p_hgvs_tlc'] = am_i_gapped['hgvs_protein_tlc']
             order_my_tp['p_hgvs_slc'] = am_i_gapped['hgvs_protein_slc']
-            order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
             order_my_tp['select_status'] = am_i_gapped['select_status']
             order_my_tp['gene_info'] = gene_dict
+            order_my_tp['transcript_version_warning'] = hgvs_transcript_dict["latest_version"]
+            order_my_tp['gapped_alignment_warning'] = am_i_gapped['gapped_alignment_warning']
             order_my_tp['gap_statement'] = am_i_gapped['gap_position']
             order_my_tp['transcript_variant_error'] = am_i_gapped['error']
 
