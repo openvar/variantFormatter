@@ -49,6 +49,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
     # batch_vars = []
     formatted_variants = collections.OrderedDict()
     for variant in batch_list:
+        # Set a bypass variable
+        bypass = False
         # remove external whitespace
         variant = variant.strip()
         # Remove internal whitespace
@@ -75,11 +77,34 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                 vcf_list = pseudo_vcf.split('-')
                 delimiter = '-'
             if len(vcf_list) != 4:
-                error = ('%s is an unsupported format: For assistance, submit variant description '
-                         'to https://rest.variantvalidator.org' % str(pseudo_vcf))
-                formatted_variants[variant]['errors'].append(error)
-                formatted_variants[variant]['flag'] = 'submission_warning'
-                continue
+                # Is it a hybrid format that VV can handle?
+                try:
+                    result = vfo.validate(variant, genome_build, "check_only").format_as_dict(test=True)
+                except Exception:
+                    pass
+                try:
+                    if "NC_" in result["intergenic_variant_1"]["primary_assembly_loci"][
+                                       genome_build.lower()]["hgvs_genomic_description"]:
+
+                        format_these.append(result["intergenic_variant_1"]["primary_assembly_loci"][
+                                            genome_build.lower()]["hgvs_genomic_description"])
+                        error = (f"{pseudo_vcf} is not HGVS compliant because a valid reference sequence has not been "
+                                 f"provided. Updating to "
+                                 f"{result['intergenic_variant_1']['primary_assembly_loci'][genome_build.lower()]['hgvs_genomic_description']}")
+                        formatted_variants[variant]['errors'].append(error)
+                        bypass = True
+                    else:
+                        error = ('%s is an unsupported format: For assistance, submit variant description '
+                                 'to https://rest.variantvalidator.org' % str(pseudo_vcf))
+                        formatted_variants[variant]['errors'].append(error)
+                        formatted_variants[variant]['flag'] = 'submission_warning'
+                        continue
+                except KeyError:
+                    error = ('%s is an unsupported format: For assistance, submit variant description '
+                             'to https://rest.variantvalidator.org' % str(pseudo_vcf))
+                    formatted_variants[variant]['errors'].append(error)
+                    formatted_variants[variant]['flag'] = 'submission_warning'
+                    continue
             if ',' in str(vcf_list[-1]):
                 alts = vcf_list[-1].split(',')
                 for eachalt in alts:
@@ -88,14 +113,17 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
                     pv = delimiter.join(base)
                     format_these.append(pv)
             else:
-                try:
-                    format_these.append(variant)
-                except Exception:
-                    error = ('%s is an unsupported format: For assistance, submit variant description '
-                             'to https://rest.variantvalidator.org' % variant)
-                    formatted_variants[variant]['errors'].append(error)
-                    formatted_variants[variant]['flag'] = 'submission_warning'
-                    continue
+                if bypass is True:
+                    pass
+                else:
+                    try:
+                        format_these.append(variant)
+                    except Exception:
+                        error = ('%s is an unsupported format: For assistance, submit variant description '
+                                 'to https://rest.variantvalidator.org' % variant)
+                        formatted_variants[variant]['errors'].append(error)
+                        formatted_variants[variant]['flag'] = 'submission_warning'
+                        continue
 
         else:
             format_these.append(variant)
@@ -103,8 +131,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         for needs_formatting in format_these:
 
             try:
-                result = vf.FormatVariant(needs_formatting, genome_build, validator,  transcript_model, specify_transcripts,
-                                      checkOnly, liftover)
+                result = vf.FormatVariant(needs_formatting, genome_build, validator,  transcript_model,
+                                          specify_transcripts, checkOnly, liftover)
             except Exception as e:
                 import traceback
                 traceback.print_exc()
