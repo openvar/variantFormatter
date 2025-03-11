@@ -101,6 +101,7 @@ class FormatVariant(object):
         self.warning_level = None
         gen_error = None
         self.liftover = liftover
+        self.direct_reformatting = {"instance": None, "reformat": None}
 
         if genome_build not in ['GRCh37', 'GRCh38', 'hg19', 'hg38']:
             p_vcf = None
@@ -138,8 +139,6 @@ class FormatVariant(object):
         if re.match('N[CTW]_', self.variant_description):
 
             # Catch instances where reformatting is required and can be handled directly
-            self.direct_reformatting = {"instance": None, "reformat": None}
-
             if re.search("\|[lgm]", variant_description):
                 to_process, self.direct_reformatting["reformat"] = variant_description.split("|")
                 self.direct_reformatting["instance"] = "methylation"
