@@ -136,6 +136,16 @@ class FormatVariant(object):
 
         # hgvs2vcf route
         if re.match('N[CTW]_', self.variant_description):
+
+            # Catch instances where reformatting is required and can be handled directly
+            self.direct_reformatting = {"instance": None, "reformat": None}
+
+            if re.search("\|[lgm]", variant_description):
+                to_process, self.direct_reformatting["reformat"] = variant_description.split("|")
+                self.direct_reformatting["instance"] = "methylation"
+                variant_description = f"{to_process}="
+                self.variant_description = variant_description
+
             try:
                 hgvs_genomic = formatter.parse(self.variant_description, self.vfo)
                 vfo.vr.validate(hgvs_genomic)
@@ -628,6 +638,13 @@ class FormatVariant(object):
         except AttributeError:
             bring_order['hgvs_t_and_p'] = None
         brought_order = {str(self.variant_description): bring_order}
+
+        # Direct reformatting
+        if self.direct_reformatting["instance"] == "methylation":
+            replace_json = json.dumps(brought_order)
+            replace_json = replace_json.replace('="', f'|{self.direct_reformatting["reformat"]}"')
+            brought_order = json.loads(replace_json)
+
         return brought_order
 
     def collect_metadata(self):
