@@ -199,6 +199,7 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
             hgvs_genomic = rhn.normalize(hgvs_genomic)
         else:
             hgvs_genomic = hn.normalize(hgvs_genomic)
+
         # directly map from the normalized genomic variant to the transcript variant
         try:
             if "ENST" in tx_id:
@@ -212,8 +213,15 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
             try:
                 hgvs_tx = hn.normalize(hgvs_tx)
             except vvhgvs.exceptions.HGVSError as e:
+                if "insertion length must be 1" in str(e):
+                    if orientation == -1:
+                        hgvs_genomic = hn.normalize(hgvs_genomic)
+                        if "ENST" in tx_id:
+                            hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="genebuild")
+                        else:
+                            hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="splign")
+                        hgvs_tx = hn.normalize(hgvs_tx)
                 pass # No restorative action required. Suspected intronic variant
-            
             hgvs_genomic_to_hgvs_transcript['hgvs_transcript'] = hgvs_tx
             try:
                 hgvs_genomic_to_hgvs_transcript['ref_bases'] = hgvs_tx.posedit.edit.ref
