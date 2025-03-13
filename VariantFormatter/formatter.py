@@ -334,7 +334,7 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo, genome_build)
         tx_list = tx_list + refseq_list + refseq_list_3
 
     # Filter out non-latest
-    if vfo.select_transcripts != 'raw':
+    if vfo.select_transcripts != 'raw' and vfo.select_transcripts != 'select':
         tx_list = vfo.transcript_filter(tx_list)
     return tx_list
 
