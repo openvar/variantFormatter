@@ -416,6 +416,15 @@ class FormatVariant(object):
                             c_select_dict.pop(k)
                     select_dict = copy.copy(c_select_dict)
 
+            if "NM_" in self.specify_transcripts or "NR_" in self.specify_transcripts \
+                or "ENST" in self.specify_transcripts:
+                overlapping_tx = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model,
+                                                                     self.vfo,
+                                                                     genome_build)
+                if tx_id not in str(overlapping_tx):
+                    continue
+
+
             hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.vfo)
 
             # Gap checking
