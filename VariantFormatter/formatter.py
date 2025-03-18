@@ -220,7 +220,10 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
                             hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="genebuild")
                         else:
                             hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="splign")
-                        hgvs_tx = hn.normalize(hgvs_tx)
+                        try:
+                            hgvs_tx = hn.normalize(hgvs_tx)
+                        except vvhgvs.exceptions.HGVSInvalidVariantError:
+                            pass
                 pass # No restorative action required. Suspected intronic variant
             hgvs_genomic_to_hgvs_transcript['hgvs_transcript'] = hgvs_tx
             try:
