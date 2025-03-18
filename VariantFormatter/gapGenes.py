@@ -39,7 +39,7 @@ def compensate_g_to_t(hgvs_tx,
                       hdp,
                       vfo,
                       transcript_model="refseq",
-                      mixed_transcrript_model=True):
+                      mixed_transcript_model=True):
 
     # Set Variable
     re_hash_hgvs_genomic = hgvs_genomic
@@ -51,7 +51,7 @@ def compensate_g_to_t(hgvs_tx,
     gap_compensation = gap_black_list(gene_symbol)
 
     # Set alt_aln_method
-    if mixed_transcrript_model is not True:
+    if mixed_transcript_model is not True:
         if transcript_model == "ensembl":
             alt_aln_method = 'genebuild'
         else:
@@ -183,14 +183,19 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, vm, vfo):
         pass
     try:
         hgvs_tx = hn.normalize(hgvs_tx)
-    except vvhgvs.exceptions.HGVSError:
+    except vvhgvs.exceptions.HGVSError as e:
+        # if "insertion length must be 1" in str(e):
+        #     if orientation == -1:
+        #         hgvs_genomic = hn.normalize(hgvs_genomic)
+        #         hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method=alt_aln_method)
+        #         hgvs_tx = hn.normalize(hgvs_tx)
         pass
         
     return hgvs_tx
 
     
 # <LICENSE>
-# Copyright (C) 2016-2023 VariantValidator Contributors
+# Copyright (C) 2016-2025 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as

@@ -33,6 +33,18 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
     if testing is True:
         validator.testing = True
 
+    # Format specify transcripts key options
+    if specify_transcripts == '["all"]':
+        specify_transcripts = "all"
+    if specify_transcripts == '["raw"]':
+        specify_transcripts = "raw"
+    if specify_transcripts == '["mane"]':
+        specify_transcripts = "mane"
+    if specify_transcripts == '["mane_select"]':
+        specify_transcripts = "mane_select"
+    if specify_transcripts == '["select"]':
+        specify_transcripts = "select"
+
     # Set select_transcripts == 'all' to None
     vfo.select_transcripts = specify_transcripts
     if specify_transcripts == 'all':
@@ -147,7 +159,7 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
 
 
 # <LICENSE>
-# Copyright (C) 2016-2023 VariantValidator Contributors
+# Copyright (C) 2016-2025 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as

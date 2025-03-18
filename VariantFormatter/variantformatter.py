@@ -101,6 +101,7 @@ class FormatVariant(object):
         self.warning_level = None
         gen_error = None
         self.liftover = liftover
+        self.direct_reformatting = {"instance": None, "reformat": None}
 
         if genome_build not in ['GRCh37', 'GRCh38', 'hg19', 'hg38']:
             p_vcf = None
@@ -136,6 +137,14 @@ class FormatVariant(object):
 
         # hgvs2vcf route
         if re.match('N[CTW]_', self.variant_description):
+
+            # Catch instances where reformatting is required and can be handled directly
+            if re.search("\|[lgm]", variant_description):
+                to_process, self.direct_reformatting["reformat"] = variant_description.split("|")
+                self.direct_reformatting["instance"] = "methylation"
+                variant_description = f"{to_process}="
+                self.variant_description = variant_description
+
             try:
                 hgvs_genomic = formatter.parse(self.variant_description, self.vfo)
                 vfo.vr.validate(hgvs_genomic)
@@ -628,6 +637,13 @@ class FormatVariant(object):
         except AttributeError:
             bring_order['hgvs_t_and_p'] = None
         brought_order = {str(self.variant_description): bring_order}
+
+        # Direct reformatting
+        if self.direct_reformatting["instance"] == "methylation":
+            replace_json = json.dumps(brought_order)
+            replace_json = replace_json.replace('="', f'|{self.direct_reformatting["reformat"]}"')
+            brought_order = json.loads(replace_json)
+
         return brought_order
 
     def collect_metadata(self):
@@ -639,7 +655,7 @@ class FormatVariant(object):
         return meta
 
 # <LICENSE>
-# Copyright (C) 2016-2023 VariantValidator Contributors
+# Copyright (C) 2016-2025 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
