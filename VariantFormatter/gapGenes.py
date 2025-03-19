@@ -10,7 +10,6 @@ import VariantValidator.modules.seq_data as seq_data
 import VariantValidator.modules.gapped_mapping
 from VariantValidator.modules.variant import Variant
 
-
 """
 Internal function that returns True if gene symbol is blacklisted and False if not
 """
@@ -71,6 +70,7 @@ def compensate_g_to_t(hgvs_tx,
         """
         Code now modified to use native VV gap mapper
         """
+
         # VV functions require evm instances
         no_norm_evm = vvhgvs.assemblymapper.AssemblyMapper(hdp,
                                                            assembly_name=primary_assembly,
@@ -106,9 +106,22 @@ def compensate_g_to_t(hgvs_tx,
         gap_mapper = VariantValidator.modules.gapped_mapping.GapMapper(variant, vfo)
         data, nw_rel_var = gap_mapper.gapped_g_to_c([str(hgvs_tx)], select_transcripts_dict={})
         ori = vfo.tx_exons(tx_ac=hgvs_tx.ac, alt_ac=hgvs_genomic.ac, alt_aln_method=vfo.alt_aln_method)
-        re_hash_hgvs_genomic, suppress_c_normalization, hgvs_coding = gap_mapper.g_to_t_compensation(ori,
-                                                                                                     nw_rel_var[0],
-                                                                                                     "")
+
+        try:
+            re_hash_hgvs_genomic, suppress_c_normalization, hgvs_coding = gap_mapper.g_to_t_compensation(ori,
+                                                                                                         nw_rel_var[0],
+                                                                                                         "")
+        except vvhgvs.exceptions.HGVSInvalidVariantError as e:
+            if "insertion length must be 1" in str(e):
+                validate_variant = vfo.validate(str(hgvs_genomic),
+                                                primary_assembly, hgvs_tx.ac, liftover_level=None).format_as_dict()
+                hgvs_coding_string = False
+                for k, v in validate_variant.items():
+                    if "NR_" in k or "NM_" in k or "ENST" in k:
+                        hgvs_coding_string = k
+                if hgvs_coding_string is not False:
+                    hgvs_coding = vfo.hp.parse_hgvs_variant(hgvs_coding_string)
+                    nw_rel_var = [hgvs_coding]
 
         # Populate output list
         gap_compensated_tx_2 = [nw_rel_var[0]]
@@ -158,7 +171,7 @@ Is only activated if the g_to_t_compensation_code IS NOT USED!
 
 
 def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, vm, vfo):
-    
+
     # set required variables
     tx_id = hgvs_tx.ac
     if re.match('ENST', tx_id):
@@ -184,13 +197,30 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, vm, vfo):
     try:
         hgvs_tx = hn.normalize(hgvs_tx)
     except vvhgvs.exceptions.HGVSError as e:
-        # if "insertion length must be 1" in str(e):
-        #     if orientation == -1:
-        #         hgvs_genomic = hn.normalize(hgvs_genomic)
-        #         hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method=alt_aln_method)
-        #         hgvs_tx = hn.normalize(hgvs_tx)
-        pass
-        
+        if "insertion length must be 1" in str(e):
+            if orientation == -1:
+                hgvs_genomic = hn.normalize(hgvs_genomic)
+                if "ENST" in tx_id:
+                    hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="genebuild")
+                else:
+                    hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="splign")
+                try:
+                    hgvs_tx = hn.normalize(hgvs_tx)
+                except vvhgvs.exceptions.HGVSInvalidVariantError:
+                    pass
+            else:
+                hgvs_genomic = reverse_normalizer.normalize(hgvs_genomic)
+                if "ENST" in tx_id:
+                    hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="genebuild")
+                else:
+                    hgvs_tx = vfo.vm.g_to_t(hgvs_genomic, tx_id, alt_aln_method="splign")
+                try:
+                    hgvs_tx = hn.normalize(hgvs_tx)
+                except vvhgvs.exceptions.HGVSInvalidVariantError:
+                    pass
+        else:
+            pass
+
     return hgvs_tx
 
     
