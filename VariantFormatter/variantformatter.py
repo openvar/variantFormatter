@@ -220,7 +220,7 @@ class FormatVariant(object):
                 try:
                     if "N" in hgvs_genomic.posedit.edit.ref:
                         gen_error = (f"UncertainSequenceError: The submitted variant description "
-                                     f"{hgvs_genomic} refers to a genomic reference "
+                                     f"{formatter.remove_reference(hgvs_genomic)} refers to a genomic reference "
                                      f"region with an uncertain base composition (N)")
                 except AttributeError:
                     pass
