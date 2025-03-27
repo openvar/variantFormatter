@@ -40,6 +40,7 @@ class GenomicDescriptions(object):
 
     # Initialise and add initialisation data to the object
     def __init__(self, p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build, variant_description):
+
         if p_vcf == "None":
             p_vcf = None
         try:
@@ -74,6 +75,7 @@ class GenomicDescriptions(object):
             removed_ref_hgvs_g = formatter.remove_reference(g_hgvs)
         except AttributeError:
             removed_ref_hgvs_g = None
+
         self.g_hgvs = removed_ref_hgvs_g
         self.un_norm_hgvs = un_norm_hgvs
         self.g_hgvs_ref = hgvs_ref_bases
@@ -215,6 +217,13 @@ class FormatVariant(object):
                 hgvs_ref_bases = None
                 un_norm_hgvs = None
                 gen_error = str(e)
+                try:
+                    if "N" in hgvs_genomic.posedit.edit.ref:
+                        gen_error = (f"UncertainSequenceError: The submitted variant description "
+                                     f"{hgvs_genomic} refers to a genomic reference "
+                                     f"region with an uncertain base composition (N)")
+                except AttributeError:
+                    pass
                 gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
                                           variant_description)
                 self.genomic_descriptions = gds
