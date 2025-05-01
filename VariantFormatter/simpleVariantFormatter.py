@@ -14,11 +14,10 @@ import collections
 import VariantValidator
 import VariantFormatter
 import VariantFormatter.variantformatter as vf
-vfo = VariantValidator.Validator()
+GLOBAL_VFO = VariantValidator.Validator()
 
 # Collect metadata
-metadata = vfo.my_config()
-print(metadata)
+metadata = GLOBAL_VFO.my_config()
 metadata['variantformatter_version'] = VariantFormatter.__version__
 sr_root, sr_version = metadata['vvseqrepo_db'].split('/')[-2:]
 metadata['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
@@ -27,8 +26,7 @@ metadata['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
 # If called in a threaded environment you MUST set validator to a thread local
 # VariantValidator instance, due to non thread-safe SQLite3 access via SeqRepo
 def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None,
-           checkOnly=False, liftover=False, validator=vfo, testing=False):
-
+           checkOnly=False, liftover=False, validator=GLOBAL_VFO, testing=None):
     # Testing?
     if testing is True:
         validator.testing = True
@@ -46,6 +44,7 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         specify_transcripts = "select"
 
     # Set select_transcripts == 'all' to None
+    vfo = validator
     vfo.select_transcripts = specify_transcripts
     if specify_transcripts == 'all':
         specify_transcripts = None
@@ -139,16 +138,13 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
 
         else:
             format_these.append(variant)
-
         for needs_formatting in format_these:
-
             try:
-                result = vf.FormatVariant(needs_formatting, genome_build, validator,  transcript_model,
+                result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model,
                                           specify_transcripts, checkOnly, liftover)
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-
             res = result.stucture_data()
             formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
