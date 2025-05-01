@@ -30,6 +30,20 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
     # Testing?
     if testing is True:
         validator.testing = True
+    else:
+        validator.testing = False
+
+    # Format specify transcripts key options
+    if specify_transcripts == '["all"]':
+        specify_transcripts = "all"
+    if specify_transcripts == '["raw"]':
+        specify_transcripts = "raw"
+    if specify_transcripts == '["mane"]':
+        specify_transcripts = "mane"
+    if specify_transcripts == '["mane_select"]':
+        specify_transcripts = "mane_select"
+    if specify_transcripts == '["select"]':
+        specify_transcripts = "select"
 
     # Format specify transcripts key options
     if specify_transcripts == '["all"]':

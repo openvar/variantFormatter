@@ -40,6 +40,7 @@ class GenomicDescriptions(object):
 
     # Initialise and add initialisation data to the object
     def __init__(self, p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build, variant_description):
+
         if p_vcf == "None":
             p_vcf = None
         try:
@@ -74,6 +75,7 @@ class GenomicDescriptions(object):
             removed_ref_hgvs_g = formatter.remove_reference(g_hgvs)
         except AttributeError:
             removed_ref_hgvs_g = None
+
         self.g_hgvs = removed_ref_hgvs_g
         self.un_norm_hgvs = un_norm_hgvs
         self.g_hgvs_ref = hgvs_ref_bases
@@ -215,6 +217,13 @@ class FormatVariant(object):
                 hgvs_ref_bases = None
                 un_norm_hgvs = None
                 gen_error = str(e)
+                try:
+                    if "N" in hgvs_genomic.posedit.edit.ref:
+                        gen_error = (f"UncertainSequenceError: The submitted variant description "
+                                     f"{formatter.remove_reference(hgvs_genomic)} refers to a genomic reference "
+                                     f"region with an uncertain base composition (N)")
+                except AttributeError:
+                    pass
                 gds = GenomicDescriptions(p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error, genome_build,
                                           variant_description)
                 self.genomic_descriptions = gds
@@ -259,6 +268,34 @@ class FormatVariant(object):
                     gen_error = self.variant_description + " updated to " + str(formatter.remove_reference(g_hgvs))
                 else:
                     gen_error = None
+
+        # Recognise unhandled/bad ref types, this needs to be before VCF handling as
+        # that is a bit of a catch all and will otherwise process HGVS LRG refs as VCF
+        elif (self.variant_description.startswith('NG_')
+              or self.variant_description.startswith('LRG_')):
+            p_vcf = None
+            g_hgvs = None
+            hgvs_ref_bases = None
+            un_norm_hgvs = None
+            gen_error = ('Variant description ' + self.variant_description +
+                         ' uses a reference type that is currently unhandled'+
+                         ' through this tool')
+            if self.variant_description.startswith('NG_'):
+                gen_error = ('Variant description ' + self.variant_description +
+                             ' uses the NG_ reference type, this is currently '+
+                             'not accepted through this tool')
+            elif self.variant_description.startswith('LRG_'):
+                 gen_error = ('Variant description ' + self.variant_description+
+                              ' uses the LRG_ reference type, LRGs are no '+
+                              'longer being updated, and are not recommended, '+
+                              'they are also not currently accepted through '+
+                              'this tool')
+            gds = GenomicDescriptions(
+                    p_vcf, g_hgvs, un_norm_hgvs, hgvs_ref_bases, gen_error,
+                    genome_build, variant_description)
+            self.genomic_descriptions = gds
+            self.warning_level = 'submission_warning'
+            return
 
         # vcf2hgvs route
         elif re.match('chr[\w\d]+\-', self.variant_description) or re.match(
@@ -415,6 +452,15 @@ class FormatVariant(object):
                         if "mane" not in k:
                             c_select_dict.pop(k)
                     select_dict = copy.copy(c_select_dict)
+
+            if "NM_" in str(self.specify_transcripts) or "NR_" in str(self.specify_transcripts) \
+                or "ENST" in str(self.specify_transcripts):
+                overlapping_tx = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model,
+                                                                     self.vfo,
+                                                                     genome_build)
+                if tx_id not in str(overlapping_tx):
+                    continue
+
 
             hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.vfo)
 
