@@ -496,6 +496,7 @@ class FormatVariant(object):
                             hgvs_protein_tlc = formatter.hgvs_transcript2hgvs_protein(am_i_gapped['hgvs_transcript'],
                                                                                       self.genome_build,
                                                                                       self.vfo)
+                            hgvs_protein_tlc = formatter.remove_reference(hgvs_protein_tlc)
                             # Handle edits that have been stringified
                             try:
                                 hgvs_protein_tlc.posedit.edit.ref
