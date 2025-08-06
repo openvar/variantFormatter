@@ -578,6 +578,29 @@ class FormatVariant(object):
                                                specified_tx_variant=specified_tx_variant
                                                )
 
+                    # Use PyLiftover if needed to add missing lifts to primary assembly
+                    if current_lift[build_to.lower()] == {}:
+                        direct_lift = lo.liftover(self.genomic_descriptions.g_hgvs,
+                                                   self.genomic_descriptions.selected_build,
+                                                   build_to,
+                                                   vfo.splign_normalizer,
+                                                   vfo.reverse_splign_normalizer,
+                                                   None,
+                                                   vfo,
+                                                   specify_tx=tx_id,
+                                                   liftover_level=self.liftover,
+                                                   gap_map=formatter.gap_checker,
+                                                   vfo=self.vfo,
+                                                   specified_tx_variant=specified_tx_variant,
+                                                   force_pyliftover=True
+                                                   )
+
+                        current_lift[build_to.lower()] = direct_lift[build_to.lower()]
+                        if build_to == "GRCh37":
+                            current_lift["hg19"] = direct_lift[build_to.lower()]
+                        if build_to == "GRCh38":
+                            current_lift["hg39"] = direct_lift[build_to.lower()]
+
                     if "am_i_gapped" in current_lift.keys():
                         if order_my_tp['gapped_alignment_warning'] == "":
                             order_my_tp['gapped_alignment_warning'] = current_lift['am_i_gapped'][
