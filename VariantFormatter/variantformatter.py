@@ -388,23 +388,27 @@ class FormatVariant(object):
         else:
             transcript_list = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model, self.vfo, genome_build)
 
-        # Remove malform IDs
-        cp_transcript_list = copy.copy(transcript_list)
-        transcript_list = []
-        for tx in cp_transcript_list:
+        # De-dup and remove malformed IDs (EG ENS seqs with different GRCh37 and GRCh38 ver but same id and version no.)
+        # Also sort by the number of main chr like mappings, this avoids pyliftover where possible, since we re-use the
+        # first non-failing hit for all liftover. (Where mapping details exist the order is, ref, alt, strand ....)
+        transcript_dict = {}
+        for tx in transcript_list:
             # Known UTA ID malforms
             if re.search('\/', tx[0]):
                 continue
-            else:
-                transcript_list.append(tx)
+            # don't exclude any tx, even if we have no chr like mapping
+            if tx[0] not in transcript_dict:
+                transcript_dict[tx[0]] = +1
+            # but add to the sort number if we do have a main chr like mapping
+            if len(tx) > 2 and (tx[1].startswith('NC_00') or tx[1] in ['NC_012920.1', 'NC_001807.4']):
+                transcript_dict[tx[0]] = transcript_dict[tx[0]] +1
 
+        transcript_list = sorted(transcript_dict.keys(),key=lambda k:transcript_dict[k],reverse=True)
         # Create a variable to trap direct g_g liftover
         g_to_g_lift = {}
 
         # Create transcript level descriptions
-        for tx_alignment_data in transcript_list:
-            tx_id = tx_alignment_data[0]
-
+        for tx_id in transcript_list:
             # Get transcript annotations
             try:
                 annotation = vfo.db.get_transcript_annotation(tx_id)
@@ -460,7 +464,6 @@ class FormatVariant(object):
                                                                      genome_build)
                 if tx_id not in str(overlapping_tx):
                     continue
-
 
             hgvs_transcript_dict = formatter.hgvs_genomic2hgvs_transcript(g_hgvs, tx_id, self.vfo)
 
@@ -615,6 +618,12 @@ class FormatVariant(object):
                 elif order_my_tp['transcript_variant_error'] is not None and g_to_g_lift != {}:
                     current_lift = g_to_g_lift
 
+                # first edit liftover to text, as required for output
+                for key, val in current_lift.items():
+                    for chr_type in val.keys():
+                        current_lift[key][chr_type]['hgvs_genomic_description'] = \
+                            current_lift[key][chr_type]['hgvs_genomic_description'].format(
+                                {'max_ref_length': 0})
                 # Copy the liftover and split into primary and alt
                 cp_current_lift = copy.deepcopy(current_lift)
                 scaff_lift = copy.deepcopy(current_lift)
@@ -685,6 +694,13 @@ class FormatVariant(object):
                                                specify_tx=False,
                                                liftover_level=self.liftover
                                                )
+
+                    # First edit liftover to text, as required for output
+                    for key, val in current_lift.items():
+                        for chr_type in val.keys():
+                            current_lift[key][chr_type]['hgvs_genomic_description'] = \
+                                current_lift[key][chr_type]['hgvs_genomic_description'].format(
+                                    {'max_ref_length': 0})
 
                     # Copy the liftover and split into primary and alt
                     cp_current_lift = copy.deepcopy(current_lift)
