@@ -14,6 +14,7 @@ import collections
 import VariantValidator
 import VariantFormatter
 import VariantFormatter.variantformatter as vf
+from VariantValidator.modules import vcf_to_pvcf
 GLOBAL_VFO = VariantValidator.Validator()
 
 # Collect metadata
@@ -78,6 +79,25 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         bypass = False
         # remove external whitespace
         variant = variant.strip()
+
+        # Process vcf lines
+        # VCF line handling - Note: handling csv brings too many issues, so stick to tabs tsv
+        vcf_processing_warnings = []
+        if "\t" in variant and not re.search(r"[gcrnmo]\.", variant):
+            try:
+                variant = vcf_to_pvcf.vcf_to_shorthand(variant)
+            except vcf_to_pvcf.VcfConversionError:
+                pass
+            else:
+                vcf_processing_warnings.append(f"VcfConversionWarning: VCF line identified and converted to {variant}")
+                vcf_data = re.split(r'[-:]', variant)
+                if (re.search("\d+", vcf_data[2]) and (
+                        re.search("del", vcf_data[3], re.IGNORECASE) or
+                        re.search("inv", vcf_data[3], re.IGNORECASE))):
+                    if not re.search(r"[gatcnmo]\.", str(vcf_data)):
+                        variant  = f"{vcf_data[0]}:{vcf_data[1]}_{vcf_data[2]}{vcf_data[3].lower()}"
+                        vcf_processing_warnings.append(f"VcfConversionWarning: CNV identified, and mapped to {variant}")
+
         # Remove internal whitespace
         wsl = variant.split()
         variant = ''.join(wsl)
@@ -162,6 +182,8 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
             res = result.stucture_data()
             formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
+            if vcf_processing_warnings != []:
+                formatted_variants[variant][needs_formatting]['genomic_variant_warnings'] = vcf_processing_warnings
 
     # Add metadata
     formatted_variants['metadata'] = metadata
