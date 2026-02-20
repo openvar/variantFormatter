@@ -405,6 +405,7 @@ class FormatVariant(object):
                 transcript_dict[tx[0]] = transcript_dict[tx[0]] +1
 
         transcript_list = sorted(transcript_dict.keys(),key=lambda k:transcript_dict[k],reverse=True)
+
         # Create a variable to trap direct g_g liftover
         g_to_g_lift = {}
 
@@ -463,6 +464,7 @@ class FormatVariant(object):
                 overlapping_tx = formatter.fetch_aligned_transcripts(g_hgvs, self.transcript_model,
                                                                      self.vfo,
                                                                      genome_build)
+
                 if tx_id not in str(overlapping_tx):
                     continue
 
