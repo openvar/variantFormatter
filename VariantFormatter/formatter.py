@@ -306,6 +306,7 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo, genome_build)
                                                    )
         enst_list_3 = []
         enst_list_2 = evm.relevant_transcripts(hgvs_genomic)
+
         for tx in enst_list_2:
             enst_list_3.append([tx])
 
@@ -346,7 +347,9 @@ def fetch_aligned_transcripts(hgvs_genomic, transcript_model, vfo, genome_build)
 
     # Filter out non-latest
     if ((vfo.select_transcripts != 'raw' and vfo.select_transcripts != 'select'
-            and "NM_" not in str(vfo.select_transcripts) and "ENST" not in str(vfo.select_transcripts))):
+            and "NR" not in str(vfo.select_transcripts)
+            and "NM_" not in str(vfo.select_transcripts)
+            and "ENST" not in str(vfo.select_transcripts))):
         tx_list = vfo.transcript_filter(tx_list)
     return tx_list
 
