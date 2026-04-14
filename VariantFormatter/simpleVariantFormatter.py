@@ -15,45 +15,66 @@ import VariantValidator
 import VariantFormatter
 import VariantFormatter.variantformatter as vf
 from VariantValidator.modules import vcf_to_pvcf
-GLOBAL_VFO = VariantValidator.Validator()
-
-# Collect metadata
-metadata = GLOBAL_VFO.my_config()
-metadata['variantformatter_version'] = VariantFormatter.__version__
-sr_root, sr_version = metadata['vvseqrepo_db'].split('/')[-2:]
-metadata['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
 
 
-# If called in a threaded environment you MUST set validator to a thread local
-# VariantValidator instance, due to non thread-safe SQLite3 access via SeqRepo
-def format(batch_input, genome_build, transcript_model=None, specify_transcripts=None,
-           checkOnly=False, liftover=False, validator=GLOBAL_VFO, testing=None):
+# ---------------------------------------------------------------------
+# Lazy global state (legacy functional API only)
+# ---------------------------------------------------------------------
+_GLOBAL_VFO = None
+_METADATA = None
+
+
+def _get_global_validator():
+    """
+    Lazily create the legacy global VariantValidator instance.
+    """
+    global _GLOBAL_VFO
+    if _GLOBAL_VFO is None:
+        _GLOBAL_VFO = VariantValidator.Validator()
+    return _GLOBAL_VFO
+
+
+def _get_metadata():
+    """
+    Lazily compute metadata (requires a validator).
+    """
+    global _METADATA
+    if _METADATA is None:
+        vfo = _get_global_validator()
+        _METADATA = vfo.my_config()
+        _METADATA['variantformatter_version'] = VariantFormatter.__version__
+        sr_root, sr_version = _METADATA['vvseqrepo_db'].split('/')[-2:]
+        _METADATA['vvseqrepo_db'] = '/'.join([sr_root, sr_version])
+    return _METADATA
+
+
+# ---------------------------------------------------------------------
+# Internal shared implementation
+# ---------------------------------------------------------------------
+def _format_impl(batch_input, genome_build, transcript_model=None,
+                 specify_transcripts=None, checkOnly=False, liftover=False,
+                 validator=None, testing=None):
 
     # Testing?
-    if testing is True:
-        validator.testing = True
-    else:
-        validator.testing = False
+    validator.testing = bool(testing)
 
-    # Format specify transcripts key options
-    if specify_transcripts == '["all"]':
-        specify_transcripts = "all"
-    if specify_transcripts == '["raw"]':
-        specify_transcripts = "raw"
-    if specify_transcripts == '["mane"]':
-        specify_transcripts = "mane"
-    if specify_transcripts == '["mane_select"]':
-        specify_transcripts = "mane_select"
-    if specify_transcripts == '["select"]':
-        specify_transcripts = "select"
+    # Normalise specify_transcripts
+    mapping = {
+        '["all"]': "all",
+        '["raw"]': "raw",
+        '["mane"]': "mane",
+        '["mane_select"]': "mane_select",
+        '["select"]': "select",
+    }
+    specify_transcripts = mapping.get(specify_transcripts, specify_transcripts)
 
-    # Set select_transcripts == 'all' to None
     vfo = validator
     vfo.select_transcripts = specify_transcripts
+
     if specify_transcripts == 'all':
         specify_transcripts = None
-    is_a_list = type(batch_input) is list
-    if is_a_list is True:
+
+    if isinstance(batch_input, list):
         batch_list = batch_input
     else:
         try:
@@ -61,137 +82,157 @@ def format(batch_input, genome_build, transcript_model=None, specify_transcripts
         except json.decoder.JSONDecodeError:
             batch_list = [batch_input]
 
-    # batch_vars = []
     formatted_variants = collections.OrderedDict()
-    for variant in batch_list:
-        # Set a bypass variable
-        bypass = False
-        # remove external whitespace
-        variant = variant.strip()
 
-        # Process vcf lines
-        # VCF line handling - Note: handling csv brings too many issues, so stick to tabs tsv
+    for variant in batch_list:
+        bypass = False
+        variant = variant.strip()
         vcf_processing_warnings = []
+
+        # VCF handling
         if "\t" in variant and not re.search(r"[gcrnmo]\.", variant):
             try:
                 variant = vcf_to_pvcf.vcf_to_shorthand(variant)
             except vcf_to_pvcf.VcfConversionError:
                 pass
             else:
-                vcf_processing_warnings.append(f"VcfConversionWarning: VCF line identified and converted to {variant}")
+                vcf_processing_warnings.append(
+                    f"VcfConversionWarning: VCF line identified and converted to {variant}"
+                )
                 vcf_data = re.split(r'[-:]', variant)
-                if (re.search("\d+", vcf_data[2]) and (
-                        re.search("del", vcf_data[3], re.IGNORECASE) or
-                        re.search("inv", vcf_data[3], re.IGNORECASE))):
+                if (
+                    re.search(r"\d+", vcf_data[2]) and
+                    (re.search("del", vcf_data[3], re.IGNORECASE) or
+                     re.search("inv", vcf_data[3], re.IGNORECASE))
+                ):
                     if not re.search(r"[gatcnmo]\.", str(vcf_data)):
-                        variant  = f"{vcf_data[0]}:{vcf_data[1]}_{vcf_data[2]}{vcf_data[3].lower()}"
-                        vcf_processing_warnings.append(f"VcfConversionWarning: CNV identified, and mapped to {variant}")
+                        variant = (
+                            f"{vcf_data[0]}:{vcf_data[1]}_"
+                            f"{vcf_data[2]}{vcf_data[3].lower()}"
+                        )
+                        vcf_processing_warnings.append(
+                            f"VcfConversionWarning: CNV identified, and mapped to {variant}"
+                        )
 
-        # Remove internal whitespace
-        wsl = variant.split()
-        variant = ''.join(wsl)
+        variant = ''.join(variant.split())
         formatted_variants[variant] = collections.OrderedDict()
         formatted_variants[variant]['errors'] = []
-        # Set validation warning flag
         formatted_variants[variant]['flag'] = None
+
         format_these = []
-        # specially exclude LRGs as they do not have a "." separated
-        # version number, we don't handle them (yet?) but they are not VCF
+
         if not variant.startswith('LRG') and (
-                re.match('chr[\w\d]+-', variant) or
-                re.match('chr[\w\d]+:', variant) or
-                re.match('[\w\d]+-', variant) or
-                re.match('[\w\d]+:', variant)):
+            re.match(r'chr[\w\d]+[-:]', variant) or
+            re.match(r'[\w\d]+[-:]', variant)
+        ):
             pseudo_vcf = variant
+            delimiter = ':' if ':' in pseudo_vcf else '-'
+            vcf_list = pseudo_vcf.split(delimiter)
 
-            if re.search(':', pseudo_vcf):
-                vcf_list = pseudo_vcf.split(':')
-                delimiter = ':'
-            else:
-                vcf_list = pseudo_vcf.split('-')
-                delimiter = '-'
             if len(vcf_list) != 4:
-                # Is it a hybrid format that VV can handle?
                 try:
-                    result = vfo.validate(variant, genome_build, "check_only").format_as_dict(test=True)
-                except Exception:
-                    pass
-                try:
-                    if "NC_" in result["intergenic_variant_1"]["primary_assembly_loci"][
-                                       genome_build.lower()]["hgvs_genomic_description"]:
+                    result = vfo.validate(
+                        variant, genome_build, "check_only"
+                    ).format_as_dict(test=True)
+                    hgvs = result["intergenic_variant_1"][
+                        "primary_assembly_loci"
+                    ][genome_build.lower()]["hgvs_genomic_description"]
 
-                        format_these.append(result["intergenic_variant_1"]["primary_assembly_loci"][
-                                            genome_build.lower()]["hgvs_genomic_description"])
-                        error = (f"{pseudo_vcf} is not HGVS compliant because a valid reference sequence has not been "
-                                 f"provided. Updating to "
-                                 f"{result['intergenic_variant_1']['primary_assembly_loci'][genome_build.lower()]['hgvs_genomic_description']}")
-                        formatted_variants[variant]['errors'].append(error)
+                    if "NC_" in hgvs:
+                        format_these.append(hgvs)
+                        formatted_variants[variant]['errors'].append(
+                            f"{pseudo_vcf} is not HGVS compliant because a valid "
+                            f"reference sequence has not been provided. "
+                            f"Updating to {hgvs}"
+                        )
                         bypass = True
                     else:
-                        error = ('%s is an unsupported format: For assistance, submit variant description '
-                                 'to https://rest.variantvalidator.org' % str(pseudo_vcf))
-                        formatted_variants[variant]['errors'].append(error)
-                        formatted_variants[variant]['flag'] = 'submission_warning'
-                        continue
-                except KeyError:
-                    error = ('%s is an unsupported format: For assistance, submit variant description '
-                             'to https://rest.variantvalidator.org' % str(pseudo_vcf))
-                    formatted_variants[variant]['errors'].append(error)
+                        raise KeyError
+                except Exception:
+                    formatted_variants[variant]['errors'].append(
+                        f"{pseudo_vcf} is an unsupported format: "
+                        "For assistance, submit variant description "
+                        "to https://rest.variantvalidator.org"
+                    )
                     formatted_variants[variant]['flag'] = 'submission_warning'
                     continue
-            if ',' in str(vcf_list[-1]):
-                alts = vcf_list[-1].split(',')
-                for eachalt in alts:
-                    base = vcf_list[:3]
-                    base.append(eachalt)
-                    pv = delimiter.join(base)
-                    format_these.append(pv)
-            else:
-                if bypass is True:
-                    pass
-                else:
-                    try:
-                        format_these.append(variant)
-                    except Exception:
-                        error = ('%s is an unsupported format: For assistance, submit variant description '
-                                 'to https://rest.variantvalidator.org' % variant)
-                        formatted_variants[variant]['errors'].append(error)
-                        formatted_variants[variant]['flag'] = 'submission_warning'
-                        continue
 
+            if ',' in vcf_list[-1]:
+                for alt in vcf_list[-1].split(','):
+                    format_these.append(
+                        delimiter.join(vcf_list[:3] + [alt])
+                    )
+            elif not bypass:
+                format_these.append(variant)
         else:
             format_these.append(variant)
+
         for needs_formatting in format_these:
-            try:
-                result = vf.FormatVariant(needs_formatting, genome_build, vfo,  transcript_model,
-                                          specify_transcripts, checkOnly, liftover)
-            except Exception as e:
-                import traceback
-                traceback.print_exc()
+            result = vf.FormatVariant(
+                needs_formatting, genome_build, vfo,
+                transcript_model, specify_transcripts,
+                checkOnly, liftover
+            )
             res = result.stucture_data()
             formatted_variants[variant]['flag'] = result.warning_level
             formatted_variants[variant][needs_formatting] = res[needs_formatting]
-            if vcf_processing_warnings != []:
-                formatted_variants[variant][needs_formatting]['genomic_variant_warnings'] = vcf_processing_warnings
 
-    # Add metadata
-    formatted_variants['metadata'] = metadata
+            if vcf_processing_warnings:
+                formatted_variants[variant][needs_formatting][
+                    'genomic_variant_warnings'
+                ] = vcf_processing_warnings
+
+    formatted_variants['metadata'] = _get_metadata()
     return formatted_variants
 
 
-# <LICENSE>
-# Copyright (C) 2016-2026 VariantValidator Contributors
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-# </LICENSE>
+# ---------------------------------------------------------------------
+# Legacy functional API (backwards compatible)
+# ---------------------------------------------------------------------
+def format(batch_input, genome_build, transcript_model=None,
+           specify_transcripts=None, checkOnly=False,
+           liftover=False, validator=None, testing=None):
+    """
+    Legacy functional API.
+    Not thread-safe unless validator is thread-local.
+    """
+    if validator is None:
+        validator = _get_global_validator()
+
+    return _format_impl(
+        batch_input, genome_build,
+        transcript_model=transcript_model,
+        specify_transcripts=specify_transcripts,
+        checkOnly=checkOnly,
+        liftover=liftover,
+        validator=validator,
+        testing=testing
+    )
+
+
+# ---------------------------------------------------------------------
+# Object-oriented API (safe, poolable)
+# ---------------------------------------------------------------------
+class SimpleVariantFormatter:
+    """
+    Object-oriented formatter.
+
+    Each instance owns its own VariantValidator.Validator.
+    Safe for pooling and concurrent use (one request per instance).
+    """
+
+    def __init__(self, *, testing=False):
+        self.validator = VariantValidator.Validator()
+        self.testing = testing
+
+    def format(self, batch_input, genome_build, transcript_model=None,
+               specify_transcripts=None, checkOnly=False, liftover=False):
+        return _format_impl(
+            batch_input, genome_build,
+            transcript_model=transcript_model,
+            specify_transcripts=specify_transcripts,
+            checkOnly=checkOnly,
+            liftover=liftover,
+            validator=self.validator,
+            testing=self.testing
+        )
