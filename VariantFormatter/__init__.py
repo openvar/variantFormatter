@@ -1,20 +1,20 @@
-import pkg_resources
+import importlib.metadata
 import re
 import warnings
 
 # Pull in use_scm_version=True enabled version number
 _is_released_version = False
 try:
-    __version__ = pkg_resources.get_distribution("VariantFormatter").version
+    __version__ = importlib.metadata.version("VariantFormatter")
     if re.match(r"^\d+\.\d+\.\d+$", __version__) is not None:
         _is_released_version = True
-except pkg_resources.DistributionNotFound as e:
+except importlib.metadata.PackageNotFoundError:
     warnings.warn("can't get __version__ because %s package isn't installed" % __package__, Warning)
     __version__ = None
 
 
 # <LICENSE>
-# Copyright (C) 2016-2025 VariantValidator Contributors
+# Copyright (C) 2016-2026 VariantValidator Contributors
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
