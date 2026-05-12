@@ -9,25 +9,7 @@ import VariantValidator
 import VariantValidator.modules.seq_data as seq_data
 import VariantValidator.modules.gapped_mapping
 from VariantValidator.modules.variant import Variant
-
-"""
-Internal function that returns True if gene symbol is blacklisted and False if not
-"""
-
-
-def gap_black_list(symbol):
-    gap_check = seq_data.gap_black_list(symbol)
-    return gap_check
-
-
-"""
-Head function for g_to_t mapping
-Runs quick tests to see if gap compensation is required
-
-RefSeq only
-hgvs <= 1.1.3
-"""
-
+from VariantValidator.modules.transcript_map_data import TranscriptMapData
 
 def compensate_g_to_t(hgvs_tx,
                       hgvs_genomic,
@@ -43,11 +25,9 @@ def compensate_g_to_t(hgvs_tx,
     # Set Variable
     re_hash_hgvs_genomic = hgvs_genomic
 
-    # Not required in these instances
-    gene_symbol = hdp.get_tx_identity_info(hgvs_tx.ac)[6]
-
     # Check the blacklist
-    gap_compensation = gap_black_list(gene_symbol)
+    map_dat = TranscriptMapData(hdp=vfo.hdp)
+    gap_compensation = map_dat.is_gapped_map(hgvs_tx.ac,hgvs_genomic.ac)
 
     # Set alt_aln_method
     if mixed_transcript_model is not True:
@@ -63,7 +43,8 @@ def compensate_g_to_t(hgvs_tx,
 
     if gap_compensation is False:
         normalized_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
-                                        reverse_normalizer, vm, vfo)
+                                        reverse_normalizer, vm, vfo,
+                                        map_dat)
         hgvs_tx_returns = [normalized_tx, False, None, None, None]
     else:
 
@@ -101,11 +82,16 @@ def compensate_g_to_t(hgvs_tx,
         variant.vm = vm
         variant.primary_assembly = primary_assembly
         variant.post_format_conversion = hgvs_genomic
+        variant.map_dat = map_dat
 
         # Map the gap
         gap_mapper = VariantValidator.modules.gapped_mapping.GapMapper(variant, vfo)
         data, nw_rel_var = gap_mapper.gapped_g_to_c([str(hgvs_tx)], select_transcripts_dict={})
-        ori = vfo.tx_exons(tx_ac=hgvs_tx.ac, alt_ac=hgvs_genomic.ac, alt_aln_method=vfo.alt_aln_method)
+        ori = variant.map_dat.tx_exons(
+                tx_ac=hgvs_tx.ac,
+                alt_ac=hgvs_genomic.ac,
+                alt_aln_method=vfo.alt_aln_method,
+                hdp=vfo.hdp)
 
         try:
             re_hash_hgvs_genomic, suppress_c_normalization, hgvs_coding = gap_mapper.g_to_t_compensation(ori,
@@ -148,7 +134,8 @@ def compensate_g_to_t(hgvs_tx,
 
         if gap_compensated_tx_2[1] is False:
             refresh_hgvs_tx = fully_normalize(hgvs_tx, hgvs_genomic, hn,
-                                              reverse_normalizer, vm, vfo)
+                                              reverse_normalizer, vm, vfo,
+                                              variant.map_dat)
             gap_compensated_tx_2[0] = refresh_hgvs_tx
         hgvs_tx_returns = gap_compensated_tx_2
 
@@ -170,7 +157,7 @@ Is only activated if the g_to_t_compensation_code IS NOT USED!
 """
 
 
-def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, vm, vfo):
+def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, vm, vfo,map_dat):
 
     # set required variables
     tx_id = hgvs_tx.ac
@@ -181,7 +168,7 @@ def fully_normalize(hgvs_tx, hgvs_genomic, hn, reverse_normalizer, vm, vfo):
     rhn = reverse_normalizer
 
     # Obtain the orientation of the transcript wrt selected genomic accession
-    exon_alignments = vfo.tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
+    exon_alignments = map_dat.tx_exons(tx_id, hgvs_genomic.ac, alt_aln_method)
     orientation = int(exon_alignments[0]['alt_strand'])
 
     # Normalize the genomic variant 5 prime if antisense or 3 prime if sense
