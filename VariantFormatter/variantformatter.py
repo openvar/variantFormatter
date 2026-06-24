@@ -631,27 +631,61 @@ class FormatVariant(object):
                 cp_current_lift = copy.deepcopy(current_lift)
                 scaff_lift = copy.deepcopy(current_lift)
                 alt_list = []
+                # Process primary chromosome mappings
                 for key, val in current_lift.items():
+
+                    # PAR regions have both chrX (.23) and chrY (.24) mappings
+                    is_par = (
+                            any("23." in k for k in val) and
+                            any("24." in k for k in val)
+                    )
+
                     for chr_type in val.keys():
+
+                        # Remove non-chromosomal accessions from the primary assembly list
                         if 'NC_' not in chr_type:
                             del cp_current_lift[key][chr_type]
-                        if '24.' in chr_type:
-                            del cp_current_lift[key][chr_type]
-                for key, val in scaff_lift.items():
-                    for chr_type in val.keys():
-                        if 'NC_' in chr_type and "24." not in chr_type:
-                            continue
-                        else:
-                            for compile_list_key, compile_list_val in val.items():
-                                if "NC" in compile_list_key:
-                                    if "24." in compile_list_key:
-                                        alt_list.append({key: compile_list_val})
-                                    else:
-                                        continue
-                                else:
-                                    alt_list.append({key: compile_list_val})
 
+                        # For PAR regions, move the chrY mapping out of primary assembly.
+                        # The chrX mapping remains in primary_assembly_loci.
+                        elif is_par and '24.' in chr_type:
+                            del cp_current_lift[key][chr_type]
+
+                # Build the alternate genomic loci list
+                for key, val in scaff_lift.items():
+
+                    # Determine whether this locus is a PAR region
+                    is_par = (
+                            any("23." in k for k in val) and
+                            any("24." in k for k in val)
+                    )
+
+                    if is_par:
+                        self.genomic_descriptions.gen_warnings = ("ParRegionWarning: Variant is located in a "
+                                                                  "pseudoautosomal region (PAR) of the X and Y "
+                                                                  "chromosomes, so the Y context description has been "
+                                                                  "moved to alt_genomic_loci")
+
+                    for compile_list_key, compile_list_val in val.items():
+
+                        # RefSeq chromosome accession
+                        if "NC_" in compile_list_key:
+
+                            # PAR chrY mappings are represented as alternate loci
+                            if is_par and "24." in compile_list_key:
+                                alt_list.append({key: compile_list_val})
+
+                            # All other chromosome mappings remain primary
+                            continue
+
+                        # Non-NC accessions (alt contigs, patches, scaffolds, etc.)
+                        # are always represented as alternate genomic loci
+                        alt_list.append({key: compile_list_val})
+
+                # Store filtered primary chromosome mappings
                 order_my_tp['primary_assembly_loci'] = cp_current_lift
+
+                # Store alternate loci mappings
                 order_my_tp['alt_genomic_loci'] = alt_list
 
             # add to output dictionary keyed by tx_ac
