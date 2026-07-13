@@ -16,6 +16,9 @@ import VariantFormatter
 import VariantFormatter.variantformatter as vf
 from VariantValidator.modules import vcf_to_pvcf
 
+class FormatterSubmissionError(Exception):
+    pass
+
 
 # ---------------------------------------------------------------------
 # Lazy global state (legacy functional API only)
@@ -225,12 +228,18 @@ class SimpleVariantFormatter:
         self.validator = VariantValidator.Validator()
         self.testing = testing
 
-    def format(self, batch_input, genome_build, transcript_model=None,
-               specify_transcripts=None, checkOnly=False, liftover=False):
+    def format(self, variant=None, genome_build=None, transcript_model=None,
+               select_transcripts=None, checkOnly=False, liftover=False):
+        if genome_build is None:
+            raise FormatterSubmissionError("Genome build is required")
+        if variant is None:
+            raise FormatterSubmissionError("Variant is required")
+
         return _format_impl(
-            batch_input, genome_build,
+            batch_input=variant,
+            genome_build=genome_build,
             transcript_model=transcript_model,
-            specify_transcripts=specify_transcripts,
+            specify_transcripts=select_transcripts,
             checkOnly=checkOnly,
             liftover=liftover,
             validator=self.validator,
