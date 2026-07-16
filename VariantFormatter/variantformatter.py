@@ -688,6 +688,51 @@ class FormatVariant(object):
                 # Store alternate loci mappings
                 order_my_tp['alt_genomic_loci'] = alt_list
 
+            else:
+                # No liftover requested.
+                # Return only the submitted assembly.
+                try:
+                    chr, pos, ref, alt = self.genomic_descriptions.p_vcf.split(":")
+                except ValueError:
+                    chr, pos, ref, alt = self.genomic_descriptions.p_vcf.split("-")
+
+                primary = {
+                    self.genomic_descriptions.g_hgvs.split(":")[0]: {
+                        "hgvs_genomic_description": self.genomic_descriptions.g_hgvs,
+                        "vcf": {
+                            "chr": chr,
+                            "pos": pos,
+                            "ref": ref,
+                            "alt": alt,
+                        }
+                    }
+                }
+
+                alt = {
+                    self.genomic_descriptions.g_hgvs.split(":")[0]: {
+                        "hgvs_genomic_description": self.genomic_descriptions.g_hgvs,
+                        "vcf": {
+                            "chr": f"chr{chr}",
+                            "pos": pos,
+                            "ref": ref,
+                            "alt": alt,
+                        }
+                    }
+                }
+
+                if self.genomic_descriptions.selected_build == "GRCh38":
+                    order_my_tp["primary_assembly_loci"] = {
+                        "grch38": primary,
+                        "hg38": alt,
+                    }
+                else:
+                    order_my_tp["primary_assembly_loci"] = {
+                        "grch37": primary,
+                        "hg19": alt,
+                    }
+
+                order_my_tp["alt_genomic_loci"] = []
+
             # add to output dictionary keyed by tx_ac
             prelim_transcript_descriptions[tx_id] = order_my_tp
 
