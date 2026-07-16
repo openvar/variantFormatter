@@ -192,9 +192,9 @@ def _format_impl(batch_input, genome_build, transcript_model=None,
 # ---------------------------------------------------------------------
 # Legacy functional API (backwards compatible)
 # ---------------------------------------------------------------------
-def format(batch_input, genome_build, transcript_model=None,
-           specify_transcripts=None, checkOnly=False,
-           liftover=False, validator=None, testing=None):
+def format(variant=None, genome=None, transcript_model=None,
+           select_transcripts=None, checkOnly=False,
+           liftover_level=True, validator=None, testing=None):
     """
     Legacy functional API.
     Not thread-safe unless validator is thread-local.
@@ -202,8 +202,40 @@ def format(batch_input, genome_build, transcript_model=None,
     if validator is None:
         validator = _get_global_validator()
 
+    # -----------------------------------------------------------------
+    # Validate required arguments
+    # -----------------------------------------------------------------
+    if genome is None:
+        raise FormatterSubmissionError("Genome build is required")
+
+    if variant is None:
+        raise FormatterSubmissionError("Variant is required")
+
+    # -----------------------------------------------------------------
+    # Normalise liftover_level
+    # -----------------------------------------------------------------
+    if liftover_level in ("True", True, 1):
+        liftover_level = True
+    elif liftover_level in (False, "False", 0, None):
+        liftover_level = False
+
+    if liftover_level not in (True, "primary", False):
+        raise FormatterSubmissionError(
+            f"liftover_level '{liftover_level}' is not supported. "
+            "Use True, False, None or 'primary'."
+        )
+
+    # -----------------------------------------------------------------
+    # Legacy variable mapping
+    # -----------------------------------------------------------------
+    batch_input = variant
+    genome_build = genome
+    specify_transcripts = select_transcripts
+    liftover = liftover_level
+
     return _format_impl(
-        batch_input, genome_build,
+        batch_input=batch_input,
+        genome_build=genome_build,
         transcript_model=transcript_model,
         specify_transcripts=specify_transcripts,
         checkOnly=checkOnly,
@@ -228,20 +260,66 @@ class SimpleVariantFormatter:
         self.validator = VariantValidator.Validator()
         self.testing = testing
 
-    def format(self, variant=None, genome_build=None, transcript_model=None,
-               select_transcripts=None, checkOnly=False, liftover=False):
-        if genome_build is None:
+    def format(self, variant=None, genome=None, transcript_model=None,
+               select_transcripts=None, checkOnly=False,
+               liftover_level=True):
+
+        # -----------------------------------------------------------------
+        # Validate required arguments
+        # -----------------------------------------------------------------
+        if genome is None:
             raise FormatterSubmissionError("Genome build is required")
+
         if variant is None:
             raise FormatterSubmissionError("Variant is required")
 
+        # -----------------------------------------------------------------
+        # Normalise liftover_level
+        # -----------------------------------------------------------------
+        if liftover_level in ("True", True, 1):
+            liftover_level = True
+        elif liftover_level in (False, "False", 0, None):
+            liftover_level = False
+
+        if liftover_level not in (True, "primary", False):
+            raise FormatterSubmissionError(
+                f"liftover_level '{liftover_level}' is not supported. "
+                "Use True, False, None or 'primary'."
+            )
+
+        # -----------------------------------------------------------------
+        # Legacy variable mapping
+        # -----------------------------------------------------------------
+        batch_input = variant
+        genome_build = genome
+        specify_transcripts = select_transcripts
+        liftover = liftover_level
+
         return _format_impl(
-            batch_input=variant,
+            batch_input=batch_input,
             genome_build=genome_build,
             transcript_model=transcript_model,
-            specify_transcripts=select_transcripts,
+            specify_transcripts=specify_transcripts,
             checkOnly=checkOnly,
             liftover=liftover,
             validator=self.validator,
             testing=self.testing
         )
+
+
+# <LICENSE>
+# Copyright (C) 2016-2026 VariantValidator Contributors
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as
+# published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+# </LICENSE>
