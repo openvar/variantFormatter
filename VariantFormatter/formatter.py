@@ -31,6 +31,7 @@ import vvhgvs.sequencevariant
 # Import VariantFormatter modules
 import VariantValidator.modules.hgvs_utils as hgvs_utils
 import VariantValidator.modules.seq_data as chr_dict
+from VariantValidator.modules import utils
 import VariantFormatter.gapGenes as gapGenes
 
 """
@@ -60,14 +61,14 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, vfo):
     vcf_to_hgvs_genomic = {'error': '', 'hgvs_genomic': '', 'ref_bases': '', 'un_normalized_hgvs_genomic': ''}
     # Simple check of the format
     if not (re.search(':', pseudo_vcf) or re.search('-', pseudo_vcf)):
-        vcf_to_hgvs_genomic['error'] = '%s is an unsupported variant description format' % pseudo_vcf
+        vcf_to_hgvs_genomic['error'] = 'InvalidVariantError: %s is an unsupported variant description format' % pseudo_vcf
     else:
         if re.search(':', pseudo_vcf):
             vcf_list = pseudo_vcf.split(':')
         else:
             vcf_list = pseudo_vcf.split('-')
         if len(vcf_list) != 4:
-            vcf_to_hgvs_genomic['error'] = '%s is an unsupported variant description format' % pseudo_vcf
+            vcf_to_hgvs_genomic['error'] = 'InvalidVariantError: %s is an unsupported variant description format' % pseudo_vcf
         else:
             # extract the variant data
             chrom = vcf_list[0]
@@ -79,7 +80,7 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, vfo):
             ac = chr_dict.to_accession(chrom, genome_build)
             if ac is None:
                 vcf_to_hgvs_genomic[
-                    'error'] = 'chromosome ID %s is not associated with genome build %s' % (
+                    'error'] = 'GenomeReferenceWarning: Chromosome ID %s is not associated with genome build %s' % (
                     chrom, genome_build)
             else:
                 # Create a genomic HGVS string then parse into an hgvs variant object
@@ -99,6 +100,11 @@ def vcf2hgvs_genomic(pseudo_vcf, genome_build, vfo):
                     vcf_to_hgvs_genomic['ref_bases'] = vfo.sf.fetch_seq(hgvs_genomic.ac,
                                                                         start_i=hgvs_genomic.posedit.pos.start.base - 1,
                                                                         end_i=hgvs_genomic.posedit.pos.end.base)
+                # Normalize errors
+                if vcf_to_hgvs_genomic["error"] != "":
+                    vcf_to_hgvs_genomic['error'] = utils.normalise_warning_codes([vcf_to_hgvs_genomic['error']])
+                    vcf_to_hgvs_genomic['error'] = vcf_to_hgvs_genomic['error'][0]
+
     return vcf_to_hgvs_genomic
 
 
@@ -128,12 +134,18 @@ def format_hgvs_genomic(hgvs_genomic, vfo):
     except vvhgvs.exceptions.HGVSError as e:
         format_hgvs_genomic['error'] = str(e)
     else:
-        # Normalize the description to its most 3 prime position and apply the correct HGVS grammer
+        # Normalize the description to its most 3 prime position and apply the correct HGVS grammar
         format_hgvs_genomic['un_normalized_hgvs_genomic'] = hgvs_genomic
         vfo.splign_normalizer.normalize(hgvs_genomic)
         hgvs_genomic = vfo.splign_normalizer.normalize(hgvs_genomic)
         format_hgvs_genomic['hgvs_genomic'] = hgvs_genomic
         format_hgvs_genomic['ref_bases'] = vfo.sf.fetch_seq(hgvs_genomic.ac, start_i=hgvs_genomic.posedit.pos.start.base - 1, end_i=hgvs_genomic.posedit.pos.end.base)
+
+        # Normalize errors
+        if format_hgvs_genomic["error"] != "":
+            format_hgvs_genomic['error'] = utils.normalise_warning_codes([format_hgvs_genomic['error']])
+            format_hgvs_genomic['error'] = format_hgvs_genomic['error'][0]
+
         return format_hgvs_genomic
     
 
@@ -190,8 +202,8 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
         orientation = int(exon_alignments[0]['alt_strand'])
 
     # May want to tighten up this exception during testing
-    except Exception as e:
-        hgvs_genomic_to_hgvs_transcript['error'] = 'No alignment data available for transcript %s and chromosome %s' % (
+    except Exception:
+        hgvs_genomic_to_hgvs_transcript['error'] = 'TranscriptDataError: No alignment data available for transcript %s and chromosome %s' % (
             tx_id, hgvs_genomic.ac)
     else:
         # Normalize the genomic variant 5 prime if antisense or 3 prime if sense
@@ -235,12 +247,17 @@ def hgvs_genomic2hgvs_transcript(hgvs_genomic, tx_id, vfo):
                     hgvs_genomic_to_hgvs_transcript['ref_bases'] = vfo.sf.fetch_seq(hgvs_tx.ac, start_i=hgvs_tx.posedit.pos.start.base - 1, end_i=hgvs_tx.posedit.pos.end.base)
                 else:
                     hgvs_genomic_to_hgvs_transcript['ref_bases'] = ''
+
+    # Normalize errors
+    if hgvs_genomic_to_hgvs_transcript['error'] != "" and "Transcript" not in hgvs_genomic_to_hgvs_transcript['error']:
+        hgvs_genomic_to_hgvs_transcript['error'] = utils.normalise_warning_codes([hgvs_genomic_to_hgvs_transcript['error']])
+        hgvs_genomic_to_hgvs_transcript['error'] = hgvs_genomic_to_hgvs_transcript['error'][0]
                     
     return hgvs_genomic_to_hgvs_transcript
 
 
 """
-Function which takes a hgvs Python transctipt variant and maps to a specified protein reference sequence. A protein
+Function which takes a hgvs Python transctript variant and maps to a specified protein reference sequence. A protein
 level hgvs python object is returned.
 
 Note the function currently assumes that the transcript description is correctly normalized having come from the 
@@ -253,17 +270,15 @@ def hgvs_transcript2hgvs_protein(hgvs_transcript, genome_build, vfo):
     # Configure vfo.vm and normalizers (easier to maintain as now matches VV)
     if 'ENST' in hgvs_transcript.ac:
         alt_aln_method = 'genebuild'
-        hn = vfo.genebuild_normalizer
         rhn = vfo.reverse_genebuild_normalizer
     else:
         alt_aln_method = 'splign'
-        hn = vfo.splign_normalizer
-        rhn = vfo.reverse_splign_normalizer 
+        rhn = vfo.reverse_splign_normalizer
 
     # Create vfo.vm
     evm = vvhgvs.assemblymapper.AssemblyMapper(vfo.hdp,
                                                assembly_name=genome_build,
-                                               alt_aln_method=alt_aln_method,  # Only RefSeq should be here!!!
+                                               alt_aln_method=alt_aln_method,
                                                normalize=True,
                                                replace_reference=True
                                                )
