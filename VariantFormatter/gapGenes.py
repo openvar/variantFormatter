@@ -6,7 +6,6 @@ import vvhgvs.exceptions
 import vvhgvs.assemblymapper
 import vvhgvs.variantmapper
 import VariantValidator
-import VariantValidator.modules.seq_data as seq_data
 import VariantValidator.modules.gapped_mapping
 from VariantValidator.modules.variant import Variant
 from VariantValidator.modules.transcript_map_data import TranscriptMapData
@@ -139,6 +138,8 @@ def compensate_g_to_t(hgvs_tx,
             gap_compensated_tx_2[0] = refresh_hgvs_tx
         hgvs_tx_returns = gap_compensated_tx_2
 
+
+
     # Create response dictionary for gap mapping output
     hgvs_tx_dict = {'hgvs_transcript': hgvs_tx_returns[0],
                     'gapped_alignment_warning': hgvs_tx_returns[3],
@@ -147,6 +148,26 @@ def compensate_g_to_t(hgvs_tx,
                     'transcript_accession': hgvs_tx_returns[0].ac,
                     'hgvs_genomic': re_hash_hgvs_genomic
                     }
+
+    # Normalize warnings
+    if hgvs_tx_dict["gapped_alignment_warning"] != "":
+        hgvs_tx_dict["gapped_alignment_warning"] = f"GappedAlignmentWarning: {hgvs_tx_dict['gapped_alignment_warning']}"
+    if hgvs_tx_dict["corrective_action"] != "":
+        hgvs_tx_dict["corrective_action"] = f"VariantMappingWarning{hgvs_tx_dict["corrective_action"]}"
+    if hgvs_tx_dict["gap_position"] != "":
+        hgvs_tx_dict["gap_position"] = f"GappedAlignmentWarning: {hgvs_tx_dict["gap_position"]}"
+
+    # Add warnings of gapped alignments to all gapped genes
+    if hgvs_tx_dict["gapped_alignment_warning"] == "" and hgvs_tx_dict["gap_position"] == "":
+
+        make_gap_warnings = gap_mapper.make_gap_warnings(hgvs_tx.ac, hgvs_genomic.ac, primary_assembly)
+
+        make_gap_warnings["gapped_alignment_warning"] = make_gap_warnings["gapped_alignment_warning"].replace(
+            "Submitted description does not represent a true variant because it is an artefact of aligning",
+            "GappedAlignmentWarning: Variation described in the context of an imperfect alignment of")
+
+        hgvs_tx_dict["gapped_alignment_warning"] = make_gap_warnings["gapped_alignment_warning"]
+        hgvs_tx_dict["gap_position"] = f"GappedAlignmentWarning: {make_gap_warnings["auto_info"]}"
 
     return hgvs_tx_dict
 
